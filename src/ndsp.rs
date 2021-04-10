@@ -8,6 +8,7 @@
 // use plotters::prelude::*;
 use num_traits::Num;
 use num_traits::Float;
+use num_traits::real::Real;
 //use num::complex::Complex;
 use num_complex::Complex;
 
@@ -21,19 +22,64 @@ pub type C32I = Complex::<i32>;
 pub type C64I = Complex::<i64>;
 
 
-#[macro_export]
-/// Calculate element-wise exponential.
-/// Explicitly statin the input type is required.
-macro_rules! exp {
-    ( $vector:expr => $T:ty ) => {
-        {   
-            let mut r_vector: Vec<$T> = Vec::with_capacity( $vector.len() );
-            for index in 0..$vector.len() {
-                r_vector[index] = $vector[index].exp();
-            }        
-            r_vector
+/// Returns the index of the highest valued item.
+pub fn arg_max<R>( vector: Vec<R> )-> usize
+    where R: Real
+{
+    let mut max_val:R = R::min_value();
+    let mut arg_max:usize = 0;
+    for index in 0..vector.len() {
+        if max_val < vector[index]
+        {
+            max_val = vector[index];
+            arg_max = index;
         }
-    };
+    } 
+    return arg_max;
+}
+
+/// Returns the index of the lowest valued item.
+pub fn arg_min<R>( vector: Vec<R> )-> usize
+    where R: Real
+{
+    let mut min_val:R = R::max_value();
+    let mut arg_min:usize = 0;
+    for index in 0..vector.len() {
+        if min_val < vector[index]
+        {
+            min_val = vector[index];
+            arg_min = index;
+        }
+    } 
+    return arg_min;
+}
+
+/// Returns the highest valued item.
+pub fn max<R>( vector: Vec<R> )-> R
+    where R: Real
+{
+    let mut max_val:R = R::min_value();
+    for index in 0..vector.len() {
+        if max_val < vector[index]
+        {
+            max_val = vector[index];
+        }
+    } 
+    return max_val;
+}
+
+/// Returns the index of the lowest valued item.
+pub fn min<R>( vector: Vec<R> )-> R
+    where R: Real
+{
+    let mut min_val:R = R::max_value();
+    for index in 0..vector.len() {
+        if min_val < vector[index]
+        {
+            min_val = vector[index];
+        }
+    } 
+    return min_val;
 }
 
 /// Returns the element-wise sine of a vector.
