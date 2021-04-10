@@ -22,6 +22,7 @@ pub type C32I = Complex::<i32>;
 pub type C64I = Complex::<i64>;
 
 #[macro_export]
+/// Create 32-bit float complex number.
 macro_rules! C32F {
     ( $re:expr, $im:expr ) => {
         num_complex::Complex::new( $re as f32, $im as f32 );
@@ -29,15 +30,15 @@ macro_rules! C32F {
 }
 
 #[macro_export]
+/// Create 64-bit float complex number.
 macro_rules! C64F {
     ( $re:expr, $im:expr ) => {
         num_complex::Complex::new( $re as f64, $im as f64 );
     };
 }
 
-
 #[macro_export]
-/// Generates complex number of specified size and type
+/// Create complex number of specified size and type
 macro_rules! c_value {
     ( $re:expr, $im:expr, $N:ty ) => { 
         num_complex::Complex::new( $re as $N, $im as $N );
@@ -169,37 +170,26 @@ pub fn abs<R>( vector: Vec<R> )-> Vec<R>
     return r_vector;
 }
 
-///Generate an unmodulated pulse, (sine).
-/// Using floating point calculation.
-/// TODO: Scale to N-bit resolution.
-/// TODO: Use fixed point type.
-/// Todo: Utilize SIMD.
-pub fn gen_real_unmod_pulse( sample_rate_hz:i32, numb_samples:usize, frequency_hz:i32, phase_rad:f32  ) -> Vec<f32>
-{
-    let x = f32::sin(12f32);
-    println!("{}", x);
-
-    //let mut pulse = Vec::<i16>::with_capacity(numb_samples);
-    
-    let end_sample:f32 = 2_f32*std::f32::consts::PI*(frequency_hz as f32)*((numb_samples as f32)/(sample_rate_hz as f32))+phase_rad; // 2*pi'freq*time+phase
-
-    let time = linspace::<f32>( phase_rad, end_sample, numb_samples );
-
-    println!( "{:#?}", time );
-
-    return time;
-}
-
 /// Returns the element-wise sine of a vector.
 pub fn sin<F>( vector: Vec<F> )-> Vec<F>
     where F: Float
 {
-    let mut return_vector: Vec<F> = Vec::with_capacity(vector.len());
+    let mut r_vector: Vec<F> = Vec::with_capacity(vector.len());
     for index in 0..vector.len() {
-        return_vector.push( F::sin(vector[index]) );
+        r_vector.push( F::sin(vector[index]) );
     }
+    return r_vector;
+}
 
-    return return_vector;
+/// Returns the element-wise cosine of a vector.
+pub fn cos<F>( vector: Vec<F> )-> Vec<F>
+    where F: Float
+{
+    let mut r_vector: Vec<F> = Vec::with_capacity(vector.len());
+    for index in 0..vector.len() {
+        r_vector.push( F::cos(vector[index]) );
+    }
+    return r_vector;
 }
 
 /// Returns a 1D vector of zeros of size numb_samples.
