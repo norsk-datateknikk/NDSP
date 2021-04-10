@@ -23,8 +23,9 @@ fn main()
     println!( "{:?}", c_value!( 12_f32, 18_f32, f32) );
 
     let c_vec = vec![ C32F!(1,2), C32F!(3,6) ];
-    println!( "{:?}", vec![ C32F!(1,2), C32F!(3,6) ] );
-    println!( "{:?}", ndsp::c_abs(vec![ C32F!(1,2), C32F!(3,6) ]) );
+    println!( "{:?}", vec![ C32F!(1,2), C32F!(3,6), C32F!(4,2) ] );
 
+    let c_vec = vec![ C32F!(1,2), C32F!(3,6), C32F!(4,2) ];
+    println!( "{:?}", ndsp::c_abs( c_vec ) );
 
 }
