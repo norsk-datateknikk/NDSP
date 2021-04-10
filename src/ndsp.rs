@@ -141,7 +141,7 @@ macro_rules! F2 {
     };
 }
 
-/// Returns the complex element-wise sine of a vector.
+/// Returns the complex element-wise absolute value.
 pub fn c_abs<F>( vector: Vec<Complex<F>> )-> Vec<F>
     where F: Float
 {
@@ -149,6 +149,18 @@ pub fn c_abs<F>( vector: Vec<Complex<F>> )-> Vec<F>
     for index in 0..vector.len() {
 
         r_vector[index] = F::sqrt( vector[index].re.powf( F2!() )+vector[index].im.powf( F2!() ) );
+    }
+    return r_vector;
+}
+
+/// Returns the complex element-wise absolute value.
+pub fn abs<R>( vector: Vec<R> )-> Vec<R>
+    where R: Real
+{
+    let mut r_vector: Vec<R> = Vec::with_capacity( vector.len() );
+    for index in 0..vector.len() {
+
+        r_vector[index] = vector[index].abs();
     }
     return r_vector;
 }
