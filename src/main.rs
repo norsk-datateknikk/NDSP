@@ -23,7 +23,9 @@ fn main()
     //let vector3 = exp!(test_vec); //TODO
     println!( "{:?}", vector2 );
 
-    let tmp =  Complex::new(0,0);
-    println!( "{:?}", tmp );
+    let mut c_vector: Vec<ndsp::C32I>;
+
+    //let tmp2 =  complex!;
+    //println!( "{:?}", tmp );
     
 }

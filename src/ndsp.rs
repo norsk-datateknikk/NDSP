@@ -9,19 +9,57 @@
 use num_traits::Float;
 use num::complex::Complex;
 
+/// Complex 32-bit float
+pub type C32F = Complex::<f32>;
+/// Complex 64-bit float
+pub type C64F = Complex::<f32>;
+/// Complex 64-bit float
+pub type C32I = Complex::<i32>;
+/// Complex 64-bit float
+pub type C64I = Complex::<i64>;
 
-//#[macro_export]
-/*
-macro_rules! C {
-    ($type:ty) => {
+
+#[macro_export]
+/// Create comlpex number of the specified type.
+macro_rules! C32F {
+    ($re:expr, im:expr) => {
         {
-            let c_tmp = 
+            C32F.new( re, im );
         }
     };
 }
-*/
 
-/*
+#[macro_export]
+/// Create comlpex number of the specified type.
+macro_rules! C64F {
+    ($re:expr, im:expr) => {
+        {
+            C64F.new( re, im );
+        }
+    };
+}
+
+#[macro_export]
+/// Create comlpex number of the specified type.
+macro_rules! C32I {
+    ($re:expr, im:expr) => {
+        {
+            C32I.new( re, im );
+        }
+    };
+}
+
+#[macro_export]
+/// Create comlpex number of the specified type.
+macro_rules! C64I {
+    ($re:expr, im:expr) => {
+        {
+            C64I.new( re, im );
+        }
+    };
+}
+
+
 #[macro_export]
 /// Returns the element-wise exponential e^x.
 macro_rules! exp {
@@ -35,7 +73,7 @@ macro_rules! exp {
             return_vector    
         }
     };
-}*/
+}
 
 /**
  * This library is intended for use on embedded 32-bit platforms.
@@ -71,7 +109,7 @@ pub fn sin<F>( vector: Vec<F> )-> Vec<F>
 {
     let mut return_vector: Vec<F> = Vec::with_capacity(vector.len());
     for index in 0..vector.len() {
-        return_vector[index] = F::sin(vector[index]);
+        return_vector.push( F::sin(vector[index]) );
     }
 
     return return_vector;

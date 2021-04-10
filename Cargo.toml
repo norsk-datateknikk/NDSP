@@ -1,5 +1,5 @@
 [package]
-name = "NDSP"
+name = "ndsp"
 version = "0.1.0"
 authors = ["Erik Buer"]
 edition = "2018"
@@ -12,3 +12,4 @@ itertools = ""
 itertools-num = ""
 num-traits = ""
 num = ""
+num-complex = ""
