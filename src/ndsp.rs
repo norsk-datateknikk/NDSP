@@ -30,14 +30,20 @@ macro_rules! C32F {
     };
 }
 
+#[macro_export]
+/// Generates complex number of specified size and type
+macro_rules! c_value {
+    ( $re:expr, $im:expr, $N:ty ) => { 
+        num_complex::Complex::new( re as N, im as N );
+    };
+}
+
+
 /// Returns the complex valu re+i*im.
 pub fn c_value<N>( re:N, im:N)-> Complex<N>
     where N: Num
 {
-    let mut c_val:Complex<N>;
-    c_val.re = re;
-    c_val.im = im;
-    return c_val;
+    return num_complex::Complex::new( re as N, im as N );
 }
 
 
