@@ -6,8 +6,10 @@
 //--------------------------------------------------------------//
 
 // use plotters::prelude::*;
+use num_traits::Num;
 use num_traits::Float;
-use num::complex::Complex;
+//use num::complex::Complex;
+use num_complex::Complex;
 
 /// Complex 32-bit float
 pub type C32F = Complex::<f32>;
@@ -20,69 +22,46 @@ pub type C64I = Complex::<i64>;
 
 
 #[macro_export]
-/// Create comlpex number of the specified type.
-macro_rules! C32F {
-    ($re:expr, im:expr) => {
-        {
-            C32F.new( re, im );
-        }
-    };
-}
-
-#[macro_export]
-/// Create comlpex number of the specified type.
-macro_rules! C64F {
-    ($re:expr, im:expr) => {
-        {
-            C64F.new( re, im );
-        }
-    };
-}
-
-#[macro_export]
-/// Create comlpex number of the specified type.
-macro_rules! C32I {
-    ($re:expr, im:expr) => {
-        {
-            C32I.new( re, im );
-        }
-    };
-}
-
-#[macro_export]
-/// Create comlpex number of the specified type.
-macro_rules! C64I {
-    ($re:expr, im:expr) => {
-        {
-            C64I.new( re, im );
-        }
-    };
-}
-
-
-#[macro_export]
-/// Returns the element-wise exponential e^x.
+/// Calculate element-wise exponential.
+/// Explicitly statin the input type is required.
 macro_rules! exp {
-    ($vector:expr) => {
-        {
-            
-            let mut return_vector: Vec<Complex<F>> = Vec::with_capacity(vector.len());
-            for index in 0..vector.len() {
-                return_vector[index] = vector[index].exp();
+    ( $vector:expr => $T:ty ) => {
+        {   
+            let mut r_vector: Vec<$T> = Vec::with_capacity( $vector.len() );
+            for index in 0..$vector.len() {
+                r_vector[index] = $vector[index].exp();
             }        
-            return_vector    
+            r_vector
         }
     };
 }
 
-/**
- * This library is intended for use on embedded 32-bit platforms.
- * Operations are separated into two classes, setup and continious.
- * - The setup functions are assumed to be ran before some continious operation, precision is preferred over efficiency.
- * - The continious functions are assumed to run real-time. Here efficiency is preferred.
- */
+/// Returns the element-wise sine of a vector.
+pub fn exp<F>( vector: Vec<F> )-> Vec<F>
+    where F: Float
+{
+    let mut r_vector: Vec<F> = Vec::with_capacity( vector.len() );
+    for index in 0..vector.len() {
+        r_vector[index] = vector[index].exp();
+    }        
+            
+    return r_vector;
+}
 
-///Generate a 16-bit unmodulated pulse, (sine).
+/// Returns the complex element-wise sine of a vector.
+pub fn c_exp<F>( vector: Vec<Complex<F>> )-> Vec<Complex<F>>
+    where F: Float
+{
+    let mut r_vector: Vec<Complex<F>> = Vec::with_capacity( vector.len() );
+    for index in 0..vector.len() {
+        r_vector[index] = vector[index].exp();
+    }
+            
+    return r_vector;
+}
+
+
+///Generate an unmodulated pulse, (sine).
 /// Using floating point calculation.
 /// TODO: Scale to N-bit resolution.
 /// TODO: Use fixed point type.
@@ -115,26 +94,26 @@ pub fn sin<F>( vector: Vec<F> )-> Vec<F>
     return return_vector;
 }
 
-/// Returns a 1D vector of floating point zeros of size numb_samples.
+/// Returns a 1D vector of zeros of size numb_samples.
 /// [0,0,...,0]
-pub fn zeros<F>( numb_samples: usize ) -> Vec<F>
-    where F: Float
+pub fn zeros<N>( numb_samples: usize ) -> Vec<N>
+    where N: Num
 {
-    let mut vector: Vec<F> = Vec::with_capacity(numb_samples);
+    let mut vector: Vec<N> = Vec::with_capacity(numb_samples);
     for i in 0..numb_samples {
-        vector.push(F::zero());
+        vector.push(N::zero());
     }
     return vector;
 }
 
-/// Returns a 1D vector of floating point ones of size numb_samples.
+/// Returns a 1D vector of ones of size numb_samples.
 /// [1,1,...,1]
-pub fn ones<F>( numb_samples: usize ) -> Vec<F>
-    where F: Float
+pub fn ones<N>( numb_samples: usize ) -> Vec<N>
+    where N: Num
 {
-    let mut vector: Vec<F> = Vec::with_capacity(numb_samples);
+    let mut vector: Vec<N> = Vec::with_capacity(numb_samples);
     for i in 0..numb_samples {
-        vector.push(F::one());
+        vector.push(N::one());
     }
     return vector;
 }

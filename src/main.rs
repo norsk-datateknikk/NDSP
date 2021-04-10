@@ -19,13 +19,8 @@ fn main()
     */
 
     let test_vec = ndsp::linspace::<f32>(0_f32, 100_f32, 600);
-    let vector2 = ndsp::sin::<f32>( test_vec );
-    //let vector3 = exp!(test_vec); //TODO
-    println!( "{:?}", vector2 );
-
-    let mut c_vector: Vec<ndsp::C32I>;
-
-    //let tmp2 =  complex!;
-    //println!( "{:?}", tmp );
+    //let vector2 = ndsp::sin::<f32>( test_vec );
+    let vector3 = exp!( test_vec => f32 ); //TODO
     
+    println!( "{:?}", vector3 );        
 }
