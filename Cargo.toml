@@ -1,5 +1,5 @@
 [package]
-name = "signals"
+name = "NDSP"
 version = "0.1.0"
 authors = ["Erik Buer"]
 edition = "2018"
@@ -11,3 +11,4 @@ plotters = "^0.3.0"
 itertools = ""
 itertools-num = ""
 num-traits = ""
+num = ""
