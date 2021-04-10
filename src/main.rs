@@ -6,10 +6,24 @@
 //--------------------------------------------------------------//
 
 mod ndsp;
+use num::complex::Complex;
 
 fn main()
 {
+    /*
+    struct Scan
+    {
+        sample_rate_hz: i32,
+        frame: Vec<i8>
+    }
+    */
+
     let test_vec = ndsp::linspace::<f32>(0_f32, 100_f32, 600);
     let vector2 = ndsp::sin::<f32>( test_vec );
+    //let vector3 = exp!(test_vec); //TODO
     println!( "{:?}", vector2 );
+
+    let tmp =  Complex::new(0,0);
+    println!( "{:?}", tmp );
+    
 }
