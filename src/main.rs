@@ -6,7 +6,6 @@
 //--------------------------------------------------------------//
 
 mod ndsp;
-use num::complex::Complex;
 
 fn main()
 {
@@ -20,7 +19,8 @@ fn main()
 
     let test_vec = ndsp::linspace::<f32>(0_f32, 100_f32, 600);
     //let vector2 = ndsp::sin::<f32>( test_vec );
-    let vector3 = exp!( test_vec => f32 ); //TODO
+
+    let c_vec = vec![ C32F!(1,2), C32F!(3,6) ];
     
-    println!( "{:?}", vector3 );        
+    println!( "{:?}", c_vec );        
 }

@@ -15,11 +15,31 @@ use num_complex::Complex;
 /// Complex 32-bit float
 pub type C32F = Complex::<f32>;
 /// Complex 64-bit float
-pub type C64F = Complex::<f32>;
+pub type C64F = Complex::<f64>;
 /// Complex 64-bit float
 pub type C32I = Complex::<i32>;
 /// Complex 64-bit float
 pub type C64I = Complex::<i64>;
+
+#[macro_export]
+macro_rules! C32F {
+    ( $re:expr, $im:expr ) => {
+        {
+            num_complex::Complex::new( $re as f32, $im as f32 );
+        }
+    };
+}
+
+/// Returns the complex valu re+i*im.
+pub fn c_value<N>( re:N, im:N)-> Complex<N>
+    where N: Num
+{
+    let mut c_val:Complex<N>;
+    c_val.re = re;
+    c_val.im = im;
+    return c_val;
+}
+
 
 
 /// Returns the index of the highest valued item.
@@ -106,6 +126,23 @@ pub fn c_exp<F>( vector: Vec<Complex<F>> )-> Vec<Complex<F>>
     return r_vector;
 }
 
+macro_rules! F2 {
+    () => {
+        F::from(2).unwrap();
+    };
+}
+
+/// Returns the complex element-wise sine of a vector.
+pub fn c_abs<F>( vector: Vec<Complex<F>> )-> Vec<F>
+    where F: Float
+{
+    let mut r_vector: Vec<F> = Vec::with_capacity( vector.len() );
+    for index in 0..vector.len() {
+
+        r_vector[index] = F::sqrt( vector[index].re.powf( F2!() )+vector[index].im.powf( F2!() ) );
+    }
+    return r_vector;
+}
 
 ///Generate an unmodulated pulse, (sine).
 /// Using floating point calculation.
