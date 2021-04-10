@@ -24,29 +24,32 @@ pub type C64I = Complex::<i64>;
 #[macro_export]
 macro_rules! C32F {
     ( $re:expr, $im:expr ) => {
-        {
-            num_complex::Complex::new( $re as f32, $im as f32 );
-        }
+        num_complex::Complex::new( $re as f32, $im as f32 );
     };
 }
+
+#[macro_export]
+macro_rules! C64F {
+    ( $re:expr, $im:expr ) => {
+        num_complex::Complex::new( $re as f64, $im as f64 );
+    };
+}
+
 
 #[macro_export]
 /// Generates complex number of specified size and type
 macro_rules! c_value {
     ( $re:expr, $im:expr, $N:ty ) => { 
-        num_complex::Complex::new( re as N, im as N );
+        num_complex::Complex::new( $re as $N, $im as $N );
     };
 }
-
 
 /// Returns the complex valu re+i*im.
 pub fn c_value<N>( re:N, im:N)-> Complex<N>
     where N: Num
 {
-    return num_complex::Complex::new( re as N, im as N );
+    return Complex::new( re as N, im as N );
 }
-
-
 
 /// Returns the index of the highest valued item.
 pub fn arg_max<R>( vector: Vec<R> )-> usize

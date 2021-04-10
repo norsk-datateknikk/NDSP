@@ -20,7 +20,10 @@ fn main()
     let test_vec = ndsp::linspace::<f32>(0_f32, 100_f32, 600);
     //let vector2 = ndsp::sin::<f32>( test_vec );
 
+    println!( "{:?}", c_value!( 12_f32, 18_f32, f32) );
+
     let c_vec = vec![ C32F!(1,2), C32F!(3,6) ];
-    
-    println!( "{:?}", c_vec );        
+    println!( "{:?}", vec![ C32F!(1,2), C32F!(3,6) ] );
+    println!( "{:?}", ndsp::c_value::<f32>( 12_f32, 18_f32) );
+
 }
