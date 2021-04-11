@@ -1,56 +1,20 @@
 //--------------------------------------------------------------//
-// Norsk Datateknikk AS 2021                                    //
+// Copyright 2021 Norsk Datateknikk AS                          //
 //--------------------------------------------------------------//
 // This file is subject to the terms and conditions defined in  //
 // file 'LICENSE', which is part of this source code package.   //
 //--------------------------------------------------------------//
 
-// use plotters::prelude::*;
+// This file containns basig functions that can operate on vectors of numerical types.
+
 use num_traits::Num;
 use num_traits::Float;
 use num_traits::real::Real;
 //use num::complex::Complex;
 use num_complex::Complex;
 
-/// Complex 32-bit float
-pub type C32F = Complex::<f32>;
-/// Complex 64-bit float
-pub type C64F = Complex::<f64>;
-/// Complex 64-bit float
-pub type C32I = Complex::<i32>;
-/// Complex 64-bit float
-pub type C64I = Complex::<i64>;
-
 #[macro_export]
-/// Create 32-bit float complex number.
-macro_rules! C32F {
-    ( $re:expr, $im:expr ) => {
-        num_complex::Complex::new( $re as f32, $im as f32 );
-    };
-}
-
-#[macro_export]
-/// Create 64-bit float complex number.
-macro_rules! C64F {
-    ( $re:expr, $im:expr ) => {
-        num_complex::Complex::new( $re as f64, $im as f64 );
-    };
-}
-
-#[macro_export]
-/// Create complex number of specified size and type
-macro_rules! c_value {
-    ( $re:expr, $im:expr, $N:ty ) => { 
-        num_complex::Complex::new( $re as $N, $im as $N );
-    };
-}
-
-/// Returns the complex valu re+i*im.
-pub fn c_value<N>( re:N, im:N)-> Complex<N>
-    where N: Num
-{
-    return Complex::new( re as N, im as N );
-}
+mod complex;
 
 /// Returns the index of the highest valued item.
 pub fn arg_max<R>( vector: Vec<R> )-> usize
@@ -138,13 +102,6 @@ pub fn c_exp<F>( vector: Vec<Complex<F>> )-> Vec<Complex<F>>
 
 macro_rules! F2 {
     () => { F::from(2).unwrap(); };
-}
-
-/// Absolute of a complex scalar.
-macro_rules! abs_c_scalar {
-    ( $c_val:expr) => { 
-        F::sqrt( $c_val.re.powf( F2!() )+$c_val.im.powf( F2!() ) ) ;
-     };
 }
 
 /// Returns the complex element-wise absolute value.
