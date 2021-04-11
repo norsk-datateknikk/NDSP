@@ -31,7 +31,8 @@ macro_rules! c_value {
 #[macro_export]
 macro_rules! C32F {
     ( $re:expr, $im:expr ) => {
-        num_complex::Complex::new( $re as f32, $im as f32 );
+        type N = f32;
+        c_value( $re as N, $im as N, N );
     };
 }
 
@@ -39,7 +40,8 @@ macro_rules! C32F {
 #[macro_export]
 macro_rules! C64F {
     ( $re:expr, $im:expr ) => {
-        num_complex::Complex::new( $re as f64, $im as f64 );
+        type N = f64;
+        c_value( $re as N, $im as N, N );
     };
 }
 
@@ -47,7 +49,8 @@ macro_rules! C64F {
 #[macro_export]
 macro_rules! C32I {
     ( $re:expr, $im:expr ) => {
-        num_complex::Complex::new( $re as f32, $im as i32 );
+        type N = i32;
+        c_value( $re as N, $im as N, N );
     };
 }
 
@@ -55,7 +58,8 @@ macro_rules! C32I {
 #[macro_export]
 macro_rules! C64I {
     ( $re:expr, $im:expr ) => {
-        c_value( $re as f64, $im as i64, i64 );
+        type N = i64;
+        c_value( $re as N, $im as N, N );
     };
 }
 
