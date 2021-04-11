@@ -5,6 +5,8 @@
 // file 'LICENSE', which is part of this source code package.   //
 //--------------------------------------------------------------//
 
+#![crate_name = "ndsp"]
+
 // use plotters::prelude::*;
 use num_traits::Num;
 use num_traits::Float;
@@ -12,18 +14,20 @@ use num_traits::real::Real;
 //use num::complex::Complex;
 use num_complex::Complex;
 
-#[macro_export]
-pub mod vector;
-#[macro_export]
-pub mod complex;
+#[macro_use]
+pub mod nd_complex;
 
+#[macro_use]
+pub mod nd_vector;
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
-    fn linspace() {
-        let test_vec = vector::linspace::<f32>(0_f32, 3_f32, 3);
-        assert_eq!(test_vec, vec![ 0_f32, 1_f32, 2_f32 ]);
+    fn test_linspace() {
+        let test_vec = nd_vector::linspace::<f32>(0_f32, 4_f32, 4);
+        assert_eq!(test_vec, vec![ 0_f32, 1_f32, 2_f32, 3_f32 ]);
 
         /*
         println!( "{:?}", c_value!( 12_f32, 18_f32, f32) );
