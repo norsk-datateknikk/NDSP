@@ -96,41 +96,17 @@ pub fn c_abs<F>( vector: Vec<Complex<F>> )-> Vec<F>
     return r_vector;
 }
 
-
-/// This macro generates element-wise operations on vectors.
-/// The operations must be a trait of the vector item class.
-/// vector<T> can thus have all traits of T.
-macro_rules! element_wise_operand {
-    (   
-        $(#[$meta:meta])*
-        $operand:ident 
-        $trait:ident
-    ) => {
-        $(#[$meta])*
-        /// Element-wise operation on vector of real type R.
-        pub fn $operand<T>( vector: Vec<T> )-> Vec<T>
-        where T: $trait
-        {
-        let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
-        for index in 0..vector.len() {
-            r_vector.push( T::$operand(vector[index]) );
-        }
-        return r_vector;
-        }
-    };
-}
-
 /*
 /// This macro generates element-wise operations on vectors of complex numbers.
 /// The operations must be a trait of the vector item class.
 /// vector<T> can thus have all traits of T.
 macro_rules! complex_element_wise_operand {
     (   
-        $(#[$meta:meta])*
+        $(#[$comment:meta])*
         $operand:ident
         $trait:ident
     ) => {
-        $(#[$meta])*
+        $(#[$comment])*
         /// Element-wise operation on vector of real type R.
         pub fn $operand<T>( vector: Vec<Complex<T>> )-> Vec<Complex<T>>
             where T: $trait
@@ -150,6 +126,29 @@ complex_element_wise_operand!{
     Float
 }
 */
+
+/// This macro generates element-wise operations on vectors.
+/// The operations must be a trait of the vector item class.
+/// vector<T> can thus have all traits of T.
+macro_rules! element_wise_operand {
+    (   
+        $(#[$comment:meta])*
+        $operand:ident 
+        $trait:ident
+    ) => {
+        $(#[$comment])*
+        /// Element-wise operation on vector of real type R.
+        pub fn $operand<T>( vector: Vec<T> )-> Vec<T>
+        where T: $trait
+        {
+        let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
+        for index in 0..vector.len() {
+            r_vector.push( T::$operand(vector[index]) );
+        }
+        return r_vector;
+        }
+    };
+}
 
 element_wise_operand!{
     /// Absolute value.
