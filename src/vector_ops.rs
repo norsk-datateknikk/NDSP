@@ -73,27 +73,14 @@ pub fn min<R>( vector: Vec<R> )-> R
     return min_val;
 }
 
-/// Returns the element-wise sine of a vector.
-pub fn exp<F>( vector: Vec<F> )-> Vec<F>
-    where F: Float
-{
-    let mut r_vector: Vec<F> = Vec::with_capacity( vector.len() );
-    for index in 0..vector.len() {
-        r_vector.push( vector[index].exp() );
-    }        
-            
-    return r_vector;
-}
-
 /// Returns the complex element-wise sine of a vector.
 pub fn c_exp<F>( vector: Vec<Complex<F>> )-> Vec<Complex<F>>
     where F: Float
 {
     let mut r_vector: Vec<Complex<F>> = Vec::with_capacity( vector.len() );
     for index in 0..vector.len() {
-        r_vector.push( vector[index].exp() );
+        r_vector.push( Complex::<F>::exp( vector[index] ) );
     }
-            
     return r_vector;
 }
 
@@ -109,83 +96,85 @@ pub fn c_abs<F>( vector: Vec<Complex<F>> )-> Vec<F>
     return r_vector;
 }
 
+
 /// This macro generates element-wise operations on vectors.
 /// The operations must be a trait of the vector item class.
 /// vector<T> can thus have all traits of T.
-macro_rules! real_element_wise_operand {
+macro_rules! element_wise_operand {
     (   
         $(#[$meta:meta])*
         $operand:ident 
+        $trait:ident
     ) => {
         $(#[$meta])*
         /// Element-wise operation on vector of real type R.
-        pub fn $operand<R>( vector: Vec<R> )-> Vec<R>
-        where R: Real
+        pub fn $operand<T>( vector: Vec<T> )-> Vec<T>
+        where T: $trait
         {
-        let mut r_vector: Vec<R> = Vec::with_capacity( vector.len() );
+        let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
         for index in 0..vector.len() {
-            r_vector.push( R::$operand(vector[index]) );
+            r_vector.push( T::$operand(vector[index]) );
         }
         return r_vector;
         }
     };
 }
 
-real_element_wise_operand!{
-    /// absolute value.
-    abs
+/*
+/// This macro generates element-wise operations on vectors of complex numbers.
+/// The operations must be a trait of the vector item class.
+/// vector<T> can thus have all traits of T.
+macro_rules! complex_element_wise_operand {
+    (   
+        $(#[$meta:meta])*
+        $operand:ident
+        $trait:ident
+    ) => {
+        $(#[$meta])*
+        /// Element-wise operation on vector of real type R.
+        pub fn $operand<T>( vector: Vec<Complex<T>> )-> Vec<Complex<T>>
+            where T: $trait
+        {
+            let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
+            for index in 0..vector.len() {
+                r_vector.push( T::$operand(vector[index]) );
+            }
+            return r_vector;
+        }
+    };
 }
-real_element_wise_operand!{
+
+complex_element_wise_operand!{
+    /// Absolute value of complex number.
+    abs
+    Float
+}
+*/
+
+element_wise_operand!{
+    /// Absolute value.
+    abs
+    Real
+}
+element_wise_operand!{
     /// Sin.
     sin
+    Float
 }
-
-
-/*  //! Debug
-/// Returns the complex element-wise absolute value.
-pub fn abs<R>( vector: Vec<R> )-> Vec<R>
-    where R: Real
-{
-    let mut r_vector: Vec<R> = Vec::with_capacity( vector.len() );
-    for index in 0..vector.len() {
-        r_vector.push( vector[index].abs() );
-    }
-    return r_vector;
+element_wise_operand!{
+    /// Cos.
+    cos
+    Float
 }
-*/
-/*
-/// Returns the element-wise sine of a vector.
-pub fn sin<F>( vector: Vec<F> )-> Vec<F>
-    where F: Float
-{
-    let mut r_vector: Vec<F> = Vec::with_capacity(vector.len());
-    for index in 0..vector.len() {
-        r_vector.push( F::sin(vector[index]) );
-    }
-    return r_vector;
+element_wise_operand!{
+    /// Tan.
+    tan
+    Float
 }
-*/
-
-/// Returns the element-wise cosine of a vector.
-pub fn cos<F>( vector: Vec<F> )-> Vec<F>
-    where F: Float
-{
-    let mut r_vector: Vec<F> = Vec::with_capacity(vector.len());
-    for index in 0..vector.len() {
-        r_vector.push( F::cos(vector[index]) );
-    }
-    return r_vector;
-}
-
-/// Returns the element-wise cosine of a vector.
-pub fn tan<F>( vector: Vec<F> )-> Vec<F>
-    where F: Float
-{
-    let mut r_vector: Vec<F> = Vec::with_capacity(vector.len());
-    for index in 0..vector.len() {
-        r_vector.push( F::tan(vector[index]) );
-    }
-    return r_vector;
+element_wise_operand!{
+    /// Exponential, e^x.
+    exp
+    Float
 }
 
 /// Returns a 1D vector of zeros of size numb_samples.
