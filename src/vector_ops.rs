@@ -79,7 +79,7 @@ pub fn exp<F>( vector: Vec<F> )-> Vec<F>
 {
     let mut r_vector: Vec<F> = Vec::with_capacity( vector.len() );
     for index in 0..vector.len() {
-        r_vector[index] = vector[index].exp();
+        r_vector.push( vector[index].exp() );
     }        
             
     return r_vector;
@@ -91,7 +91,7 @@ pub fn c_exp<F>( vector: Vec<Complex<F>> )-> Vec<Complex<F>>
 {
     let mut r_vector: Vec<Complex<F>> = Vec::with_capacity( vector.len() );
     for index in 0..vector.len() {
-        r_vector[index] = vector[index].exp();
+        r_vector.push( vector[index].exp() );
     }
             
     return r_vector;
@@ -109,6 +109,39 @@ pub fn c_abs<F>( vector: Vec<Complex<F>> )-> Vec<F>
     return r_vector;
 }
 
+/// This macro generates element-wise operations on vectors.
+/// The operations must be a trait of the vector item class.
+/// vector<T> can thus have all traits of T.
+macro_rules! real_element_wise_operand {
+    (   
+        $(#[$meta:meta])*
+        $operand:ident 
+    ) => {
+        $(#[$meta])*
+        /// Element-wise operation on vector of real type R.
+        pub fn $operand<R>( vector: Vec<R> )-> Vec<R>
+        where R: Real
+        {
+        let mut r_vector: Vec<R> = Vec::with_capacity( vector.len() );
+        for index in 0..vector.len() {
+            r_vector.push( R::$operand(vector[index]) );
+        }
+        return r_vector;
+        }
+    };
+}
+
+real_element_wise_operand!{
+    /// absolute value.
+    abs
+}
+real_element_wise_operand!{
+    /// Sin.
+    sin
+}
+
+
+/*  //! Debug
 /// Returns the complex element-wise absolute value.
 pub fn abs<R>( vector: Vec<R> )-> Vec<R>
     where R: Real
@@ -119,7 +152,8 @@ pub fn abs<R>( vector: Vec<R> )-> Vec<R>
     }
     return r_vector;
 }
-
+*/
+/*
 /// Returns the element-wise sine of a vector.
 pub fn sin<F>( vector: Vec<F> )-> Vec<F>
     where F: Float
@@ -130,6 +164,7 @@ pub fn sin<F>( vector: Vec<F> )-> Vec<F>
     }
     return r_vector;
 }
+*/
 
 /// Returns the element-wise cosine of a vector.
 pub fn cos<F>( vector: Vec<F> )-> Vec<F>
@@ -138,6 +173,17 @@ pub fn cos<F>( vector: Vec<F> )-> Vec<F>
     let mut r_vector: Vec<F> = Vec::with_capacity(vector.len());
     for index in 0..vector.len() {
         r_vector.push( F::cos(vector[index]) );
+    }
+    return r_vector;
+}
+
+/// Returns the element-wise cosine of a vector.
+pub fn tan<F>( vector: Vec<F> )-> Vec<F>
+    where F: Float
+{
+    let mut r_vector: Vec<F> = Vec::with_capacity(vector.len());
+    for index in 0..vector.len() {
+        r_vector.push( F::tan(vector[index]) );
     }
     return r_vector;
 }
@@ -165,7 +211,6 @@ pub fn ones<N>( numb_samples: usize ) -> Vec<N>
     }
     return vector;
 }
-
 
 /// Returns a 1D vector of evenly spaced numbers of type F.
 /// [0,1,...,N-1]
