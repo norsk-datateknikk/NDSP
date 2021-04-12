@@ -105,38 +105,30 @@ pub fn mean<T>( vector: Vec<T> )-> T
     mean!(vector);
 }
 
-/*
-macro_rules! energy {
-    ( $vector:expr ) => {
-        
-    };
+/// Power of a vector.
+pub fn power<T>( vector: Vec<T> )-> Vec<T>
+    where T: Real
+{
+    let mut r_vector:Vec<T> = Vec::with_capacity( vector.len() );
+        for i in 0..vector.len()  {
+            r_vector.push(vector[i].powf(<T>::from(2).unwrap()));
+        }
+        return r_vector;
 }
 
+macro_rules! energy {
+    ( $vector:expr ) => {
+        sum(power($vector));
+    };
+}
 
 /// Energy of a vector.
 pub fn energy<T>( vector: Vec<T> )-> T
     where T: Real
 {
-    energy!(vector);
+    return energy!(vector);
 }
-*/
 
-/*  // TODO inject element-wise opertion
-/// This macro generates element-wise operations on vectors.
-/// The operations must be a trait of the vector item class.
-/// vector<T> can thus have all traits of T.
-macro_rules! inject_element_wise_operand {
-    (
-        $operand:ident 
-        $trait:ident
-    ) => {
-        let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
-        for i in 0..vector.len(9)  {
-            vector[i] = vector[i].$operand();
-        }
-    };
-}
-*/
 
 /// This macro generates element-wise operations on vectors.
 /// The operations must be a trait of the vector item class.
