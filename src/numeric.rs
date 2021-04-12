@@ -5,7 +5,8 @@
 // file 'LICENSE', which is part of this source code package.   //
 //--------------------------------------------------------------//
 
-use super::nd_complex::*;
+use super::func::*;
+use super::cfunc::*;
 
 /// Numeric type 
 struct NumericF32
