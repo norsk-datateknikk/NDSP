@@ -10,7 +10,10 @@
 pub mod numeric;
 
 #[macro_use]
-pub mod func;
+pub mod sfunc;
 
 #[macro_use]
-pub mod cfunc;
+pub mod vfunc;
+
+#[macro_use]
+pub mod cvfunc;
