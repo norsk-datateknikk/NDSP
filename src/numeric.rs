@@ -8,13 +8,13 @@
 use super::sfunc::*;
 use super::cvfunc::*;
 
-/// Numeric type 
+/// Numeric vector type
 struct NumericF32
 {
     obj:Vec<f32>
 }
 
-/// Numeric type 
+/// Numeric vector type
 struct NumericC32F
 {
     obj:Vec<C32F>
