@@ -19,9 +19,10 @@ test = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-plotters = "^0.3.0"
-itertools = ""
-itertools-num = ""
+#plotters = "^0.3.0"
+#itertools = ""
+#itertools-num = ""
 num-traits = ""
 num = ""
 num-complex = ""
+#rustfft = ""
