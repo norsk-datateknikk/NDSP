@@ -60,3 +60,20 @@ macro_rules! db2pow {
     };
 }
 */
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn sfunc_mag2db() {
+        let scalar = 2_f32;
+        assert_eq!( 6.0206003_f32, mag2db(scalar) );
+    }
+
+    #[test]
+    fn sfunc_pow2db() {
+        let scalar = 2_f32;
+        assert_eq!( 3.0103002_f32, pow2db(scalar) );
+    }
+}
