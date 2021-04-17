@@ -349,18 +349,33 @@ pub fn rotate_right<T>( vector: Vec<T>, steps: usize ) -> Vec<T>
     return r_vector;
 }
 
-/*
-/// Returns a 1D vector of zeros of size numb_samples.
-/// [0,0,...,0]
+/// Element-wise addition of two vectors of equal or unequal size.
 pub fn add<T>( vector1: Vec<T>, vector2: Vec<T> ) -> Vec<T>
     where T: Float
 {
-    length = 
+    // Determine length of output
+    if vector1.len() < vector2.len() {
+        let min_len = vector1.len();
+        let mut r_vector = vector2.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]+vector2[i];
+        }
+        return r_vector;
 
-    //r_vector.append( &mut vector[ 1..steps ] );
-    return r_vector;
+    }
+    else    {
+        let min_len = vector2.len();
+        let mut r_vector =  vector1.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]+vector2[i];
+        }
+        return r_vector;
+    }
 }
 
+/*
 macro_rules! magnitude_spectrum_calculation {
     ( $vector:expr, $T:ty ) => {
         let mut temp_vector:Vec<Complex<$T>> = Vec::with_capacity( $vector.len() );
@@ -433,5 +448,12 @@ mod tests {
     fn func_rotate_left() {
         let vec = vec![ 1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 6_f32 ];
         assert_eq!( vec![ 3_f32, 4_f32, 5_f32, 6_f32, 1_f32, 2_f32 ] , rotate_left( vec, 2) );
+    }
+
+    #[test]
+    fn func_add() {
+        let vec1 = vec![ 1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 6_f32 ];
+        let vec2 = vec![ 1_f32, 2_f32, 3_f32, 4_f32, 5_f32 ];
+        assert_eq!( vec![ 2_f32, 4_f32, 6_f32, 8_f32, 10_f32, 6_f32 ] , add( vec1, vec2) );
     }
 }
