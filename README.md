@@ -6,4 +6,17 @@ Not compute speed focused at this time.
 
 The goal is to write a library that targets embedded platforms.
 
-Work-in-progress
+## Rust Installation:
+```
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+## Testing the library (for development purposes):
+```
+cargo test
+```
+
+## Building the library for release:
+```
+cargo build --release
+```
