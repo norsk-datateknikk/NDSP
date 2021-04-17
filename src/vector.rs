@@ -20,12 +20,14 @@ struct VectorC32F
     obj:Vec<C32F>
 }
 
+/*
 impl Add for VectorF32 {
 
 }
 
 pub trait Add {
-    type ;
+    type 
 
     fn next(&mut self) -> Option<Self::Item>;
 }
+*/
