@@ -15,7 +15,6 @@ use crate::vfunc::*;
 use num_traits::Num;
 use num_traits::Float;
 use num_traits::real::Real;
-//use num::complex::Complex;
 use num_complex::Complex;
 
 /// Complex 32-bit float

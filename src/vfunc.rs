@@ -10,9 +10,12 @@
 use num_traits::Num;
 use num_traits::Float;
 use num_traits::real::Real;
+use num_complex::Complex;
+
+use rustfft::FftPlanner;
 
 // Import scalar operations
-use super::sfunc::*;
+use crate::sfunc::*;
 
 /// Returns the index of the highest valued item.
 pub fn arg_max<R>( vector: Vec<R> )-> usize
@@ -345,6 +348,40 @@ pub fn rotate_right<T>( vector: Vec<T>, steps: usize ) -> Vec<T>
     //r_vector.append( &mut vector[ 1..steps ] );
     return r_vector;
 }
+
+/*
+/// Returns a 1D vector of zeros of size numb_samples.
+/// [0,0,...,0]
+pub fn add<T>( vector1: Vec<T>, vector2: Vec<T> ) -> Vec<T>
+    where T: Float
+{
+    length = 
+
+    //r_vector.append( &mut vector[ 1..steps ] );
+    return r_vector;
+}
+
+macro_rules! magnitude_spectrum_calculation {
+    ( $vector:expr, $T:ty ) => {
+        let mut temp_vector:Vec<Complex<$T>> = Vec::with_capacity( $vector.len() );
+        let mut planner = FftPlanner::<$T>::new();
+        let size = temp_vector.len();
+        
+        let fft = planner.plan_fft_forward( size );
+
+        fft.process(&mut temp_vector);
+        let magnitude = scale( crate::cvfunc::abs(temp_vector), (1 as $T) / (size as $T) ); 
+        return rotate_right( magnitude, size/2);
+    };
+}
+
+/// Calculate magnitue spectrum for 32-bit complex floating point vectors, linear scale.
+/// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
+pub fn magnitude_spectrum( vector: Vec<f32> ) -> Vec<f32>
+{
+    magnitude_spectrum_calculation!( vector, f32 );
+}
+*/
 
 #[cfg(test)]
 mod tests {
