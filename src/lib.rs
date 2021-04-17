@@ -8,6 +8,9 @@
 #![crate_name = "ndsp"]
 
 #[macro_use]
+pub mod vector;
+
+#[macro_use]
 pub mod sfunc;
 
 #[macro_use]
