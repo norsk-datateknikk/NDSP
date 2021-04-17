@@ -219,6 +219,60 @@ element_wise_operand!{
     Float
 }
 
+/// This macro generates element-wise operations on vectors.
+/// The operations must be a trait of the vector item class.
+/// vector<T> can thus have all traits of T.
+macro_rules! element_wise_arg_operand {
+    (   
+        $(#[$comment:meta])*
+        $operand:ident
+        $trait:ident
+    ) => {
+        $(#[$comment])*
+        /// Element-wise operation on vector of real type T.
+        pub fn $operand<T>( vector: Vec<T>, argument : T )-> Vec<T>
+        where T: $trait
+        {
+        let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
+        for item in vector  {
+            r_vector.push( item.$operand( argument ) );
+        }
+        return r_vector;
+        }
+    };
+
+    (   
+        $(#[$comment:meta])*
+        $operand:ident
+        $trait:ident
+        $arg_type:ty
+    ) => {
+        $(#[$comment])*
+        /// Element-wise operation on vector of real type T.
+        pub fn $operand<T>( vector: Vec<T>, argument : $arg_type )-> Vec<T>
+        where T: $trait
+        {
+        let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
+        for item in vector  {
+            r_vector.push( item.$operand( argument ) );
+        }
+        return r_vector;
+        }
+    };
+}
+
+element_wise_arg_operand!{
+    /// Raise to a floating point valued power.
+    powf
+    Float
+}
+element_wise_arg_operand!{
+    /// Raise to a floating point valued power.
+    powi
+    Float
+    i32
+}
+
 /// Returns a 1D vector of zeros of size numb_samples.
 /// [0,0,...,0]
 pub fn zeros<N>( numb_samples: usize ) -> Vec<N>
@@ -266,6 +320,32 @@ pub fn linspace<F>( start: F, stop: F, numb_samples: usize ) -> Vec<F>
     return vector;
 }
 
+/// Returns a 1D vector of zeros of size numb_samples.
+/// [0,0,...,0]
+pub fn rotate_left<T>( vector: Vec<T>, steps: usize ) -> Vec<T>
+    where T: Float
+{
+    let size = vector.len();
+    
+    let r_vector = [ &vector[ steps..size ], &vector[ 0..steps ] ].concat();
+
+    //r_vector.append( &mut vector[ 1..steps ] );
+    return r_vector;
+}
+
+/// Returns a 1D vector of zeros of size numb_samples.
+/// [0,0,...,0]
+pub fn rotate_right<T>( vector: Vec<T>, steps: usize ) -> Vec<T>
+    where T: Float
+{
+    let size = vector.len();
+    
+    let r_vector = [ &vector[ size-steps..size ], &vector[ 0..size-steps ] ].concat();
+
+    //r_vector.append( &mut vector[ 1..steps ] );
+    return r_vector;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -304,6 +384,18 @@ mod tests {
     fn func_energy() {
         let vec = vec![ 1_f32, -2_f32 ];
         assert_eq!( 5_f32 , energy( vec ) );
+    }
+
+    #[test]
+    fn func_rotate_right() {
+        let vec = vec![ 1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 6_f32 ];
+        assert_eq!( vec![ 5_f32, 6_f32, 1_f32, 2_f32, 3_f32, 4_f32 ] , rotate_right( vec, 2) );
+    }
+
+    #[test]
+    fn func_rotate_left() {
+        let vec = vec![ 1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 6_f32 ];
+        assert_eq!( vec![ 3_f32, 4_f32, 5_f32, 6_f32, 1_f32, 2_f32 ] , rotate_left( vec, 2) );
     }
 
 }

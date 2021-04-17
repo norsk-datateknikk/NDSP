@@ -10,6 +10,7 @@
 use rustfft::FftPlanner;
 
 use crate::sfunc::*;
+use crate::vfunc::*;
 
 use num_traits::Num;
 use num_traits::Float;
@@ -149,33 +150,49 @@ pub fn power_dBm<T>( vector: Vec<Complex<T>> )-> Vec<T>
         return r_vector;
 }
 
-/*
-macro_rules! power_spectrum_calculation {
+
+macro_rules! magnitude_spectrum_calculation {
     ( $vector:expr, $T:ty ) => {
+        let mut temp_vector = $vector;
         let mut planner = FftPlanner::<$T>::new();
-        let fft = planner.plan_fft_forward( $vector.len() );
-
-        fft.process(&mut $vector);
+        let size = temp_vector.len();
         
-        let magnitude_spectrum = scale( $vector, (1 as $T) / ($vector.len() as $T) );
-        //println!("{:?}", magnitude_spectrum);
+        let fft = planner.plan_fft_forward( size );
 
-        return $vector;
+        fft.process(&mut temp_vector);
+        return crate::vfunc::scale( abs(temp_vector), (1 as $T) / (size as $T) );
     };
 }
 
-/// Calculate power spectrum for 32-bit complex floating point, linear scale.
-pub fn power_spectrum( mut vector: Vec<Complex<f32>> )->  Vec<Complex<f32>>
+/// Calculate magnitue spectrum for 32-bit complex floating point vectors, linear scale.
+pub fn magnitude_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 {
-    power_spectrum_calculation!( vector, f32 );
+    magnitude_spectrum_calculation!( vector, f32 );
 }
 
-/// Calculate power spectrum for 64-bit complex floating point, linear scale.
-pub fn power_spectrum64( mut vector: Vec<Complex<f64>> )->  Vec<Complex<f64>>
+
+/// Calculate magnitue spectrum for 64-bit complex floating point vectors, linear scale.
+pub fn magnitude_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
 {
-    power_spectrum_calculation!( vector, f64 );
+    magnitude_spectrum_calculation!( vector, f64 );
+    
 }
-*/
+
+/// Calculate power spectrum for 32-bit complex floating point vectors, linear scale.
+pub fn power_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
+{
+    let magnitude_vector = magnitude_spectrum(vector);
+    return crate::vfunc::powf(magnitude_vector, 2 as f32);
+}
+
+
+/// Calculate power spectrum for 64-bit complex floating point vectors, linear scale.
+pub fn power_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
+{   
+    let magnitude_vector = magnitude_spectrum64(vector);
+    return crate::vfunc::powf(magnitude_vector, 2 as f64);
+}
+
 
 /// This macro generates element-wise operations on vectors of complex numbers.
 /// The operations must be a trait of the vector item class.
@@ -232,7 +249,7 @@ element_wise_operand!{
 }
 /*
 element_wise_operand!{
-    /// THe norm or abolute value.
+    /// The norm or abolute value.
     norm
     Float
 }*/
@@ -269,6 +286,18 @@ mod tests {
     fn cfunc_power_dBm() {
         let vec = vec![ C32F!(2,0), C32F!(0,4), C32F!(-2,0) ];
         assert_eq!( vec![ 36.0206_f32, 42.041201_f32, 36.0206003_f32 ], power_dBm( vec ) );
+    }
+
+    #[test]
+    fn cfunc_magnitude_spectrum() {
+        let vec = vec![ C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4) ];
+        assert_eq!( vec![ 2.5_f32, 0_f32, 0_f32, 0_f32, 2.0615528_f32, 0_f32, 0_f32, 0_f32 ], magnitude_spectrum( vec ) );
+    }
+
+    #[test]
+    fn cfunc_power_spectrum() {
+        let vec = vec![ C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4) ];
+        assert_eq!( vec![ 6.25_f32, 0_f32, 0_f32, 0_f32, 4.25_f32, 0_f32, 0_f32, 0_f32 ], power_spectrum( vec ) );
     }
     
     #[test]
