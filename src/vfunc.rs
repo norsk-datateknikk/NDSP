@@ -397,5 +397,4 @@ mod tests {
         let vec = vec![ 1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 6_f32 ];
         assert_eq!( vec![ 3_f32, 4_f32, 5_f32, 6_f32, 1_f32, 2_f32 ] , rotate_left( vec, 2) );
     }
-
 }
