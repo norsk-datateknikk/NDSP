@@ -7,8 +7,6 @@
 
 #![crate_name = "ndsp"]
 
-pub mod numeric;
-
 #[macro_use]
 pub mod sfunc;
 
