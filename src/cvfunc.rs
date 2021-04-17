@@ -166,7 +166,7 @@ macro_rules! magnitude_spectrum_calculation {
 }
 
 /// Calculate magnitue spectrum for 32-bit complex floating point vectors, linear scale.
-/// Corresponding angular frequency [-pi/2,..., 0,...,pi/2-(pi/N)].
+/// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn magnitude_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 {
     magnitude_spectrum_calculation!( vector, f32 );
@@ -174,7 +174,7 @@ pub fn magnitude_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 
 
 /// Calculate magnitue spectrum for 64-bit complex floating point vectors, linear scale.
-/// Corresponding angular frequency [-pi/2,..., 0,...,pi/2-(pi/N)].
+/// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn magnitude_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
 {
     magnitude_spectrum_calculation!( vector, f64 );
@@ -182,7 +182,7 @@ pub fn magnitude_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
 }
 
 /// Calculate power spectrum for 32-bit complex floating point vectors, linear scale.
-/// Corresponding angular frequency [-pi/2,..., 0,...,pi/2-(pi/N)].
+/// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn power_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 {
     let magnitude_vector = magnitude_spectrum(vector);
@@ -191,7 +191,7 @@ pub fn power_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 
 
 /// Calculate power spectrum for 64-bit complex floating point vectors, linear scale.
-/// Corresponding angular frequency [-pi/2,..., 0,...,pi/2-(pi/N)].
+/// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn power_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
 {   
     let magnitude_vector = magnitude_spectrum64(vector);
