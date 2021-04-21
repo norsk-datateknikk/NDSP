@@ -8,6 +8,9 @@
 #![crate_name = "ndsp"]
 
 #[macro_use]
+extern crate impl_ops;
+
+#[macro_use]
 pub mod vector;
 
 #[macro_use]

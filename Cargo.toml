@@ -32,3 +32,4 @@ num-traits = ""
 num = ""
 num-complex = "0.3" # Ensure this is the same version as used in num-complex
 rustfft = ""
+impl_ops = ""

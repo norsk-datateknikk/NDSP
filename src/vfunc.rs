@@ -390,7 +390,7 @@ macro_rules! magnitude_spectrum_calculation {
     };
 }
 
-/// Calculate magnitue spectrum for 32-bit complex floating point vectors, linear scale.
+/// Calculate magnitue spectrum for 32-bit floating point vectors, linear scale.
 /// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn magnitude_spectrum( vector: Vec<f32> ) -> Vec<f32>
 {

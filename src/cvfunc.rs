@@ -98,6 +98,33 @@ pub fn abs<T>( vector: Vec<Complex<T>> )-> Vec<T>
     return r_vector;
 }
 
+/// Element-wise addition of two vectors of equal or unequal size.
+/// Result has the length of the longes vector.
+pub fn add<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Complex<T>>
+    where T: Float
+{
+    // Determine length of output
+    if vector1.len() < vector2.len() {
+        let min_len = vector1.len();
+        let mut r_vector = vector2.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]+vector2[i];
+        }
+        return r_vector;
+
+    }
+    else    {
+        let min_len = vector2.len();
+        let mut r_vector =  vector1.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]+vector2[i];
+        }
+        return r_vector;
+    }
+}
+
 /// Multiply vector with scalar.
 pub fn scale<T>( vector: Vec<Complex<T>>, scalar: T )-> Vec<Complex<T>>
     where T: Real
