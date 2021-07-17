@@ -19,10 +19,7 @@ test = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-#plotters = "^0.3.0"
-#itertools = ""
-#itertools-num = ""
 num-traits = ""
 num = ""
-num-complex = "0.3" # Ensure this is the same as used in num-complex
+num-complex = "0.3"
 rustfft = ""

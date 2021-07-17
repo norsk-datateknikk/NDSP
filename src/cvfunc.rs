@@ -151,7 +151,6 @@ pub fn power_dBm<T>( vector: Vec<Complex<T>> )-> Vec<T>
 }
 
 
-/*
 macro_rules! magnitude_spectrum_calculation {
     ( $vector:expr, $T:ty ) => {
         let mut temp_vector = $vector;
@@ -194,7 +193,6 @@ pub fn power_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
     return crate::vfunc::powf(magnitude_vector, 2 as f64);
 }
 
-*/
 
 /// This macro generates element-wise operations on vectors of complex numbers.
 /// The operations must be a trait of the vector item class.
@@ -290,7 +288,6 @@ mod tests {
         assert_eq!( vec![ 36.0206_f32, 42.041201_f32, 36.0206003_f32 ], power_dBm( vec ) );
     }
 
-    /*
     #[test]
     fn cfunc_magnitude_spectrum() {
         let vec = vec![ C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4) ];
@@ -302,7 +299,6 @@ mod tests {
         let vec = vec![ C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4) ];
         assert_eq!( vec![ 6.25_f32, 0_f32, 0_f32, 0_f32, 4.25_f32, 0_f32, 0_f32, 0_f32 ], power_spectrum( vec ) );
     }
-    */
     
     #[test]
     fn cfunc_inv() {
