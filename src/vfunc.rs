@@ -96,6 +96,8 @@ pub fn mean<T>( vector: Vec<T> )-> T
     return r_val/( num::cast( vector.len() ).unwrap() );
 }
 
+//TODO variance, both methods.
+
 /// Multiply vector with scalar.
 pub fn scale<T>( vector: Vec<T>, scalar: T )-> Vec<T>
     where T: Real
@@ -320,8 +322,7 @@ pub fn linspace<F>( start: F, stop: F, numb_samples: usize ) -> Vec<F>
     return vector;
 }
 
-/// Returns a 1D vector of zeros of size numb_samples.
-/// [0,0,...,0]
+/// Rotate the items in the vector to the left.
 pub fn rotate_left<T>( vector: Vec<T>, steps: usize ) -> Vec<T>
     where T: Float
 {
@@ -333,8 +334,7 @@ pub fn rotate_left<T>( vector: Vec<T>, steps: usize ) -> Vec<T>
     return r_vector;
 }
 
-/// Returns a 1D vector of zeros of size numb_samples.
-/// [0,0,...,0]
+/// Rotate the items in the vector to the right.
 pub fn rotate_right<T>( vector: Vec<T>, steps: usize ) -> Vec<T>
     where T: Float
 {

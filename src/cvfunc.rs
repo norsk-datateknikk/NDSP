@@ -151,15 +151,16 @@ pub fn power_dBm<T>( vector: Vec<Complex<T>> )-> Vec<T>
 }
 
 
+/*
 macro_rules! magnitude_spectrum_calculation {
     ( $vector:expr, $T:ty ) => {
         let mut temp_vector = $vector;
         let mut planner = FftPlanner::<$T>::new();
         let size = temp_vector.len();
-        
+
         let fft = planner.plan_fft_forward( size );
 
-        fft.process(&mut temp_vector);
+        fft.process( temp_vector.as_mut_slice() );
         return crate::vfunc::scale( abs(temp_vector), (1 as $T) / (size as $T) );
     };
 }
@@ -188,11 +189,12 @@ pub fn power_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 
 /// Calculate power spectrum for 64-bit complex floating point vectors, linear scale.
 pub fn power_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
-{   
+{
     let magnitude_vector = magnitude_spectrum64(vector);
     return crate::vfunc::powf(magnitude_vector, 2 as f64);
 }
 
+*/
 
 /// This macro generates element-wise operations on vectors of complex numbers.
 /// The operations must be a trait of the vector item class.
@@ -288,6 +290,7 @@ mod tests {
         assert_eq!( vec![ 36.0206_f32, 42.041201_f32, 36.0206003_f32 ], power_dBm( vec ) );
     }
 
+    /*
     #[test]
     fn cfunc_magnitude_spectrum() {
         let vec = vec![ C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4) ];
@@ -299,6 +302,7 @@ mod tests {
         let vec = vec![ C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4), C32F!(2,0), C32F!(1,4) ];
         assert_eq!( vec![ 6.25_f32, 0_f32, 0_f32, 0_f32, 4.25_f32, 0_f32, 0_f32, 0_f32 ], power_spectrum( vec ) );
     }
+    */
     
     #[test]
     fn cfunc_inv() {
