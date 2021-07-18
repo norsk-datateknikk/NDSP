@@ -129,12 +129,12 @@ pub fn energy<T>( vector: Vec<T> )-> T
     return sum(power(vector));
 }
 
-pub fn neg<T>( vector: Vec<T> )-> Vec<T>
+pub fn neg<T>( vector: &Vec<T> )-> Vec<T>
     where T: Float
 {
     let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
     for item in vector  {
-        r_vector.push( -item );
+        r_vector.push( -item.clone() );
     }
     return r_vector;
 }
@@ -358,8 +358,9 @@ pub fn rotate_right<T>( vector: Vec<T>, steps: usize ) -> Vec<T>
     return r_vector;
 }
 
+//TODO This functions appears multiple times with add mul and div. Make macro.
 /// Element-wise addition of two vectors of equal or unequal size.
-pub fn add<T>( vector1: Vec<T>, vector2: Vec<T> ) -> Vec<T>
+pub fn add<T>( vector1: &Vec<T>, vector2: &Vec<T> ) -> Vec<T>
     where T: Float
 {
     // Determine length of output
@@ -384,9 +385,10 @@ pub fn add<T>( vector1: Vec<T>, vector2: Vec<T> ) -> Vec<T>
     }
 }
 
+//TODO This functions appears multiple times with add mul and div. Make macro.
 /// Element-wise addition of two vectors of equal or unequal size.
 /// Result has the length of the longes vector.
-pub fn mul<T>( vector1: Vec<T>, vector2: Vec<T> ) -> Vec<T>
+pub fn mul<T>( vector1: &Vec<T>, vector2: &Vec<T> ) -> Vec<T>
     where T: Float
 {
     // Determine length of output
@@ -406,6 +408,34 @@ pub fn mul<T>( vector1: Vec<T>, vector2: Vec<T> ) -> Vec<T>
         
         for i in 0..min_len {
             r_vector[i] = vector1[i]*vector2[i];
+        }
+        return r_vector;
+    }
+}
+
+//TODO This functions appears multiple times with add mul and div. Make macro.
+/// Element-wise addition of two vectors of equal or unequal size.
+/// Result has the length of the longes vector.
+pub fn div<T>( vector1: &Vec<T>, vector2: &Vec<T> ) -> Vec<T>
+    where T: Float
+{
+    // Determine length of output
+    if vector1.len() < vector2.len() {
+        let min_len = vector1.len();
+        let mut r_vector = vector2.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]/vector2[i];
+        }
+        return r_vector;
+
+    }
+    else    {
+        let min_len = vector2.len();
+        let mut r_vector =  vector1.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]/vector2[i];
         }
         return r_vector;
     }
@@ -471,7 +501,7 @@ mod tests {
     #[test]
     fn func_neg() {
         let vec = vec![ 1_f32, -2_f32 ];
-        assert_eq!( vec![ -1_f32, 2_f32 ] , neg( vec ) );
+        assert_eq!( vec![ -1_f32, 2_f32 ] , neg( &vec ) );
     }
 
     #[test]

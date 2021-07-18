@@ -104,7 +104,7 @@ where T: Float
 }
 
 /// Returns a 1D vector multiplied by -1.
-pub fn neg<T>( vector: Vec<Complex<T>> )-> Vec<Complex<T>>
+pub fn neg<T>( vector: &Vec<Complex<T>> )-> Vec<Complex<T>>
     where T: Float
 {
     let mut r_vector: Vec<Complex<T>> = Vec::with_capacity( vector.len() );
@@ -133,9 +133,10 @@ pub fn abs<T>( vector: Vec<Complex<T>> )-> Vec<T>
     return r_vector;
 }
 
+//TODO This functions appears multiple times with add mul and div. Make macro.
 /// Element-wise addition of two vectors of equal or unequal size.
 /// Result has the length of the longes vector.
-pub fn add<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Complex<T>>
+pub fn add<T>( vector1: &Vec<Complex<T>>, vector2: &Vec<Complex<T>> ) -> Vec<Complex<T>>
     where T: Float
 {
     // Determine length of output
@@ -160,9 +161,10 @@ pub fn add<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Compl
     }
 }
 
+//TODO This functions appears multiple times with add mul and div. Make macro.
 /// Element-wise addition of two vectors of equal or unequal size.
 /// Result has the length of the longes vector.
-pub fn mul<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Complex<T>>
+pub fn mul<T>( vector1: &Vec<Complex<T>>, vector2: &Vec<Complex<T>> ) -> Vec<Complex<T>>
     where T: Float
 {
     // Determine length of output
@@ -187,9 +189,37 @@ pub fn mul<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Compl
     }
 }
 
+//TODO This functions appears multiple times with add mul and div. Make macro.
 /// Element-wise addition of two vectors of equal or unequal size.
 /// Result has the length of the longes vector.
-pub fn mulInt<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Complex<T>>
+pub fn div<T>( vector1: &Vec<Complex<T>>, vector2: &Vec<Complex<T>> ) -> Vec<Complex<T>>
+    where T: Float
+{
+    // Determine length of output
+    if vector1.len() < vector2.len() {
+        let min_len = vector1.len();
+        let mut r_vector = vector2.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]/vector2[i];
+        }
+        return r_vector;
+
+    }
+    else    {
+        let min_len = vector2.len();
+        let mut r_vector =  vector1.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]/vector2[i];
+        }
+        return r_vector;
+    }
+}
+
+/// Element-wise addition of two vectors of equal or unequal size.
+/// Result has the length of the longes vector.
+pub fn mulInt<T>( vector1: &Vec<Complex<T>>, vector2: &Vec<Complex<T>> ) -> Vec<Complex<T>>
     where T: PrimInt
 {
     // Determine length of output

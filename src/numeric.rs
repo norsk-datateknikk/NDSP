@@ -158,7 +158,7 @@ macro_rules! vector_trait_overload{
         
             fn add(self, other: &'b $Name) -> $Name {
                 $Name {
-                    vec: crate::$type::add( self.vec.clone(), other.vec.clone() ),
+                    vec: crate::$type::add( &self.vec, &other.vec ),
                 }
             }
         }
@@ -168,7 +168,17 @@ macro_rules! vector_trait_overload{
         
             fn mul(self, other: &'b $Name) -> $Name {
                 $Name {
-                    vec: crate::$type::mul( self.vec.clone(), other.vec.clone() ),
+                    vec: crate::$type::mul( &self.vec, &other.vec ),
+                }
+            }
+        }
+
+        impl<'a, 'b> std::ops::Div<&'b $Name> for &'a $Name {
+            type Output = $Name;
+        
+            fn div(self, other: &'b $Name) -> $Name {
+                $Name {
+                    vec: crate::$type::div( &self.vec, &other.vec ),
                 }
             }
         }
@@ -179,7 +189,7 @@ macro_rules! vector_trait_overload{
             #[inline]
             fn neg( self) -> $Name {
                 $Name {
-                    vec: crate::$type::neg( self.vec.clone() ),
+                    vec: crate::$type::neg( &self.vec ),
                 }
             }
         }
