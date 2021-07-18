@@ -14,6 +14,7 @@ use crate::vfunc::*;
 
 use num::traits::Num;
 use num::traits::Float;
+use num::traits::PrimInt;
 use num::traits::real::Real;
 use num::Complex;
 
@@ -73,10 +74,32 @@ pub fn c_value<N>( re:N, im:N)-> Complex<N>
     return Complex::new( re as N, im as N );
 }
 
-
 /// Trait for float
 macro_rules! numb {
     ( $numb:expr ) => { T::from($numb).unwrap(); };
+}
+
+/// Returns a 1D vector of ones of size numb_samples.
+/// [1+0i,1+0i,...,1+0i]
+pub fn ones<T>( numb_samples: usize )-> Vec<Complex<T>>
+where T: Float
+{
+    let mut vector: Vec<Complex<T>> = Vec::with_capacity(numb_samples);
+    for _i in 0..numb_samples {
+        vector.push( c_value!( T::one(), T::zero(), T) );
+    }
+    return vector;
+}
+
+/// Returns a 1D vector multiplied by -1.
+pub fn neg<T>( vector: Vec<Complex<T>> )-> Vec<Complex<T>>
+    where T: Float
+{
+    let mut r_vector: Vec<Complex<T>> = Vec::with_capacity( vector.len() );
+    for item in vector  {
+        r_vector.push( -item );
+    }
+    return r_vector;
 }
 
 /// Absolute of a complex scalar.
@@ -120,6 +143,60 @@ pub fn add<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Compl
         
         for i in 0..min_len {
             r_vector[i] = vector1[i]+vector2[i];
+        }
+        return r_vector;
+    }
+}
+
+/// Element-wise addition of two vectors of equal or unequal size.
+/// Result has the length of the longes vector.
+pub fn mul<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Complex<T>>
+    where T: Float
+{
+    // Determine length of output
+    if vector1.len() < vector2.len() {
+        let min_len = vector1.len();
+        let mut r_vector = vector2.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]*vector2[i];
+        }
+        return r_vector;
+
+    }
+    else    {
+        let min_len = vector2.len();
+        let mut r_vector =  vector1.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]*vector2[i];
+        }
+        return r_vector;
+    }
+}
+
+/// Element-wise addition of two vectors of equal or unequal size.
+/// Result has the length of the longes vector.
+pub fn mulInt<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Complex<T>>
+    where T: PrimInt
+{
+    // Determine length of output
+    if vector1.len() < vector2.len() {
+        let min_len = vector1.len();
+        let mut r_vector = vector2.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]+vector2[i];
+        }
+        return r_vector;
+
+    }
+    else    {
+        let min_len = vector2.len();
+        let mut r_vector =  vector1.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]*vector2[i];
         }
         return r_vector;
     }
@@ -292,6 +369,12 @@ mod tests {
     fn cfunc_abs() {
         let vec = vec![ C32F!(2,0), C32F!(0,4), C32F!(-2,0) ];
         assert_eq!( vec![ 2_f32, 4_f32, 2_f32 ], abs( vec ) );
+    }
+
+    #[test]
+    fn cfunc_neg() {
+        let vec = vec![ C32F!(2,0), C32F!(1,4)];
+        assert_eq!( vec![ C32F!(-2,0), C32F!(-1,-4)], neg( vec ) );
     }
 
     #[test]

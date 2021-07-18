@@ -129,6 +129,16 @@ pub fn energy<T>( vector: Vec<T> )-> T
     return sum(power(vector));
 }
 
+pub fn neg<T>( vector: Vec<T> )-> Vec<T>
+    where T: Float
+{
+    let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
+    for item in vector  {
+        r_vector.push( -item );
+    }
+    return r_vector;
+}
+
 /// This macro generates element-wise operations on vectors.
 /// The operations must be a trait of the vector item class.
 /// vector<T> can thus have all traits of T.
@@ -374,6 +384,33 @@ pub fn add<T>( vector1: Vec<T>, vector2: Vec<T> ) -> Vec<T>
     }
 }
 
+/// Element-wise addition of two vectors of equal or unequal size.
+/// Result has the length of the longes vector.
+pub fn mul<T>( vector1: Vec<T>, vector2: Vec<T> ) -> Vec<T>
+    where T: Float
+{
+    // Determine length of output
+    if vector1.len() < vector2.len() {
+        let min_len = vector1.len();
+        let mut r_vector = vector2.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]*vector2[i];
+        }
+        return r_vector;
+
+    }
+    else    {
+        let min_len = vector2.len();
+        let mut r_vector =  vector1.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]*vector2[i];
+        }
+        return r_vector;
+    }
+}
+
 /*
 macro_rules! magnitude_spectrum_calculation {
     ( $vector:expr, $T:ty ) => {
@@ -429,6 +466,12 @@ mod tests {
     fn func_power() {
         let vec = vec![ 1_f32, -2_f32 ];
         assert_eq!( vec![ 1_f32, 4_f32 ] , power( vec ) );
+    }
+
+    #[test]
+    fn func_neg() {
+        let vec = vec![ 1_f32, -2_f32 ];
+        assert_eq!( vec![ -1_f32, 2_f32 ] , neg( vec ) );
     }
 
     #[test]
