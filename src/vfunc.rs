@@ -7,9 +7,9 @@
 
 // This file containns basic functions that can operate on vectors of numerical types.
 
-use num_traits::Num;
-use num_traits::Float;
-use num_traits::real::Real;
+use num::traits::Num;
+use num::traits::Float;
+use num::traits::real::Real;
 
 // Import scalar operations
 use super::sfunc::*;

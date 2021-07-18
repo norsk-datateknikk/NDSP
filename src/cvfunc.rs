@@ -12,11 +12,10 @@ use rustfft::FftPlanner;
 use crate::sfunc::*;
 use crate::vfunc::*;
 
-use num_traits::Num;
-use num_traits::Float;
-use num_traits::real::Real;
-//use num::complex::Complex;
-use num_complex::Complex;
+use num::traits::Num;
+use num::traits::Float;
+use num::traits::real::Real;
+use num::Complex;
 
 /// Complex 32-bit float
 pub type C32F = Complex::<f32>;
@@ -31,7 +30,7 @@ pub type C64I = Complex::<i64>;
 #[macro_export]
 macro_rules! c_value {
     ( $re:expr, $im:expr, $N:ty ) => {
-        num_complex::Complex::new( $re as $N, $im as $N );
+        num::Complex::new( $re as $N, $im as $N );
     };
 }
 

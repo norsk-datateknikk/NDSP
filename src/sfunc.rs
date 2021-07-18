@@ -7,9 +7,9 @@
 
 // This file containns basic functions that can operate on scalars of numerical types.
 
-use num_traits::Num;
-use num_traits::Float;
-use num_traits::real::Real;
+use num::traits::Num;
+use num::traits::Float;
+use num::traits::real::Real;
 
 /// Convert btween linear magnitude scale and decibel. 
 #[macro_export]

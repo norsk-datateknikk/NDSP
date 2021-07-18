@@ -9,16 +9,18 @@ use super::sfunc::*;
 use super::vfunc::*;
 use super::cvfunc::*;
 
+#[derive(Clone)]
 /// Numeric vector type
 struct VecF32
 {
-    obj:Vec<f32>
+    vec:Vec<f32>
 }
 
+#[derive(Clone)]
 /// Numeric vector type
 struct VecC32F
 {
-    obj:Vec<C32F>
+    vec:Vec<C32F>
 }
 
 /*
@@ -33,7 +35,7 @@ pub trait VectorOperations {
 
 impl VectorOperations for VecF32 {
     fn min(&self) -> f32 {
-        return super::vfunc::min(self.obj);
+        return super::vfunc::min( self.vec.clone() );
     }
 }
 
