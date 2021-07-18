@@ -139,6 +139,16 @@ pub fn neg<T>( vector: &Vec<T> )-> Vec<T>
     return r_vector;
 }
 
+pub fn inv<T>( vector: &Vec<T> )-> Vec<T>
+    where T: Float
+{
+    let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
+    for item in vector  {
+        r_vector.push( T::one()/ item.clone() );
+    }
+    return r_vector;
+}
+
 /// This macro generates element-wise operations on vectors.
 /// The operations must be a trait of the vector item class.
 /// vector<T> can thus have all traits of T.
@@ -526,6 +536,6 @@ mod tests {
     fn func_add() {
         let vec1 = vec![ 1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 6_f32 ];
         let vec2 = vec![ 1_f32, 2_f32, 3_f32, 4_f32, 5_f32 ];
-        assert_eq!( vec![ 2_f32, 4_f32, 6_f32, 8_f32, 10_f32, 6_f32 ] , add( vec1, vec2) );
+        assert_eq!( vec![ 2_f32, 4_f32, 6_f32, 8_f32, 10_f32, 6_f32 ] , add( &vec1, &vec2) );
     }
 }

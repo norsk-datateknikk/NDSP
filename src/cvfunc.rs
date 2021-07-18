@@ -386,11 +386,13 @@ element_wise_operand!{
     exp
     Float
 }
+/*
 element_wise_operand!{
     /// Invert, 1/x.
     inv
     Float
 }
+*/
 element_wise_operand!{
     /// Complex jonjugate.
     conj
@@ -410,7 +412,7 @@ mod tests {
     #[test]
     fn cfunc_neg() {
         let vec = vec![ C32F!(2,0), C32F!(1,4)];
-        assert_eq!( vec![ C32F!(-2,0), C32F!(-1,-4)], neg( vec ) );
+        assert_eq!( vec![ C32F!(-2,0), C32F!(-1,-4)], neg( &vec ) );
     }
 
     #[test]
@@ -449,11 +451,13 @@ mod tests {
         assert_eq!( vec![ 6.25_f32, 0_f32, 0_f32, 0_f32, 4.25_f32, 0_f32, 0_f32, 0_f32 ], power_spectrum( vec ) );
     }
     
+    /*
     #[test]
     fn cfunc_inv() {
         let vec = vec![ C32F!(2,0), C32F!(0,4)];
         assert_eq!( vec![ C32F!(0.5,-0), C32F!(0,-0.25)], inv( &vec ) );
     }
+    */
 
     #[test]
     fn cfunc_conj() {

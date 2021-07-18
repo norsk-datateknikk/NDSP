@@ -83,11 +83,12 @@ vector_struct!( VecC64F, C64F, cvfunc );
 
 // TODO figure out what to do with returning real numbers from complex operations.
 
-pub trait AdvancedVectorTraits<T> {
+pub trait AdvancedVectorTraits<T,T2> {
     fn sin( &self ) -> Self;
     fn cos( &self ) -> Self;
     fn tan( &self ) -> Self;
     fn exp( &self ) -> Self;
+    fn scale( &self, scalar: &T2 ) -> Self;
 }
 
 /// This macro generates element-wise traits on vectors of complex numbers.
@@ -112,7 +113,7 @@ macro_rules! impl_element_wise_operand {
 
 macro_rules! advanced_vector_traits {
     ( $Name:ident, $T:ty, $type:ident, $RT:ty ) => {
-        impl AdvancedVectorTraits<$T> for $Name {
+        impl AdvancedVectorTraits<$T, $RT> for $Name {
             impl_element_wise_operand!{
                 /// Sin.
                 sin
@@ -137,6 +138,14 @@ macro_rules! advanced_vector_traits {
                 $Name
                 $type
             }
+
+            /// Scale by scalar value.
+            #[inline]
+            fn scale( &self, scalar: &$RT ) -> $Name {
+                $Name {
+                    vec: crate::$type::scale( &self.vec, &scalar ),
+                }
+            }
         }
     };
 }
@@ -152,7 +161,7 @@ advanced_vector_traits!( VecC64F, C64F, cvfunc, f64 );
 
 /// Trait overload
 macro_rules! vector_trait_overload{
-    ( $Name:ident, $T:ty, $type:ident ) => {
+    ( $Name:ident, $T:ty, $type:ident, $RT:ty ) => {
         impl<'a, 'b> std::ops::Add<&'b $Name> for &'a $Name {
             type Output = $Name;
         
@@ -182,6 +191,27 @@ macro_rules! vector_trait_overload{
                 }
             }
         }
+        
+        impl<'a, 'b> std::ops::Mul<&'b $RT> for &'a $Name {
+            type Output = $Name;
+        
+            fn mul(self, other: &'b $RT) -> $Name {
+                $Name {
+                    vec: crate::$type::scale( &self.vec, &other ),
+                }
+            }
+        }
+        /*
+        impl<'a, 'b> std::ops::Div<&'b $RT> for &'a $Name {
+            type Output = $Name;
+        
+            fn div(self, other: &'b $RT) -> $Name {
+                $Name {
+                    vec: crate::$type::scale( & crate::$type::inv(&self.vec), &other ),
+                }
+            }
+        }*/
+        
 
         impl std::ops::Neg for $Name {   
             type Output = $Name;
@@ -196,10 +226,10 @@ macro_rules! vector_trait_overload{
     };
 }
 
-vector_trait_overload!( VecC32F, C32F, cvfunc );
-vector_trait_overload!( VecC64F, C64F, cvfunc );
-vector_trait_overload!( VecF32,  f32, vfunc );
-vector_trait_overload!( VecF64,  f64, vfunc );
+vector_trait_overload!( VecC32F, C32F, cvfunc, f32 );
+vector_trait_overload!( VecC64F, C64F, cvfunc, f64 );
+vector_trait_overload!( VecF32,  f32, vfunc, f32 );
+vector_trait_overload!( VecF64,  f64, vfunc, f64 );
 
 #[cfg(test)]
 mod tests {
@@ -221,6 +251,15 @@ mod tests {
         let sum = &vec_obj*&vec_obj;
         assert_eq!( VecC32F::new(vec![ C32F!(4,0), C32F!(-16,0), C32F!(4,0) ]), sum );
     }
+    /*
+    #[test]
+    fn cv_trait_div_by_vec() {
+        let vec = vec![ 2_f32, -2_f32, 1_f32 ];
+        let vec_obj = VecF32::new(vec);
+        let sum = &2_f32/&vec_obj;
+        assert_eq!( VecF32::new(vec![ 1_f32, -1_f32, 0.5_f32 ]), sum );
+    }
+    */
 
     #[test]
     fn vector_trait_neg() {
