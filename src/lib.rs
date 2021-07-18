@@ -7,6 +7,10 @@
 
 #![crate_name = "ndsp"]
 
+#[macro_use]
+extern crate impl_ops;
+
+#[macro_use]
 pub mod numeric;
 
 #[macro_use]

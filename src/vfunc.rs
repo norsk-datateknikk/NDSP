@@ -11,8 +11,10 @@ use num::traits::Num;
 use num::traits::Float;
 use num::traits::real::Real;
 
+use rustfft::FftPlanner;
+
 // Import scalar operations
-use super::sfunc::*;
+use crate::sfunc::*;
 
 /// Returns the index of the highest valued item.
 pub fn arg_max<R>( vector: Vec<R> )-> usize
@@ -346,6 +348,55 @@ pub fn rotate_right<T>( vector: Vec<T>, steps: usize ) -> Vec<T>
     return r_vector;
 }
 
+/// Element-wise addition of two vectors of equal or unequal size.
+pub fn add<T>( vector1: Vec<T>, vector2: Vec<T> ) -> Vec<T>
+    where T: Float
+{
+    // Determine length of output
+    if vector1.len() < vector2.len() {
+        let min_len = vector1.len();
+        let mut r_vector = vector2.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]+vector2[i];
+        }
+        return r_vector;
+
+    }
+    else    {
+        let min_len = vector2.len();
+        let mut r_vector =  vector1.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]+vector2[i];
+        }
+        return r_vector;
+    }
+}
+
+/*
+macro_rules! magnitude_spectrum_calculation {
+    ( $vector:expr, $T:ty ) => {
+        let mut temp_vector:Vec<Complex<$T>> = Vec::with_capacity( $vector.len() );
+        let mut planner = FftPlanner::<$T>::new();
+        let size = temp_vector.len();
+        
+        let fft = planner.plan_fft_forward( size );
+
+        fft.process(&mut temp_vector);
+        let magnitude = scale( crate::cvfunc::abs(temp_vector), (1 as $T) / (size as $T) ); 
+        return rotate_right( magnitude, size/2);
+    };
+}
+
+/// Calculate magnitue spectrum for 32-bit floating point vectors, linear scale.
+/// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
+pub fn magnitude_spectrum( vector: Vec<f32> ) -> Vec<f32>
+{
+    magnitude_spectrum_calculation!( vector, f32 );
+}
+*/
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -398,4 +449,10 @@ mod tests {
         assert_eq!( vec![ 3_f32, 4_f32, 5_f32, 6_f32, 1_f32, 2_f32 ] , rotate_left( vec, 2) );
     }
 
+    #[test]
+    fn func_add() {
+        let vec1 = vec![ 1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 6_f32 ];
+        let vec2 = vec![ 1_f32, 2_f32, 3_f32, 4_f32, 5_f32 ];
+        assert_eq!( vec![ 2_f32, 4_f32, 6_f32, 8_f32, 10_f32, 6_f32 ] , add( vec1, vec2) );
+    }
 }

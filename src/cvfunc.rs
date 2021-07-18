@@ -98,6 +98,33 @@ pub fn abs<T>( vector: Vec<Complex<T>> )-> Vec<T>
     return r_vector;
 }
 
+/// Element-wise addition of two vectors of equal or unequal size.
+/// Result has the length of the longes vector.
+pub fn add<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Complex<T>>
+    where T: Float
+{
+    // Determine length of output
+    if vector1.len() < vector2.len() {
+        let min_len = vector1.len();
+        let mut r_vector = vector2.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]+vector2[i];
+        }
+        return r_vector;
+
+    }
+    else    {
+        let min_len = vector2.len();
+        let mut r_vector =  vector1.clone();
+        
+        for i in 0..min_len {
+            r_vector[i] = vector1[i]+vector2[i];
+        }
+        return r_vector;
+    }
+}
+
 /// Multiply vector with scalar.
 pub fn scale<T>( vector: Vec<Complex<T>>, scalar: T )-> Vec<Complex<T>>
     where T: Real
@@ -127,8 +154,8 @@ pub fn power<T>( vector: Vec<Complex<T>> )-> Vec<T>
         return r_vector;
 }
 
-/// Power of a vector in dBW (dB relative to one W).
-pub fn power_dBW<T>( vector: Vec<Complex<T>> )-> Vec<T>
+/// Power of a vector in dBW (dB relative to one Watt).
+pub fn power_dbw<T>( vector: Vec<Complex<T>> )-> Vec<T>
     where T: Real
 {
     let mut r_vector:Vec<T> = Vec::with_capacity( vector.len() );
@@ -139,7 +166,7 @@ pub fn power_dBW<T>( vector: Vec<Complex<T>> )-> Vec<T>
 }
 
 /// Power of a vector  in dBW (dB relative to one mW).
-pub fn power_dBm<T>( vector: Vec<Complex<T>> )-> Vec<T>
+pub fn power_dbm<T>( vector: Vec<Complex<T>> )-> Vec<T>
     where T: Real
 {
     let mut r_vector:Vec<T> = Vec::with_capacity( vector.len() );
@@ -164,6 +191,7 @@ macro_rules! magnitude_spectrum_calculation {
 }
 
 /// Calculate magnitue spectrum for 32-bit complex floating point vectors, linear scale.
+/// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn magnitude_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 {
     magnitude_spectrum_calculation!( vector, f32 );
@@ -171,6 +199,7 @@ pub fn magnitude_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 
 
 /// Calculate magnitue spectrum for 64-bit complex floating point vectors, linear scale.
+/// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn magnitude_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
 {
     magnitude_spectrum_calculation!( vector, f64 );
@@ -178,6 +207,7 @@ pub fn magnitude_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
 }
 
 /// Calculate power spectrum for 32-bit complex floating point vectors, linear scale.
+/// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn power_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 {
     let magnitude_vector = magnitude_spectrum(vector);
@@ -186,6 +216,7 @@ pub fn power_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 
 
 /// Calculate power spectrum for 64-bit complex floating point vectors, linear scale.
+/// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn power_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
 {
     let magnitude_vector = magnitude_spectrum64(vector);
@@ -276,15 +307,15 @@ mod tests {
     }
 
     #[test]
-    fn cfunc_power_dBW() {
+    fn cfunc_power_dbw() {
         let vec = vec![ C32F!(2,0), C32F!(0,4), C32F!(-2,0) ];
-        assert_eq!( vec![ 6.0206003_f32, 12.041201_f32, 6.0206003_f32 ], power_dBW( vec ) );
+        assert_eq!( vec![ 6.0206003_f32, 12.041201_f32, 6.0206003_f32 ], power_dbw( vec ) );
     }
 
     #[test]
-    fn cfunc_power_dBm() {
+    fn cfunc_power_dbm() {
         let vec = vec![ C32F!(2,0), C32F!(0,4), C32F!(-2,0) ];
-        assert_eq!( vec![ 36.0206_f32, 42.041201_f32, 36.0206003_f32 ], power_dBm( vec ) );
+        assert_eq!( vec![ 36.0206_f32, 42.041201_f32, 36.0206003_f32 ], power_dbm( vec ) );
     }
 
     #[test]
@@ -310,5 +341,4 @@ mod tests {
         let vec = vec![ C32F!(2,0), C32F!(1,4)];
         assert_eq!( vec![ C32F!(2,0), C32F!(1,-4)], conj( vec ) );
     }
-
 }
