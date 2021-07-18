@@ -101,12 +101,12 @@ pub fn mean<T>( vector: Vec<T> )-> T
 //TODO variance, both methods.
 
 /// Multiply vector with scalar.
-pub fn scale<T>( vector: Vec<T>, scalar: T )-> Vec<T>
+pub fn scale<T>( vector: &Vec<T>, scalar: &T )-> Vec<T>
     where T: Real
 {
     let mut r_vector:Vec<T> = Vec::with_capacity( vector.len() );
     for i in 0..vector.len() {
-        r_vector.push(vector[i]*scalar);
+        r_vector.push(vector[i]*scalar.clone());
     }
     return r_vector;
 }
@@ -150,7 +150,7 @@ macro_rules! element_wise_operand {
     ) => {
         $(#[$comment])*
         /// Element-wise operation on vector of real type T.
-        pub fn $operand<T>( vector: Vec<T> )-> Vec<T>
+        pub fn $operand<T>( vector: &Vec<T> )-> Vec<T>
         where T: $trait
         {
         let mut r_vector: Vec<T> = Vec::with_capacity( vector.len() );
@@ -447,7 +447,7 @@ mod tests {
     #[test]
     fn func_abs() {
         let vec = vec![ 2_f32, -2_f32 ];
-        assert_eq!( vec![ 2_f32, 2_f32 ], abs( vec ) );
+        assert_eq!( vec![ 2_f32, 2_f32 ], abs( &vec ) );
     }
     
     #[test]

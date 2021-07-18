@@ -215,12 +215,12 @@ pub fn mulInt<T>( vector1: Vec<Complex<T>>, vector2: Vec<Complex<T>> ) -> Vec<Co
 }
 
 /// Multiply vector with scalar.
-pub fn scale<T>( vector: Vec<Complex<T>>, scalar: T )-> Vec<Complex<T>>
+pub fn scale<T>( vector: &Vec<Complex<T>>, scalar: &T )-> Vec<Complex<T>>
     where T: Real
 {
     let mut r_vector:Vec<Complex<T>> = Vec::with_capacity( vector.len() );
     for i in 0..vector.len() {
-        r_vector.push(vector[i].scale(scalar));
+        r_vector.push(vector[i].scale(scalar.clone()));
     }
     return r_vector;
 }
@@ -275,7 +275,7 @@ macro_rules! magnitude_spectrum_calculation {
         let fft = planner.plan_fft_forward( size );
 
         fft.process( temp_vector.as_mut_slice() );
-        return crate::vfunc::scale( abs(temp_vector), (1 as $T) / (size as $T) );
+        return crate::vfunc::scale( &abs(temp_vector), &((1 as $T) / (size as $T)) );
     };
 }
 
@@ -324,7 +324,7 @@ macro_rules! element_wise_operand {
     ) => {
         $(#[$comment])*
         /// Element-wise operation on vector of real type R.
-        pub fn $operand<T>( vector: Vec<Complex<T>> )-> Vec<Complex<T>>
+        pub fn $operand<T>( vector: &Vec<Complex<T>> )-> Vec<Complex<T>>
             where T: $trait
         {
             let mut r_vector: Vec<Complex<T>> = Vec::with_capacity( vector.len() );
@@ -366,12 +366,6 @@ element_wise_operand!{
     conj
     Float
 }
-/*
-element_wise_operand!{
-    /// The norm or abolute value.
-    norm
-    Float
-}*/
 
 #[cfg(test)]
 mod tests {
@@ -392,7 +386,7 @@ mod tests {
     #[test]
     fn cfunc_scale() {
         let vec = vec![ C32F!(2,0), C32F!(0,4), C32F!(-2,0) ];
-        assert_eq!( vec![ C32F!(4,0), C32F!(0,8), C32F!(-4,0) ], scale( vec, 2_f32 ) );
+        assert_eq!( vec![ C32F!(4,0), C32F!(0,8), C32F!(-4,0) ], scale( &vec, &2_f32 ) );
     }
 
     #[test]
@@ -428,12 +422,12 @@ mod tests {
     #[test]
     fn cfunc_inv() {
         let vec = vec![ C32F!(2,0), C32F!(0,4)];
-        assert_eq!( vec![ C32F!(0.5,-0), C32F!(0,-0.25)], inv( vec ) );
+        assert_eq!( vec![ C32F!(0.5,-0), C32F!(0,-0.25)], inv( &vec ) );
     }
 
     #[test]
     fn cfunc_conj() {
         let vec = vec![ C32F!(2,0), C32F!(1,4)];
-        assert_eq!( vec![ C32F!(2,0), C32F!(1,-4)], conj( vec ) );
+        assert_eq!( vec![ C32F!(2,0), C32F!(1,-4)], conj( &vec ) );
     }
 }

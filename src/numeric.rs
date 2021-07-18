@@ -34,7 +34,7 @@ macro_rules! vector_struct {
         /// Numeric vector type
         struct $Name
         {
-            vec:Vec<$T>
+            vec:Vec<$T>,
         }
         
         impl VectorTraits<$T> for $Name {
@@ -62,7 +62,6 @@ macro_rules! vector_struct {
             fn len( &self ) -> usize {
                 return self.vec.len();
             }
-            
         }
 
         impl std::ops::Index<usize> for $Name {
@@ -82,29 +81,74 @@ vector_struct!( VecF64, f64, vfunc );
 vector_struct!( VecC32F, C32F, cvfunc );
 vector_struct!( VecC64F, C64F, cvfunc );
 
-/*
+// TODO figure out what to do with returning real numbers from complex operations.
+
+pub trait AdvancedVectorTraits<T> {
+    fn sin( &self ) -> Self;
+    fn cos( &self ) -> Self;
+    fn tan( &self ) -> Self;
+    fn exp( &self ) -> Self;
+}
+
 /// This macro generates element-wise traits on vectors of complex numbers.
 /// The operations must have a function in the respective func files.
-macro_rules! element_wise_operand {
+macro_rules! impl_element_wise_operand {
     (   
         $(#[$comment:meta])*
         $operand:ident
+        $Name:ident
+        $type:ident
     ) => {
         $(#[$comment])*
-        /// Element-wise operation on vector of real type R.
-        impl std::ops::$operand for $Name {   
-            type Output = $Name;
-
-            #[inline]
-            fn neg( self) -> $Name {
-                $Name {
-                    vec: crate::$type::neg( self.vec.clone() ),
-                }
+        /// Element-wise operation on numeric vector.
+        #[inline]
+        fn $operand( &self ) -> $Name {
+            $Name {
+                vec: crate::$type::$operand( &self.vec ),
             }
         }
     };
 }
-*/
+
+macro_rules! advanced_vector_traits {
+    ( $Name:ident, $T:ty, $type:ident, $RT:ty ) => {
+        impl AdvancedVectorTraits<$T> for $Name {
+            impl_element_wise_operand!{
+                /// Sin.
+                sin
+                $Name
+                $type
+            }
+            impl_element_wise_operand!{
+                /// Cos.
+                cos
+                $Name
+                $type
+            }
+            impl_element_wise_operand!{
+                /// Tan.
+                tan
+                $Name
+                $type
+            }
+            impl_element_wise_operand!{
+                /// Exp.
+                exp
+                $Name
+                $type
+            }
+        }
+    };
+}
+
+
+// These are separated out as they might not be trivial to implement for indeger vectors.
+advanced_vector_traits!( VecF32, f32, vfunc, f32 );
+advanced_vector_traits!( VecF64, f64, vfunc, f64 );
+
+advanced_vector_traits!( VecC32F, C32F, cvfunc, f32 );
+advanced_vector_traits!( VecC64F, C64F, cvfunc, f64 );
+
 
 /// Trait overload
 macro_rules! vector_trait_overload{
@@ -146,7 +190,6 @@ vector_trait_overload!( VecC32F, C32F, cvfunc );
 vector_trait_overload!( VecC64F, C64F, cvfunc );
 vector_trait_overload!( VecF32,  f32, vfunc );
 vector_trait_overload!( VecF64,  f64, vfunc );
-
 
 #[cfg(test)]
 mod tests {
@@ -191,7 +234,19 @@ mod tests {
     }
 
     #[test]
+    fn basic_trait_zeros() {
+        assert_eq!( VecF32::new(vec![ 0_f32, 0_f32, 0_f32]), VecF32::zeros(3) );
+    }
+
+    #[test]
     fn basic_trait_ones() {
         assert_eq!( VecF32::new(vec![ 1_f32, 1_f32, 1_f32]), VecF32::ones(3) );
+    }
+
+    #[test]
+    fn advanced_trait_sin() {
+        let vec = vec![ 0_f32, 1_f32, -1_f32 ];
+        let vec_obj = VecF32::new(vec);
+        assert_eq!( VecF32::new(vec![ 0_f32, 0.84147096_f32, -0.84147096_f32 ]), vec_obj.sin() );
     }
 }
