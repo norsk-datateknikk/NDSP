@@ -79,6 +79,18 @@ macro_rules! numb {
     ( $numb:expr ) => { T::from($numb).unwrap(); };
 }
 
+/// Returns a 1D vector of zeros of size numb_samples.
+/// [0+0j,0+0j,...,0+0j]
+pub fn zeros<T>( numb_samples: usize ) -> Vec<Complex<T>>
+    where T: Float
+{
+    let mut vector: Vec<Complex<T>> = Vec::with_capacity(numb_samples);
+    for _i in 0..numb_samples {
+        vector.push(c_value!(T::zero(), T::zero(), T));
+    }
+    return vector;
+}
+
 /// Returns a 1D vector of ones of size numb_samples.
 /// [1+0i,1+0i,...,1+0i]
 pub fn ones<T>( numb_samples: usize )-> Vec<Complex<T>>
