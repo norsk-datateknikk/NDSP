@@ -295,17 +295,24 @@ pub fn power_dbm<T>( vector: Vec<Complex<T>> )-> Vec<T>
         return r_vector;
 }
 
-
-macro_rules! magnitude_spectrum_calculation {
-    ( $vector:expr, $T:ty ) => {
-        let mut temp_vector = $vector;
+#[macro_export]
+macro_rules! vector_fft {
+    ( $vector:expr, $T:ty, $rvec:ident ) => {
+        let mut $rvec = $vector;
         let mut planner = FftPlanner::<$T>::new();
-        let size = temp_vector.len();
+        let size = $rvec.len();
 
         let fft = planner.plan_fft_forward( size );
 
-        fft.process( temp_vector.as_mut_slice() );
-        return crate::vfunc::scale( &abs(temp_vector), &((1 as $T) / (size as $T)) );
+        fft.process( $rvec.as_mut_slice() );
+    };
+}
+
+macro_rules! vector_magnitude_spectrum_calculation {
+    ( $vector:expr, $T:ty, $rvec:ident ) => {
+        vector_fft!( $vector, $T, rvec1  );
+        let size = rvec1.len();
+        let $rvec = crate::vfunc::scale( &abs(rvec1), &((1 as $T) / (size as $T)) );
     };
 }
 
@@ -313,7 +320,8 @@ macro_rules! magnitude_spectrum_calculation {
 /// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn magnitude_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 {
-    magnitude_spectrum_calculation!( vector, f32 );
+    vector_magnitude_spectrum_calculation!( vector, f32, rvector );
+    return rvector;
 }
 
 
@@ -321,15 +329,15 @@ pub fn magnitude_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 /// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn magnitude_spectrum64( vector: Vec<Complex<f64>> )->  Vec<f64>
 {
-    magnitude_spectrum_calculation!( vector, f64 );
-    
+    vector_magnitude_spectrum_calculation!( vector, f64, rvector );
+    return rvector;
 }
 
 /// Calculate power spectrum for 32-bit complex floating point vectors, linear scale.
 /// Corresponding angular frequency [-pi,..., 0,...,pi-(2pi/N)].
 pub fn power_spectrum( vector: Vec<Complex<f32>> ) -> Vec<f32>
 {
-    let magnitude_vector = magnitude_spectrum(vector);
+    vector_magnitude_spectrum_calculation!( vector, f32, magnitude_vector );
     return crate::vfunc::powf(magnitude_vector, 2 as f32);
 }
 

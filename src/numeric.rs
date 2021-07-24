@@ -10,6 +10,8 @@ use num::traits::Float;
 use num::traits::real::Real;
 use num::Complex;
 
+use rustfft::FftPlanner;
+
 use crate::sfunc::*;
 #[macro_use]
 use crate::cvfunc::*;
@@ -67,7 +69,6 @@ macro_rules! vector_struct {
         impl std::ops::Index<usize> for $Name {
             type Output = $T;
         
-            #[inline]
             fn index(&self, index: usize) -> &$T {
                 return &self.vec[index];
             }
@@ -102,7 +103,6 @@ macro_rules! impl_element_wise_operand {
     ) => {
         $(#[$comment])*
         /// Element-wise operation on numeric vector.
-        #[inline]
         fn $operand( &self ) -> $Name {
             $Name {
                 vec: crate::$type::$operand( &self.vec ),
@@ -230,6 +230,58 @@ vector_trait_overload!( VecC32F, C32F, cvfunc, f32 );
 vector_trait_overload!( VecC64F, C64F, cvfunc, f64 );
 vector_trait_overload!( VecF32,  f32, vfunc, f32 );
 vector_trait_overload!( VecF64,  f64, vfunc, f64 );
+
+#[macro_export]
+macro_rules! fft {
+    ( $vec:expr, $T:ty, $rvec:ident ) => {
+        let mut $rvec = $vec.clone();
+        let mut planner = FftPlanner::<$T>::new();
+        let size = $rvec.len();
+
+        let fft = planner.plan_fft_forward( size );
+        fft.process( $rvec.as_mut_slice() );
+    };
+}
+
+pub trait FrequencyDomainTraits<T,T2> {
+    fn fft( &self ) -> Self;
+    //fn magnitude_spectrum( &self ) -> Self;   // TODO
+    //fn power_spectrum( &self ) -> Self;       // TODO
+}
+
+/// Frequency Domain traits for Complex vectors.
+macro_rules! impl_frequency_domain_traits {
+    ( $Name:ident, $T:ty, $type:ident, $RT:ty ) => {
+        /// Element-wise operation on numeric vector.
+        impl FrequencyDomainTraits<$T, $RT> for $Name {        
+            /// Discrete fourier transform of the vector.
+            fn fft( &self ) -> $Name {              // TODO Test
+                fft!( &self.vec, $RT, rvector);
+                $Name {
+                    vec: rvector.to_vec(),
+                }
+            }
+            /*
+            /// Element-wise operation on numeric vector.
+            fn magnitude_spectrum( &self ) -> $Name {
+                let mut temp_vector = self.vec.clone();
+                let mut planner = FftPlanner::<$RT>::new();
+                let size = temp_vector.len();
+
+                let fft = planner.plan_fft_forward( size );
+
+                fft.process( temp_vector.as_mut_slice() );
+                $Name {
+                    vec:  crate::vfunc::scale( &abs(temp_vector), &((1 as $T) / (size as $T)) ),
+                }
+            }*/
+        }
+        
+    };
+}
+
+impl_frequency_domain_traits!( VecC32F, C32F, cvfunc, f32 );
+impl_frequency_domain_traits!( VecC64F, C64F, cvfunc, f64 );
 
 #[cfg(test)]
 mod tests {
