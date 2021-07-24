@@ -140,7 +140,6 @@ macro_rules! advanced_vector_traits {
             }
 
             /// Scale by scalar value.
-            #[inline]
             fn scale( &self, scalar: &$RT ) -> $Name {
                 $Name {
                     vec: crate::$type::scale( &self.vec, &scalar ),
@@ -243,9 +242,17 @@ macro_rules! fft {
     };
 }
 
+macro_rules! magnitude_spectrum_calculation {
+    ( $vec:expr, $T:ty, $rvec:ident ) => {
+        fft!( $vec, $T, rvec1  );
+        let size = rvec1.len();
+        let $rvec = crate::vfunc::scale( &abs(rvec1), &((1 as $T) / (size as $T)) );
+    };
+}
+
 pub trait FrequencyDomainTraits<T,T2> {
     fn fft( &self ) -> Self;
-    //fn magnitude_spectrum( &self ) -> Self;   // TODO
+    //fn magnitude_spectrum( &self ) -> ;   // TODO
     //fn power_spectrum( &self ) -> Self;       // TODO
 }
 
@@ -264,17 +271,12 @@ macro_rules! impl_frequency_domain_traits {
             /*
             /// Element-wise operation on numeric vector.
             fn magnitude_spectrum( &self ) -> $Name {
-                let mut temp_vector = self.vec.clone();
-                let mut planner = FftPlanner::<$RT>::new();
-                let size = temp_vector.len();
-
-                let fft = planner.plan_fft_forward( size );
-
-                fft.process( temp_vector.as_mut_slice() );
+                magnitude_spectrum_calculation!( &self.vec, $RT, rvector);
                 $Name {
-                    vec:  crate::vfunc::scale( &abs(temp_vector), &((1 as $T) / (size as $T)) ),
+                    vec: rvector.to_vec(),
                 }
-            }*/
+            }
+            */
         }
         
     };
