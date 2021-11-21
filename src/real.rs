@@ -5,7 +5,5 @@
 // file 'LICENSE', which is part of this source code package.   //
 //--------------------------------------------------------------//
 
-#![crate_name = "ndsp"]
-
 #[macro_use]
-pub mod real;
+pub mod fixed;

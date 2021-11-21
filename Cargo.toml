@@ -13,16 +13,25 @@ edition = "2018"
 description = "A package conaining DSP-related functions."
 readme = "README.md"
 repository = "https://github.com/norsk-datateknikk/NDSP"
-license = "MIT"
 license-file = "LICENSE"
-keywords = ["dsp", "radio", "audio"]
+keywords = ["dsp", "radio", "audio", "no_std"]
 
 [lib]
 name = "ndsp"
+path  = "src/lib.rs"
 bench = false
-test = true
+doc   = true
+test  = true
+edition    = "2018"
+crate-type = ["lib"]
 
 [dependencies]
-num = ""
-rustfft = ""
-impl_ops = ""
+fixed_trigonometry = "^0.3.0"
+fixed = "^1.10.0"
+
+[dev-dependencies]
+plotters = "^0.3.1"
+
+[dependencies.num]
+version = "0.4"
+default-features = false
