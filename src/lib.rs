@@ -12,5 +12,7 @@
 #[cfg(all(not(feature = "std"), test))]
 extern crate std;
 
+pub mod traits;
+
 #[macro_use]
-pub mod vec;
+pub mod fixed;

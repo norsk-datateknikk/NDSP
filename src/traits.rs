@@ -6,6 +6,16 @@
 //--------------------------------------------------------------//
 
 
+// Generic vector operations.
+pub trait Len {
+    fn len( &self ) -> usize;
+}
+
+pub trait Cap {
+    fn capacity( &self ) -> usize;
+}
+
+// Struct constructors.
 pub trait LinSpace {
     fn linspace<T>( start:T, step:T ) -> Self;
 }
@@ -18,39 +28,39 @@ pub trait Zeros {
     fn ones()      -> Self;
 }
 
-pub trait Len {
-    fn len( &self ) -> usize;
+// Compute-In-place operations.
+pub trait Powi {
+    fn powi( &mut self, power:u32 );
 }
 
-pub trait Powi {
-    fn powi( &self, power:u32 ) -> Self;
+pub trait Abs {
+    fn abs( &mut self );
+}
+
+pub trait Sqrt {
+    fn sqrt( &mut self );
 }
 
 pub trait Sin {
-    fn sin( &self )  -> Self;
+    fn sin( &mut self );
 }
 
 pub trait Cos {
-    fn cos( &self )  -> Self;
+    fn cos( &mut self );
 }
 
 pub trait Tan {
-    fn tan( &self )  -> Self;
+    fn tan( &mut self );
 }
 
 pub trait Atan {
-    fn atan( &self )  -> Self;
+    fn atan( &mut self );
 }
 
 pub trait WrapPhase {
-    fn wrap_phase( &self )  -> Self;
+    fn wrap_phase( &mut self );
 }
 
 pub trait Fft {
-    fn fft( &self )  -> Self;
-}
-
-pub trait ComplexCartesian {
-    fn real() -> Self;
-    fn imag() -> Self;
+    fn fft( &mut self );
 }
