@@ -7,3 +7,10 @@
 
 #[macro_use]
 pub mod fixed;
+
+extern crate alloc;
+
+#[derive(Clone, Default, Debug, PartialEq)]
+pub struct Vec<T> {
+    vec: alloc::vec::Vec<T>
+}
