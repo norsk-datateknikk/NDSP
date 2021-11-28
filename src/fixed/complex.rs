@@ -76,6 +76,30 @@ impl <T> traits::Cap for Vec<T> {
     }
 }
 
+impl <T> traits::PushBack<T> for Vec<T> {
+    /// Push a value to the back of the vector.
+    #[inline]
+    fn push_back(&mut self, value: T) {
+        self.vec.push(value);
+    }
+}
+
+impl<T:fixed::traits::Fixed> Vec<num::complex::Complex<T>> {
+    /// Allocate a memmory for a vector of a certain capacity.
+    ///
+    #[allow(dead_code)]
+    fn new_from_real( real_vec: crate::fixed::real::Vec<T> ) -> Vec<num::complex::Complex<T>>
+    {
+        let mut vec = Vec::<num::complex::Complex<T>>::new_with_capacity(real_vec.len());
+
+        for idx in 0..real_vec.len()
+        {
+            vec.push_back(num::complex::Complex::new(T::from_num(real_vec[idx]), T::from_num(0)))
+        }
+        return vec;
+    }
+}
+
 impl <T: fixed::traits::FixedSigned> traits::Abs for Vec<num::complex::Complex<T>> {
     /// Take the elemtent-wise absolute value.
     fn abs(&mut self) {

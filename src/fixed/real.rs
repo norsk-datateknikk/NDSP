@@ -74,6 +74,14 @@ impl <T> traits::Cap for Vec<T> {
     }
 }
 
+impl <T> traits::PushBack<T> for Vec<T> {
+    /// Push a value to the back of the vector.
+    #[inline]
+    fn push_back(&mut self, value: T) {
+        self.vec.push(value);
+    }
+}
+
 impl <T: fixed::traits::Fixed> Vec<T> {
     /// Returns a 1D vector of evenly spaced numbers of type T.
     #[allow(dead_code)]
@@ -93,15 +101,14 @@ impl <T: fixed::traits::Fixed> Vec<T> {
         let mut vector = Vec::<T>::new_with_capacity(num);
         
         let mut val = start;
-        for idx in 0..vector.capacity()
+        for _idx in 0..vector.capacity()
         {
-            vector[idx] = val;
+            vector.push_back(val);
             val += step;
         }
         return vector;
     }
 }
-
 
 
 impl <T: fixed::traits::FixedSigned> traits::Sin for Vec<T> {
@@ -120,6 +127,20 @@ impl <T: fixed::traits::FixedSigned> traits::Cos for Vec<T> {
     fn cos(&mut self) {
         for idx in 0..self.len() {
             self[idx] = fixed_trigonometry::cos(self[idx]);
+        }
+    }
+}
+
+impl <T: fixed::traits::FixedSigned> traits::WrapPhase for Vec<T> {
+    /// Wrapps θ to the -π=<x<π range.
+    /// 
+    /// ## Arguments 
+    ///
+    /// * `phi` - The unwrapped phase in radians.
+    /// 
+    fn wrap_phase(&mut self) {
+        for idx in 0..self.len() {
+            self[idx] = fixed_trigonometry::wrap_phase(self[idx]);
         }
     }
 }

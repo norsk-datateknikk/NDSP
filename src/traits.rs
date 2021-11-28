@@ -15,6 +15,11 @@ pub trait Cap {
     fn capacity( &self ) -> usize;
 }
 
+// Generic vector operations.
+pub trait PushBack<T> {
+    fn push_back( &mut self, value: T );
+}
+
 pub trait Ones {
     fn ones()      -> Self;
 }
