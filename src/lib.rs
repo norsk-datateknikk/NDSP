@@ -8,11 +8,9 @@
 #![crate_name = "ndsp"]
 #![no_std]
 
-#![feature(collections)]
-
 // Use std for test.
 #[cfg(all(not(feature = "std"), test))]
 extern crate std;
 
 #[macro_use]
-pub mod real;
+pub mod vec;
