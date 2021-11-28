@@ -110,21 +110,51 @@ impl <T: fixed::traits::FixedSigned> traits::Abs for Vec<num::complex::Complex<T
     }
 }
 
-/* TODO
-impl<T> Vec<num::complex::Complex<T>> {
-    /// Creates a rotating pahsor with a specific angular frequency.
+impl<T:fixed::traits::FixedSigned>  Vec<num::complex::Complex<T>> {
+    /// Creates a rotating phasor with a specific angular frequency.
+    /// 
+    ///  `s[n] = cos(ωn+θ) + i sin(n+θ), n ∈ {0,1,...N-1}`.
     /// 
     /// ## Arguments
     /// 
-    /// * `capacity` - The capacity of the new vector.
+    /// * `angular_freq_rad`- The angular frequency (ω).
+    /// * `phase_rad`       - The start phase in rad (θ).
+    /// * `numb`            - The number of samples (N).
     ///
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp;
+    /// use fixed::{types::extra::U28, FixedI32};
+    /// 
+    /// let omega =  FixedI32::<U28>::from_num(0.8);
+    /// let theta =  FixedI32::<U28>::from_num(0);
+    /// 
+    /// let signal = ndsp::fixed::complex::Vec::osc(omega, theta, 4);
+    /// 
+    /// println!("Signal {:?}", signal);
+    /// 
+    /// assert_eq!{ -0.2831852, -0.2831853 };
+    /// ``` 
     #[allow(dead_code)]
-    fn nco( angular_freq: T,  ) -> Vec<num::complex::Complex<T>>
+    fn osc( angular_freq_rad: T, phase_rad: T, numb: usize ) -> Vec<num::complex::Complex<T>>
     {
-        
+        let mut vec = Vec::new_with_capacity(numb);
+        let mut phase_rad_inc= phase_rad;
+        for _i in 0..numb
+        {
+            // Calculate twiddle factor for W_i.
+            let real = trig::cos( phase_rad_inc );
+            let imag = trig::sin( phase_rad_inc );
+
+            vec.push_back( num::Complex::new( real, imag ) );
+
+            phase_rad_inc = phase_rad_inc + angular_freq_rad;
+            phase_rad_inc = trig::wrap_phase(phase_rad_inc);
+        }
+        return vec;
     }
 }
-*/
 
 impl <T:fixed::traits::FixedSigned> traits::Fft for Vec<num::complex::Complex<T>> {
     /// Calculate the Raddix-2 FFT for fixed point vectors.
