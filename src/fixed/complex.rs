@@ -8,9 +8,11 @@
 
 extern crate alloc;
 extern crate num;
-extern crate fixed_trigonometry; 
+extern crate fixed_trigonometry;
+use fixed_trigonometry as trig;
 
-use crate::traits; 
+use crate::traits;
+use crate::traits::*;
 
 /// Numeric vector of real, fixed-point numbers.
 #[derive(Clone, Default, Debug, PartialEq)]
@@ -54,7 +56,6 @@ impl <T> core::ops::IndexMut<usize> for Vec<T> {
     }
 }
 
-
 impl <T> traits::Len for Vec<T> {
     /// Function returning the size of the vector.
     /// 
@@ -67,7 +68,7 @@ impl <T> traits::Len for Vec<T> {
 
 impl <T> traits::Cap for Vec<T> {
     /// Function returning the capacity of the vector.
-    /// 
+    /// <>
     /// The capacity is the maximum number of items the vector can hold.
     #[inline]
     fn capacity(&self) -> usize {
@@ -75,6 +76,15 @@ impl <T> traits::Cap for Vec<T> {
     }
 }
 
+impl <T: fixed::traits::FixedSigned> traits::Abs for Vec<num::complex::Complex<T>> {
+    /// Take the elemtent-wise absolute value.
+    fn abs(&mut self) {
+        for idx in 0..self.len() {
+            self[idx].re = trig::complex::abs(self[idx]);
+            self[idx].im = T::from_num(0);
+        }
+    }
+}
 
 impl <T:fixed::traits::FixedSigned> traits::Fft for Vec<num::complex::Complex<T>> {
     /// Calculate the Raddix-2 FFT for fixed point vectors.

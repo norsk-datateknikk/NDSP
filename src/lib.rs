@@ -5,6 +5,8 @@
 // file 'LICENSE', which is part of this source code package.   //
 //--------------------------------------------------------------//
 
+//! This is an experimental library for no-std DSP in Rust.
+
 #![crate_name = "ndsp"]
 #![no_std]
 

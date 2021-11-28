@@ -15,11 +15,6 @@ pub trait Cap {
     fn capacity( &self ) -> usize;
 }
 
-// Struct constructors.
-pub trait LinSpace {
-    fn linspace<T>( start:T, step:T ) -> Self;
-}
-
 pub trait Ones {
     fn ones()      -> Self;
 }

@@ -63,15 +63,6 @@ impl <T> traits::Len for Vec<T> {
         return self.vec.len();
     }
 }
-impl <T> traits::Len for &Vec<T> {
-    /// Function returning the size of the vector.
-    /// 
-    /// The size is the number of items with values.
-    #[inline]
-    fn len(&self) -> usize {
-        return self.vec.len();
-    }
-}
 
 impl <T> traits::Cap for Vec<T> {
     /// Function returning the capacity of the vector.
@@ -82,15 +73,36 @@ impl <T> traits::Cap for Vec<T> {
         return self.vec.capacity();
     }
 }
-impl <T> traits::Cap for &crate::fixed::real::Vec<T> {
-    /// Function returning the capacity of the vector.
-    /// 
-    /// The capacity is the maximum number of items the vector can hold.
-    #[inline]
-    fn capacity(&self) -> usize {
-        return self.vec.capacity();
+
+impl <T: fixed::traits::Fixed> Vec<T> {
+    /// Returns a 1D vector of evenly spaced numbers of type T.
+    #[allow(dead_code)]
+    fn linspace( start:T, stop:T, num:usize, end_point: bool ) -> Vec<T> {
+        let temp_num;
+        if end_point
+        {
+            temp_num = num;
+        }
+        else
+        {
+            temp_num = num+1
+        }
+
+        let step = (stop-start)/T::from_num(temp_num);
+
+        let mut vector = Vec::<T>::new_with_capacity(num);
+        
+        let mut val = start;
+        for idx in 0..vector.capacity()
+        {
+            vector[idx] = val;
+            val += step;
+        }
+        return vector;
     }
 }
+
+
 
 impl <T: fixed::traits::FixedSigned> traits::Sin for Vec<T> {
     /// Take the elemtent-wise sine using a Taylor approximation of sin(x).
@@ -103,7 +115,7 @@ impl <T: fixed::traits::FixedSigned> traits::Sin for Vec<T> {
 }
 
 impl <T: fixed::traits::FixedSigned> traits::Cos for Vec<T> {
-    /// Take the elemtent-wise sine using a Taylor approximation of sin(x).
+    /// Take the elemtent-wise cosine using a shifted Taylor approximation of sin(x).
     /// Self must be wrapped to the -π=<x<π range.
     fn cos(&mut self) {
         for idx in 0..self.len() {
@@ -113,8 +125,7 @@ impl <T: fixed::traits::FixedSigned> traits::Cos for Vec<T> {
 }
 
 impl <T: fixed::traits::FixedSigned> traits::Sqrt for Vec<T> {
-    /// Take the elemtent-wise sine using a Taylor approximation of sin(x).
-    /// Self must be wrapped to the -π=<x<π range.
+    /// Take the element-wise square root.
     fn sqrt(&mut self) {
         for idx in 0..self.len() {
             self[idx] = fixed_trigonometry::sqrt::niirf( self[idx], 2);
@@ -123,8 +134,7 @@ impl <T: fixed::traits::FixedSigned> traits::Sqrt for Vec<T> {
 }
 
 impl <T: fixed::traits::FixedSigned> traits::Abs for Vec<T> {
-    /// Take the elemtent-wise sine using a Taylor approximation of sin(x).
-    /// Self must be wrapped to the -π=<x<π range.
+    /// Take the elemtent-wise absolute value.
     fn abs(&mut self) {
         for idx in 0..self.len() {
             if self[idx]<0
