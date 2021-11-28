@@ -110,6 +110,22 @@ impl <T: fixed::traits::FixedSigned> traits::Abs for Vec<num::complex::Complex<T
     }
 }
 
+/* TODO
+impl<T> Vec<num::complex::Complex<T>> {
+    /// Creates a rotating pahsor with a specific angular frequency.
+    /// 
+    /// ## Arguments
+    /// 
+    /// * `capacity` - The capacity of the new vector.
+    ///
+    #[allow(dead_code)]
+    fn nco( angular_freq: T,  ) -> Vec<num::complex::Complex<T>>
+    {
+        
+    }
+}
+*/
+
 impl <T:fixed::traits::FixedSigned> traits::Fft for Vec<num::complex::Complex<T>> {
     /// Calculate the Raddix-2 FFT for fixed point vectors.
     /// Scaled for each butterfly computation.
