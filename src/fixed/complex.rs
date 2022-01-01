@@ -8,7 +8,6 @@
 
 extern crate alloc;
 extern crate num;
-extern crate cordic;
 extern crate fixed_trigonometry;
 use fixed_trigonometry as trig;
 
