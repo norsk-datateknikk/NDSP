@@ -25,7 +25,7 @@ pub trait Ones {
 }
 
 pub trait Zeros {
-    fn ones()      -> Self;
+    fn zeros()      -> Self;
 }
 
 // Compute-In-place operations.

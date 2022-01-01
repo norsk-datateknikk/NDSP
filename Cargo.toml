@@ -9,7 +9,7 @@
 name = "ndsp"
 version = "0.1.0"
 authors = ["Erik Buer"]
-edition = "2018"
+edition = "2021"
 description = "A package conaining DSP-related functions."
 readme = "README.md"
 repository = "https://github.com/norsk-datateknikk/NDSP"

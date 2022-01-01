@@ -8,6 +8,7 @@
 
 extern crate alloc;
 extern crate num;
+extern crate cordic;
 extern crate fixed_trigonometry;
 use fixed_trigonometry as trig;
 
@@ -110,6 +111,7 @@ impl <T: fixed::traits::FixedSigned> traits::Abs for Vec<num::complex::Complex<T
     }
 }
 
+/*
 impl<T:fixed::traits::FixedSigned>  Vec<num::complex::Complex<T>> {
     /// Creates a rotating phasor with a specific angular frequency.
     /// 
@@ -137,13 +139,13 @@ impl<T:fixed::traits::FixedSigned>  Vec<num::complex::Complex<T>> {
     /// assert_eq!{ -0.2831852, -0.2831853 };
     /// ``` 
     #[allow(dead_code)]
-    fn osc( angular_freq_rad: T, phase_rad: T, numb: usize ) -> Vec<num::complex::Complex<T>>
+    pub fn osc( angular_freq_rad: T, phase_rad: T, numb: usize ) -> Vec<num::complex::Complex<T>>
     {
         let mut vec = Vec::new_with_capacity(numb);
         let mut phase_rad_inc= phase_rad;
         for _i in 0..numb
-        {
-            // Calculate twiddle factor for W_i.
+        {   
+            // let (real,imag ) = cordic::sin_cos(phase_rad_inc); //! Requires cordic number trait.
             let real = trig::cos( phase_rad_inc );
             let imag = trig::sin( phase_rad_inc );
 
@@ -155,6 +157,7 @@ impl<T:fixed::traits::FixedSigned>  Vec<num::complex::Complex<T>> {
         return vec;
     }
 }
+*/
 
 impl <T:fixed::traits::FixedSigned> traits::Fft for Vec<num::complex::Complex<T>> {
     /// Calculate the Raddix-2 FFT for fixed point vectors.
@@ -165,10 +168,6 @@ impl <T:fixed::traits::FixedSigned> traits::Fft for Vec<num::complex::Complex<T>
     /// Decimation-in-freqency.
     /// 
     /// The method utilizes fixed point approximations for square root, sine, cosine and atan calculations.
-    /// 
-    /// ## Arguments
-    /// 
-    /// * `vec` - A mutable reference to the vector to do the computation on, and store the result in.
     /// 
     fn fft(&mut self){
         fixed_trigonometry::fft::fft( &mut self.vec);
