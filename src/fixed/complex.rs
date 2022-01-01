@@ -5,11 +5,18 @@
 // file 'LICENSE', which is part of this source code package.   //
 //--------------------------------------------------------------//
 
-
 extern crate alloc;
 extern crate num;
 extern crate fixed_trigonometry;
+use fixed::traits::Fixed;
 use fixed_trigonometry as trig;
+
+#[cfg(any(feature = "std"))]
+use std::fs::File;
+#[cfg(any(feature = "std"))]
+use std::fs;
+#[cfg(any(feature = "std"))]
+use std::io::{BufReader, Read};
 
 use crate::traits;
 use crate::traits::*;
@@ -38,6 +45,7 @@ impl<T> Vec<T> {
         }
     }
 }
+
 
 impl <T> core::ops::Index<usize> for Vec<T> {
     type Output = T;
@@ -170,5 +178,56 @@ impl <T:fixed::traits::FixedSigned> traits::Fft for Vec<num::complex::Complex<T>
     /// 
     fn fft(&mut self){
         fixed_trigonometry::fft::fft( &mut self.vec);
+    }
+}
+
+#[cfg(any(feature = "std"))]
+impl <T> traits::FromFile for Vec<num::complex::Complex<T>>
+    where T: Fixed
+{
+    /// Read a binary file from e.g. Gnu Radio Companion into a vector.
+    fn from_file( item_type: ItemType, path: &str ) -> Self
+    {
+
+        let file = File::open(path).expect("file wasn't found.");
+        let mut reader = BufReader::new(&file);
+
+        let file_size_bytes = &file.metadata().unwrap().len();
+
+        // Currently only float32 and complex32 is supported.
+        const item_size_bytes:usize = 4;
+        
+        let mut vec = Self::new_with_capacity(*file_size_bytes as usize/item_size_bytes);
+        
+        // Counter to keep track of I/Q sample. Even = I, odd = Q.
+        let mut counter:usize = 0;
+
+        let mut temp_complex = num::complex::Complex::new(T::from_num(0), T::from_num(0));
+
+        loop {
+            use std::io::ErrorKind;
+            let mut buffer = [0u8; std::mem::size_of::<f32>()];
+            
+            let res = reader.read_exact(&mut buffer);
+            match res {
+                Err(error) if error.kind() == ErrorKind::UnexpectedEof => break,
+                _ => {}
+            }
+            res.expect("Unexpected error during read");
+
+            if &counter%2==0
+            {
+                // Use `from_be_bytes` if numbers in file is big-endian
+                temp_complex.re = T::from_num(f32::from_le_bytes(buffer));
+            }
+            else {
+                // Use `from_be_bytes` if numbers in file is big-endian
+                temp_complex.im = T::from_num(f32::from_le_bytes(buffer));
+                vec.push_back(temp_complex);
+            }
+            counter +=1;
+        }
+
+        return vec;
     }
 }

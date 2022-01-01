@@ -64,3 +64,16 @@ pub trait WrapPhase {
 pub trait Fft {
     fn fft( &mut self );
 }
+
+
+/// The type of the items in a binary file file.
+#[derive(Clone, Debug, PartialEq)]
+pub enum ItemType {
+    Complex32,
+    Float32,
+}
+// Traits requiring std
+pub trait FromFile {
+    // Load signal of type T in a binary file into vector. 
+    fn from_file( item_type: ItemType, path: &str ) -> Self;
+}

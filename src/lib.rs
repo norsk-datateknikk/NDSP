@@ -14,6 +14,9 @@
 #[cfg(all(not(feature = "std"), test))]
 extern crate std;
 
+#[cfg(feature = "std")]
+extern crate std;
+
 pub mod traits;
 
 #[macro_use]
