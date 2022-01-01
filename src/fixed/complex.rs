@@ -14,8 +14,6 @@ use fixed_trigonometry as trig;
 #[cfg(any(feature = "std"))]
 use std::fs::File;
 #[cfg(any(feature = "std"))]
-use std::fs;
-#[cfg(any(feature = "std"))]
 use std::io::{BufReader, Read};
 
 use crate::traits;
@@ -187,7 +185,7 @@ impl <T> traits::FromFile for Vec<num::complex::Complex<T>>
 {
     /// Read a binary file from e.g. Gnu Radio Companion into a vector.
     /// Assuming a binary file containing complex32.
-    fn from_file( item_type: ItemType, path: &str ) -> Self
+    fn from_file( _item_type: ItemType, path: &str ) -> Self
     {
 
         let file = File::open(path).expect("file wasn't found.");
@@ -196,9 +194,9 @@ impl <T> traits::FromFile for Vec<num::complex::Complex<T>>
         let file_size_bytes = &file.metadata().unwrap().len();
 
         // Currently only float32 and complex32 is supported.
-        const item_size_bytes:usize = 4;
+        const ITEM_SIZE_BYTES:usize = 4;
         
-        let mut vec = Self::new_with_capacity(*file_size_bytes as usize/item_size_bytes);
+        let mut vec = Self::new_with_capacity(*file_size_bytes as usize/ITEM_SIZE_BYTES);
         
         // Counter to keep track of I/Q sample. Even = I, odd = Q.
         let mut counter:usize = 0;
