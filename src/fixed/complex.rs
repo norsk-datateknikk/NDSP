@@ -186,6 +186,7 @@ impl <T> traits::FromFile for Vec<num::complex::Complex<T>>
     where T: Fixed
 {
     /// Read a binary file from e.g. Gnu Radio Companion into a vector.
+    /// Assuming a binary file containing complex32.
     fn from_file( item_type: ItemType, path: &str ) -> Self
     {
 
