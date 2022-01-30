@@ -70,7 +70,7 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
     /// let omega =  FixedI32::<U28>::from_num(0.8);
     /// let theta =  FixedI32::<U28>::from_num(0);
     /// 
-    /// let signal = ndsp::fixed::complex::Vec::osc(omega, theta, 4);
+    /// let signal = ndsp::vec::Vec::osc(omega, theta, 4);
     /// 
     /// println!("Signal {:?}", signal);
     /// 
