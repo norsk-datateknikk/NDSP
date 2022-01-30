@@ -1,9 +1,9 @@
-#--------------------------------------------------------------#
-# Copyright 2021 Norsk Datateknikk AS                          #
-#--------------------------------------------------------------#
-# This file is subject to the terms and conditions defined in  #
-# file 'LICENSE', which is part of this source code package.   #
-#--------------------------------------------------------------#
+#-----------------------------------------------------------------#
+# Copyright 2021 Norsk Datateknikk AS                             #
+#-----------------------------------------------------------------#
+# This file is subject to the terms and conditions defined in the #
+# file 'LICENSE', which is part of this source code package.      #
+#-----------------------------------------------------------------#
 
 [package]
 name = "ndsp"
@@ -17,17 +17,16 @@ license-file = "LICENSE"
 keywords = ["dsp", "radio", "audio", "no_std"]
 
 [lib]
-name = "ndsp"
 path  = "src/lib.rs"
 bench = false
 doc   = true
 test  = true
-edition    = "2018"
 crate-type = ["lib"]
 
 [dependencies]
-fixed_trigonometry = "^0.3.0"
-fixed = "^1.10.0"
+fixed_trigonometry = "^0.3.5"   
+mixed-num          = "^0.1.6"
+fixed              = "^1.10.0"
 
 [dependencies.num]
 version = "^0.4"
@@ -38,5 +37,4 @@ plotters = "^0.3.1"
 
 [features]
 default = ["std"]
-
 std = []
