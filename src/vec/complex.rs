@@ -60,22 +60,7 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
     /// * `angular_freq_rad`- The angular frequency (ω).
     /// * `phase_rad`       - The start phase in rad (θ).
     /// * `numb`            - The number of samples (N).
-    ///
-    /// ## Example
     /// 
-    /// ```
-    /// use ndsp;
-    /// use fixed::{types::extra::U28, FixedI32};
-    /// 
-    /// let omega =  FixedI32::<U28>::from_num(0.8);
-    /// let theta =  FixedI32::<U28>::from_num(0);
-    /// 
-    /// let signal = ndsp::vec::Vec::osc(omega, theta, 4);
-    /// 
-    /// println!("Signal {:?}", signal);
-    /// 
-    /// assert_eq!{ -0.2831852, -0.2831853 };
-    /// ``` 
     #[allow(dead_code)]
     pub fn osc( angular_freq_rad: T, phase_rad: T, numb: usize ) -> Vec<Complex<T>>
     {
@@ -161,5 +146,25 @@ impl <T> traits::FromFile for Vec<Complex<T>>
         }
 
         return vec;
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn to_string() {
+        use fixed::{types::extra::U28, FixedI32};
+        use std::println;
+
+        let omega = 0.8f32;
+        let theta = 0f32;
+         
+        let signal = super::vec::Vec::osc(omega, theta, 4);
+         
+        println!("Signal {}", signal);
+        assert_eq!(signal.to_string(), "[ 1.0000035+0i, -0.902972+0.7173561i, 3.0477293+0.94117063i, 0.74554664-0.9825768i ]" )
     }
 }

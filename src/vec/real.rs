@@ -14,20 +14,15 @@ use crate::traits::*;
 use crate::vec::*;
 
 impl <T: MixedNum> Vec<T> {
+    
+}
+
+impl <T: MixedNum> LinRange<T> for Vec<T>
+{
     /// Returns a 1D vector of evenly spaced numbers of type T.
     #[allow(dead_code)]
-    fn linspace( start:T, stop:T, num:usize, end_point: bool ) -> Vec<T> {
-        let temp_num;
-        if end_point
-        {
-            temp_num = num;
-        }
-        else
-        {
-            temp_num = num+1
-        }
-
-        let step = (stop-start)/T::mixed_from_num(temp_num as i32);
+    fn lin_range( start:T, stop:T, num:usize ) -> Vec<T> {
+        let step = (stop-start)/T::mixed_from_num((num-1) as i32);
 
         let mut vector = Vec::<T>::new_with_capacity(num);
         
@@ -39,7 +34,7 @@ impl <T: MixedNum> Vec<T> {
         }
         return vector;
     }
-}
+} 
 
 
 impl <T: MixedTrigonometry> traits::Sin for Vec<T> {
@@ -94,5 +89,17 @@ impl <T: MixedNum + MixedNumSigned> traits::Abs<R> for Vec<T> {
                 self[idx]=-self[idx];
             }
         }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn linrange() {
+        let test_vec = Vec::lin_range(0f32, 3f32, 4);
+        assert_eq!(test_vec.to_string(), "[ 0, 1, 2, 3 ]" )
     }
 }
