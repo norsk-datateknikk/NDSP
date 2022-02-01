@@ -6,8 +6,6 @@
 //-----------------------------------------------------------------//
 
 use crate::*;
-use mixed_num::traits::*;
-
 
 extern crate alloc;
 extern crate num;

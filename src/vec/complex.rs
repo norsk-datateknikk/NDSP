@@ -156,7 +156,6 @@ mod tests {
 
     #[test]
     fn to_string() {
-        use fixed::{types::extra::U28, FixedI32};
         use std::println;
 
         let omega = 0.8f32;
