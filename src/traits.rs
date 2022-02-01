@@ -37,6 +37,11 @@ pub trait Zeros {
     fn zeros()      -> Self;
 }
 
+pub trait LinRange<T>{
+    /// Generate a 1D vector of evenly spaced numbers of type T.
+    fn lin_range( start:T, stop:T, num:usize ) -> Self;
+} 
+
 // Compute-In-place operations.
 pub trait Powi {
     /// Rase the vector to an integer power. Computed-in-place.

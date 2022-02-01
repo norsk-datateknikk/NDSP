@@ -9,9 +9,15 @@ use crate::*;
 
 extern crate alloc;
 extern crate num;
+use alloc::string::ToString;
 
 use crate::traits;
 use crate::traits::*;
+
+#[cfg(feature = "std")]
+use std::fmt;
+#[cfg(feature = "std")]
+use alloc::string::String;
 
 pub mod real;
 pub mod complex;
@@ -83,5 +89,33 @@ impl <T> traits::PushBack<T> for Vec<T> {
     #[inline]
     fn push_back(&mut self, value: T) {
         self.vec.push(value);
+    }
+}
+
+#[cfg(feature = "std")]
+impl <T: fmt::Display> fmt::Display for Vec<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut temp_string = String::from("[ ");
+        for i in 0..self.len()
+        {
+            if 0<i
+            {
+                temp_string.push_str(", ");
+            }
+            temp_string.push_str(self[i].to_string().as_str());
+        }
+        temp_string.push_str(" ]");
+        write!(f, "{}", temp_string)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn to_string() {
+        let test_vec = Vec::lin_range(0f32, 3f32, 4);
+        assert_eq!(test_vec.to_string(), "[ 0, 1, 2, 3 ]" )
     }
 }
