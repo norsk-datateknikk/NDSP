@@ -5,6 +5,8 @@
 // file 'LICENSE', which is part of this source code package.      //
 //-----------------------------------------------------------------//
 
+use num::Complex;
+use crate::vec::Vec;
 
 // structs to enable separation between real and complex implementations of the same trait.
 pub struct R;
@@ -93,6 +95,17 @@ pub enum ItemType {
     Complex32,
     Float32,
 }
+
+pub trait AsReal<T> {
+    /// Returns the real part of the vector as a real only vector.
+    fn as_real(&self) -> Vec<T>;
+}
+
+pub trait AsComplex<T> {
+    /// Returns the real part of the vector in a complex vector.
+    fn as_complex(&self) -> Vec<Complex<T>>;
+}
+
 // Traits requiring std
 pub trait FromFile {
     // Load signal of type T in a binary file into vector. 

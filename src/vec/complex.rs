@@ -38,6 +38,19 @@ impl<T: MixedNum> Vec<Complex<T>> {
     }
 }
 
+impl <T: MixedNum> traits::AsReal<T> for Vec<Complex<T>> {
+    /// Returns the real part of the vector as a real only vector.
+    fn as_real(&self) -> Vec<T>
+    {
+        let mut r_vec = Vec::<T>::new_with_capacity(*&self.len());
+        for i in 0..*&self.len()
+        {
+            r_vec.push_back( self[i].re);
+        }
+        return r_vec;
+    }
+}
+
 
 impl <T: MixedNum + MixedNumSigned> traits::Abs<C> for Vec<Complex<T>> {
     /// Take the elemtent-wise absolute value.
@@ -148,7 +161,6 @@ impl <T> traits::FromFile for Vec<Complex<T>>
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -170,6 +182,14 @@ mod tests {
         signal.push_back( num::Complex::new( 1f32, 0f32 ) );
         signal.abs();
         assert_eq!(signal.to_string(), "[ 1.000752+0i, 1.000752+0i ]" )
+    }
+
+    #[test]
+    fn as_real() {
+        let mut signal = Vec::new_with_capacity(2);
+        signal.push_back( num::Complex::new( 0f32, 1f32 ) );
+        signal.push_back( num::Complex::new( 1f32, 0f32 ) );
+        assert_eq!(signal.as_real().to_string(), "[ 0, 1 ]" )
     }
 
     #[test]
