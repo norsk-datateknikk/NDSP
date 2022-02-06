@@ -7,6 +7,8 @@
 
 
 extern crate alloc;
+
+use num::Complex;
 use mixed_num::traits::*;
 
 use crate::traits;
@@ -92,6 +94,20 @@ impl <T: MixedNum + MixedNumSigned> traits::Abs<R> for Vec<T> {
     }
 }
 
+impl <T: MixedNum> traits::AsComplex<T> for Vec<T> {
+    /// Returns the real part of the vector as a real only vector.
+    fn as_complex(&self) -> Vec<Complex<T>>
+    {
+        let len = *&self.len();
+        let mut r_vec = Vec::<Complex<T>>::new_with_capacity(len);
+        for i in 0..len
+        {
+            r_vec.push_back( Complex::new( self[i], T::mixed_from_num(0)));
+        }
+        return r_vec;
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -101,5 +117,11 @@ mod tests {
     fn linrange() {
         let test_vec = Vec::lin_range(0f32, 3f32, 4);
         assert_eq!(test_vec.to_string(), "[ 0, 1, 2, 3 ]" )
+    }
+
+    #[test]
+    fn as_complex() {
+        let test_vec = Vec::lin_range(0f32, 3f32, 4);
+        assert_eq!(test_vec.as_complex().to_string(), "[ 0+0i, 1+0i, 2+0i, 3+0i ]" )
     }
 }
