@@ -61,21 +61,20 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
     /// * `phase_rad`       - The start phase in rad (θ).
     /// * `numb`            - The number of samples (N).
     /// 
-    #[allow(dead_code)]
     pub fn osc( angular_freq_rad: T, phase_rad: T, numb: usize ) -> Vec<Complex<T>>
     {
         let mut vec = Vec::new_with_capacity(numb);
-        let mut phase_rad_inc= phase_rad;
+        let mut sample_phase_rad= phase_rad;
         for _i in 0..numb
         {   
-            // let (real,imag ) = cordic::sin_cos(phase_rad_inc); //! Requires cordic number trait.
-            let real = phase_rad_inc.mixed_cos();
-            let imag = phase_rad_inc.mixed_sin();
+            sample_phase_rad = sample_phase_rad.mixed_wrap_phase();
+            
+            let real = sample_phase_rad.mixed_cos();
+            let imag = sample_phase_rad.mixed_sin();
 
             vec.push_back( num::Complex::new( real, imag ) );
 
-            phase_rad_inc = phase_rad_inc + angular_freq_rad;
-            phase_rad_inc = phase_rad_inc.mixed_wrap_phase();
+            sample_phase_rad += angular_freq_rad;
         }
         return vec;
     }
@@ -155,15 +154,29 @@ mod tests {
     use super::*;
 
     #[test]
-    fn to_string() {
-        use std::println;
+    fn osc() {
 
-        let omega = 0.8f32;
+        let omega = <f32>::mixed_pi()/f32::mixed_from_num(8);
         let theta = 0f32;
          
         let signal = super::vec::Vec::osc(omega, theta, 4);
-         
-        println!("Signal {}", signal);
-        assert_eq!(signal.to_string(), "[ 1.0000035+0i, -0.902972+0.7173561i, 3.0477293+0.94117063i, 0.74554664-0.9825768i ]" )
+        assert_eq!(signal.to_string(), "[ 1.0000035+0i, 0.9238796+0.38268343i, 0.7071068+0.70710677i, 0.38268334+0.9238796i ]" )
+    }
+
+    #[test]
+    fn abs() {       
+        let mut signal = Vec::new_with_capacity(2);
+        signal.push_back( num::Complex::new( 0f32, 1f32 ) );
+        signal.push_back( num::Complex::new( 1f32, 0f32 ) );
+        signal.abs();
+        assert_eq!(signal.to_string(), "[ 1.000752+0i, 1.000752+0i ]" )
+    }
+
+    #[test]
+    fn to_string() {
+        let mut signal = Vec::new_with_capacity(2);
+        signal.push_back( num::Complex::new( 0f32, 1f32 ) );
+        signal.push_back( num::Complex::new( 1f32, 0f32 ) );
+        assert_eq!(signal.to_string(), "[ 0+1i, 1+0i ]" )
     }
 }
