@@ -1,9 +1,6 @@
-//-----------------------------------------------------------------//
-// Copyright 2021 Norsk Datateknikk AS                             //
-//-----------------------------------------------------------------//
-// This file is subject to the terms and conditions defined in the //
-// file 'LICENSE', which is part of this source code package.      //
-//-----------------------------------------------------------------//
+//----------------------//
+// Norsk Datateknikk AS //
+//----------------------//
 
 //! This is an experimental library for no-std DSP in Rust.
 

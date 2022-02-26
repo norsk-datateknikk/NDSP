@@ -1,9 +1,6 @@
-//-----------------------------------------------------------------//
-// Copyright 2021 Norsk Datateknikk AS                             //
-//-----------------------------------------------------------------//
-// This file is subject to the terms and conditions defined in the //
-// file 'LICENSE', which is part of this source code package.      //
-//-----------------------------------------------------------------//
+//----------------------//
+// Norsk Datateknikk AS //
+//----------------------//
 
 use num::Complex;
 use crate::vec::Vec;
@@ -89,11 +86,14 @@ pub trait Fft {
     fn fft( &mut self );
 }
 
-/// The type of the items in a binary file file.
-#[derive(Clone, Debug, PartialEq)]
-pub enum ItemType {
-    Complex32,
-    Float32,
+pub trait Max<T> {
+    // Return the value of the greats item in the vector 
+    fn max( &self ) -> T;
+}
+
+pub trait Min<T> {
+    // Return the value of the greats item in the vector 
+    fn min( &self ) -> T;
 }
 
 pub trait AsReal<T> {
@@ -107,7 +107,15 @@ pub trait AsComplex<T> {
 }
 
 // Traits requiring std
+
+/// The type of the items in a binary file file.
+#[derive(Clone, Debug, PartialEq)]
+pub enum ItemType {
+    Complex32,
+    Float32,
+}
+
 pub trait FromFile {
     // Load signal of type T in a binary file into vector. 
-    fn from_file( item_type: ItemType, path: &str ) -> Self;
+    fn from_binary( item_type: ItemType, path: &str ) -> Self;
 }

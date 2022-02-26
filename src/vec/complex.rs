@@ -1,9 +1,6 @@
-//-----------------------------------------------------------------//
-// Copyright 2021 Norsk Datateknikk AS                             //
-//-----------------------------------------------------------------//
-// This file is subject to the terms and conditions defined in the //
-// file 'LICENSE', which is part of this source code package.      //
-//-----------------------------------------------------------------//
+//----------------------//
+// Norsk Datateknikk AS //
+//----------------------//
 
 extern crate alloc;
 use num;
@@ -115,7 +112,7 @@ impl <T> traits::FromFile for Vec<Complex<T>>
 {
     /// Read a binary file from e.g. Gnu Radio Companion into a vector.
     /// Assuming a binary file containing complex32.
-    fn from_file( _item_type: ItemType, path: &str ) -> Self
+    fn from_binary( _item_type: ItemType, path: &str ) -> Self
     {
 
         let file = File::open(path).expect("file wasn't found.");

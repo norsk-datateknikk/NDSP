@@ -1,27 +1,25 @@
-//-----------------------------------------------------------------//
-// Copyright 2021 Norsk Datateknikk AS                             //
-//-----------------------------------------------------------------//
-// This file is subject to the terms and conditions defined in the //
-// file 'LICENSE', which is part of this source code package.      //
-//-----------------------------------------------------------------//
+//----------------------//
+// Norsk Datateknikk AS //
+//----------------------//
 
 use crate::*;
-
-extern crate alloc;
-extern crate num;
-use alloc::string::ToString;
-
 use crate::traits;
 use crate::traits::*;
+
+pub mod real;
+pub mod complex;
+//#[cfg(feature = "std")]
+//pub mod plot;
+
+extern crate alloc;
+use alloc::string::ToString;
+
+extern crate num;
 
 #[cfg(feature = "std")]
 use std::fmt;
 #[cfg(feature = "std")]
 use alloc::string::String;
-
-pub mod real;
-pub mod complex;
-
 /// Numeric vector of real, fixed-point numbers.
 #[derive(Clone, Default, Debug, PartialEq)]
 pub struct Vec<T>
@@ -108,6 +106,7 @@ impl <T: fmt::Display> fmt::Display for Vec<T> {
         write!(f, "{}", temp_string)
     }
 }
+
 
 #[cfg(test)]
 mod tests {

@@ -1,9 +1,6 @@
-//-----------------------------------------------------------------//
-// Copyright 2021 Norsk Datateknikk AS                             //
-//-----------------------------------------------------------------//
-// This file is subject to the terms and conditions defined in the //
-// file 'LICENSE', which is part of this source code package.      //
-//-----------------------------------------------------------------//
+//----------------------//
+// Norsk Datateknikk AS //
+//----------------------//
 
 
 extern crate alloc;
@@ -108,6 +105,37 @@ impl <T: MixedNum> traits::AsComplex<T> for Vec<T> {
     }
 }
 
+impl <T: MixedNum> traits::Max<T> for Vec<T> {
+    fn max(&self) -> T
+    {
+        let len = *&self.len();
+        let mut max_value = T::mixed_min_value();
+        for i in 0..len
+        {
+            if max_value < self[i]
+            {
+                max_value = self[i]
+            }
+        }
+        return max_value;
+    }
+}
+
+impl <T: MixedNum> traits::Min<T> for Vec<T> {
+    fn min(&self) -> T
+    {
+        let len = *&self.len();
+        let mut max_value = T::mixed_max_value();
+        for i in 0..len
+        {
+            if self[i] < max_value
+            {
+                max_value = self[i]
+            }
+        }
+        return max_value;
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -117,6 +145,18 @@ mod tests {
     fn linrange() {
         let test_vec = Vec::lin_range(0f32, 3f32, 4);
         assert_eq!(test_vec.to_string(), "[ 0, 1, 2, 3 ]" )
+    }
+
+    #[test]
+    fn max() {
+        let test_vec = Vec::lin_range(0f32, 3f32, 4);
+        assert_eq!(test_vec.max(), 3f32 )
+    }
+
+    #[test]
+    fn min() {
+        let test_vec = Vec::lin_range(0f32, 3f32, 4);
+        assert_eq!(test_vec.min(), 0f32 )
     }
 
     #[test]
