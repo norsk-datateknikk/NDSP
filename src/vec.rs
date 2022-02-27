@@ -4,7 +4,6 @@
 
 use crate::*;
 use crate::traits;
-use crate::traits::*;
 
 pub mod real;
 pub mod complex;
@@ -35,7 +34,7 @@ impl<T> Vec<T> {
     /// * `capacity` - The capacity of the new vector.
     ///
     #[allow(dead_code)]
-    fn new_with_capacity( capacity: usize ) -> Vec<T>
+    pub fn new_with_capacity( capacity: usize ) -> Vec<T>
     {
         let mut vec = alloc::vec::Vec::<T>::new(); 
         vec.reserve_exact(capacity);
@@ -92,6 +91,13 @@ impl <T> traits::PushBack<T> for Vec<T> {
 
 #[cfg(feature = "std")]
 impl <T: fmt::Display> fmt::Display for Vec<T> {
+    /// # Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// assert_eq!(test_vec.to_string(), "[ 0, 1, 2, 3 ]" )
+    /// ```
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut temp_string = String::from("[ ");
         for i in 0..self.len()
@@ -108,13 +114,13 @@ impl <T: fmt::Display> fmt::Display for Vec<T> {
 }
 
 
+// We prefer doctests, as they provide documentation additionally.
 #[cfg(test)]
 mod tests {
-    use super::*;
+    //use super::*;
 
     #[test]
-    fn to_string() {
-        let test_vec = Vec::lin_range(0f32, 3f32, 4);
-        assert_eq!(test_vec.to_string(), "[ 0, 1, 2, 3 ]" )
+    fn test() {
+        assert_eq!(true, true )
     }
 }

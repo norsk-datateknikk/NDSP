@@ -18,6 +18,8 @@ extern crate mixed_num;
 extern crate fixed_trigonometry;
 
 pub mod traits;
+pub use traits::*;
 
 #[macro_use]
 pub mod vec;
+pub use vec::*;

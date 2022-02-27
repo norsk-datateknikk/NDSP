@@ -37,6 +37,16 @@ impl<T: MixedNum> Vec<Complex<T>> {
 
 impl <T: MixedNum> traits::AsReal<T> for Vec<Complex<T>> {
     /// Returns the real part of the vector as a real only vector.
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signal = Vec::new_with_capacity(2);
+    /// signal.push_back( num::Complex::new( 0f32, 1f32 ) );
+    /// signal.push_back( num::Complex::new( 1f32, 0f32 ) );
+    /// assert_eq!(signal.as_real().to_string(), "[ 0, 1 ]" )
+    /// ```
     fn as_real(&self) -> Vec<T>
     {
         let mut r_vec = Vec::<T>::new_with_capacity(*&self.len());
@@ -51,6 +61,17 @@ impl <T: MixedNum> traits::AsReal<T> for Vec<Complex<T>> {
 
 impl <T: MixedNum + MixedNumSigned> traits::Abs<C> for Vec<Complex<T>> {
     /// Take the elemtent-wise absolute value.
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signal = Vec::new_with_capacity(2);
+    /// signal.push_back( num::Complex::new( 0f32, 1f32 ) );
+    /// signal.push_back( num::Complex::new( 1f32, 0f32 ) );
+    /// signal.abs();
+    /// assert_eq!(signal.to_string(), "[ 1.000752+0i, 1.000752+0i ]" )
+    /// ```
     fn abs(&mut self) {
         for idx in 0..self.len() {
             self[idx].re = fixed_trigonometry::complex::abs(self[idx]);
@@ -71,6 +92,18 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
     /// * `phase_rad`       - The start phase in rad (θ).
     /// * `numb`            - The number of samples (N).
     /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::traits::*;
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let signal = Vec::osc(omega, theta, 4);
+    /// assert_eq!(signal.to_string(), "[ 1.0000035+0i, 0.9238796+0.38268343i, 0.7071068+0.70710677i, 0.38268334+0.9238796i ]" )
+    /// ```
     pub fn osc( angular_freq_rad: T, phase_rad: T, numb: usize ) -> Vec<Complex<T>>
     {
         let mut vec = Vec::new_with_capacity(numb);
@@ -92,7 +125,7 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
 
 
 impl <T: MixedNumSigned + MixedNum + MixedTrigonometry> traits::Fft for Vec<Complex<T>> {
-    /// Calculate the Raddix-2 FFT for fixed point vectors.
+    /// Calculate the Raddix-2 FFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
     /// 
@@ -100,7 +133,6 @@ impl <T: MixedNumSigned + MixedNum + MixedTrigonometry> traits::Fft for Vec<Comp
     /// Decimation-in-freqency.
     /// 
     /// The method utilizes fixed point approximations for square root, sine, cosine and atan calculations.
-    /// 
     fn fft(&mut self){
         fixed_trigonometry::fft::fft( &mut self.vec);
     }
@@ -158,36 +190,10 @@ impl <T> traits::FromFile for Vec<Complex<T>>
     }
 }
 
+// We prefer doctests, as they provide documentation additionally.
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn osc() {
-
-        let omega = <f32>::mixed_pi()/f32::mixed_from_num(8);
-        let theta = 0f32;
-         
-        let signal = super::vec::Vec::osc(omega, theta, 4);
-        assert_eq!(signal.to_string(), "[ 1.0000035+0i, 0.9238796+0.38268343i, 0.7071068+0.70710677i, 0.38268334+0.9238796i ]" )
-    }
-
-    #[test]
-    fn abs() {       
-        let mut signal = Vec::new_with_capacity(2);
-        signal.push_back( num::Complex::new( 0f32, 1f32 ) );
-        signal.push_back( num::Complex::new( 1f32, 0f32 ) );
-        signal.abs();
-        assert_eq!(signal.to_string(), "[ 1.000752+0i, 1.000752+0i ]" )
-    }
-
-    #[test]
-    fn as_real() {
-        let mut signal = Vec::new_with_capacity(2);
-        signal.push_back( num::Complex::new( 0f32, 1f32 ) );
-        signal.push_back( num::Complex::new( 1f32, 0f32 ) );
-        assert_eq!(signal.as_real().to_string(), "[ 0, 1 ]" )
-    }
 
     #[test]
     fn to_string() {
