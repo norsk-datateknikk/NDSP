@@ -7,8 +7,8 @@ use crate::traits;
 
 pub mod real;
 pub mod complex;
-//#[cfg(feature = "std")]
-//pub mod plot;
+#[cfg(feature = "std")]
+pub mod plot;
 
 extern crate alloc;
 use alloc::string::ToString;

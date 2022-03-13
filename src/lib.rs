@@ -46,7 +46,7 @@
 //!     Ok(())
 //! }
 //! 
-//! let test_vec = Vec::lin_range(0f32, 1f32, 50);
+//! let test_vec = Vec::lin_range(0f32, 1f32, 64);
 //! plot(&test_vec).unwrap();
 //! ``` 
 
