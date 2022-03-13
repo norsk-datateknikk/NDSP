@@ -17,6 +17,11 @@ pub trait Len {
     fn len( &self ) -> usize;
 }
 
+pub trait NewFromVec<T> {
+    /// Create a new vector from an std or alloc vector.
+    fn new_from_vec( vec: alloc::vec::Vec<T> ) -> Vec<T>;
+}
+
 pub trait Cap {
     /// The capacity of the vector. The amount of allocated positions.
     fn capacity( &self ) -> usize;
