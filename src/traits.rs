@@ -119,10 +119,15 @@ pub trait Indices<T> {
     fn indices( &self ) -> Vec<T>;
 }
 
-pub trait AsReal<T> {
+pub trait Re<T> {
     /// Returns the real part of the vector as a real only vector.
-    fn as_real(&self) -> Vec<T>;
+    fn re(&self) -> Vec<T>;
 }
+pub trait Im<T> {
+    /// Returns the real part of the vector as a real only vector.
+    fn im(&self) -> Vec<T>;
+}
+
 
 pub trait AsComplex<T> {
     /// Returns the real part of the vector in a complex vector.

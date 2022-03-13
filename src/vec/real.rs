@@ -12,10 +12,12 @@ use crate::traits;
 use crate::traits::*;
 use crate::vec::*;
 
+/*
 #[cfg(any(feature = "std"))]
 use std::fs::File;
 #[cfg(any(feature = "std"))]
 use std::io::{BufReader, Read};
+*/
 
 impl <T: MixedNum> Vec<T> {
     

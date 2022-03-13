@@ -12,11 +12,12 @@ use crate::traits::*;
 use crate::vec::*;
 use Vec;
 
+/*
 #[cfg(any(feature = "std"))]
 use std::fs::File;
 #[cfg(any(feature = "std"))]
 use std::io::{BufReader, Read};
-
+*/
 use crate::traits;
 
 
@@ -35,7 +36,7 @@ impl<T: MixedNum> Vec<Complex<T>> {
     }
 }
 
-impl <T: MixedNum> traits::AsReal<T> for Vec<Complex<T>> {
+impl <T: MixedNum> traits::Re<T> for Vec<Complex<T>> {
     /// Returns the real part of the vector as a real only vector.
     /// ## Example
     /// 
@@ -47,7 +48,7 @@ impl <T: MixedNum> traits::AsReal<T> for Vec<Complex<T>> {
     /// signal.push_back( num::Complex::new( 1f32, 0f32 ) );
     /// assert_eq!(signal.as_real().to_string(), "[ 0, 1 ]" )
     /// ```
-    fn as_real(&self) -> Vec<T>
+    fn re(&self) -> Vec<T>
     {
         let mut r_vec = Vec::<T>::new_with_capacity(*&self.len());
         for i in 0..*&self.len()
@@ -59,7 +60,30 @@ impl <T: MixedNum> traits::AsReal<T> for Vec<Complex<T>> {
 }
 
 
-impl <T: MixedNum + MixedNumSigned> traits::Abs<C> for Vec<Complex<T>> {
+impl <T: MixedNum> traits::Im<T> for Vec<Complex<T>> {
+    /// Returns the real part of the vector as a real only vector.
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signal = Vec::new_with_capacity(2);
+    /// signal.push_back( num::Complex::new( 0f32, 1f32 ) );
+    /// signal.push_back( num::Complex::new( 1f32, 0f32 ) );
+    /// assert_eq!(signal.as_real().to_string(), "[ 1, 0 ]" )
+    /// ```
+    fn im(&self) -> Vec<T>
+    {
+        let mut r_vec = Vec::<T>::new_with_capacity(*&self.len());
+        for i in 0..*&self.len()
+        {
+            r_vec.push_back( self[i].im);
+        }
+        return r_vec;
+    }
+}
+
+impl <T: MixedNum + MixedNumSigned + MixedSqrt> traits::Abs<C> for Vec<Complex<T>> {
     /// Take the elemtent-wise absolute value.
     /// ## Example
     /// 
@@ -70,7 +94,7 @@ impl <T: MixedNum + MixedNumSigned> traits::Abs<C> for Vec<Complex<T>> {
     /// signal.push_back( num::Complex::new( 0f32, 1f32 ) );
     /// signal.push_back( num::Complex::new( 1f32, 0f32 ) );
     /// signal.abs();
-    /// assert_eq!(signal.to_string(), "[ 1.000752+0i, 1.000752+0i ]" )
+    /// assert_eq!(signal.to_string(), "[ 1+0i, 1+0i ]" )
     /// ```
     fn abs(&mut self) {
         for idx in 0..self.len() {
@@ -102,7 +126,7 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
     /// let theta = 0f32; 
     /// 
     /// let signal = Vec::osc(omega, theta, 4);
-    /// assert_eq!(signal.to_string(), "[ 1.0000035+0i, 0.9238796+0.38268343i, 0.7071068+0.70710677i, 0.38268334+0.9238796i ]" )
+    /// assert_eq!(signal.to_string(), "[ 1+0i, 0.9238795+0.38268346i, 0.70710677+0.70710677i, 0.38268343+0.9238795i ]" )
     /// ```
     pub fn osc( angular_freq_rad: T, phase_rad: T, numb: usize ) -> Vec<Complex<T>>
     {
@@ -124,7 +148,7 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
 }
 
 
-impl <T: MixedNumSigned + MixedNum + MixedTrigonometry> traits::Fft for Vec<Complex<T>> {
+impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt> traits::Fft for Vec<Complex<T>> {
     /// Calculate the Raddix-2 FFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
@@ -138,7 +162,7 @@ impl <T: MixedNumSigned + MixedNum + MixedTrigonometry> traits::Fft for Vec<Comp
     }
 }
 
-impl <T: MixedNumSigned + MixedNum + MixedTrigonometry> traits::Ifft for Vec<Complex<T>> {
+impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt> traits::Ifft for Vec<Complex<T>> {
     /// Calculate the Raddix-2 IFFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
