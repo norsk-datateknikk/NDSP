@@ -18,6 +18,10 @@ use std::fs::File;
 use std::io::{BufReader, Read};
 
 impl <T: MixedNum> Vec<T> {
+    
+}
+
+impl <T: MixedNum + MixedNumConversion<T2>, T2: MixedNum> ToTouples<T2> for Vec<T> {
     /// Returns the vector as a vector of touples (x,y), where `outvec[1] = (n, in_vec[n])`.
     /// 
     /// ## Example
@@ -28,8 +32,7 @@ impl <T: MixedNum> Vec<T> {
     /// assert_eq!(test_vec.to_touples()[1], (1f32,1f32) );
     /// assert_eq!(test_vec.to_touples()[2], (2f32,2f32) );
     /// ```
-    pub fn to_touples<T2>( &self ) -> std::vec::Vec<(T2, T2)> 
-        where T2: mixed_num::traits::MixedNum, T: mixed_num::traits::MixedNumConversion<T2>
+    fn to_touples( &self ) -> alloc::vec::Vec<(T2, T2)>
     {
         let mut outvec = alloc::vec::Vec::<(T2, T2)>::new();
         for idx in 0..self.len() {
@@ -220,6 +223,13 @@ impl <T: MixedNum> traits::MinMax<T> for Vec<T> {
 }
 
 impl <T: MixedNum> ToRange<T> for Vec<T>{
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// assert_eq!(test_vec.to_range(), 2f32..5f32 )
+    /// ```
     #[inline]
     fn to_range( &self ) -> core::ops::Range<T>
     {

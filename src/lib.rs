@@ -37,12 +37,10 @@
 //! 
 //!     chart.configure_mesh().draw()?;
 //! 
-//!     let tuple_series = vec.to_touples();
-//! 
-//!     // Draws a sinle line
+//!     // Draws a single line
 //!     chart
 //!         .draw_series( LineSeries::new(
-//!             tuple_series,
+//!             vec.to_touples(),
 //!             &BLUE) )?;
 //! 
 //!     Ok(())

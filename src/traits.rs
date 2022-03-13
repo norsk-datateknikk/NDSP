@@ -2,6 +2,8 @@
 // Norsk Datateknikk AS //
 //----------------------//
 
+extern crate alloc;
+
 use num::Complex;
 use crate::vec::Vec;
 
@@ -28,12 +30,12 @@ pub trait PushBack<T> {
 
 pub trait Ones {
     /// Create a vector of ones.
-    fn ones()      -> Self;
+    fn ones() -> Self;
 }
 
 pub trait Zeros {
     /// Create a vector of zeros.
-    fn zeros()      -> Self;
+    fn zeros() -> Self;
 }
 
 pub trait LinRange<T>{
@@ -144,4 +146,10 @@ pub trait FromBinary {
 pub trait ToBinary {
     // Load signal of type T in a binary file into vector. 
     fn to_binary( &self, path: &str );
+}
+
+
+pub trait ToTouples<T>{
+    // Load signal of type T in a binary file into vector. 
+    fn to_touples( &self ) -> alloc::vec::Vec<(T, T)>;
 }
