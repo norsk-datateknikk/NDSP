@@ -4,6 +4,8 @@ use alloc::vec::Vec;
 use mixed_num::traits::*;
 use num::complex::Complex;
 
+use crate::*;
+
 /// Check if x is a power of two.
 /// 
 /// ## Argument
@@ -191,20 +193,16 @@ fn butterfly_df<T>( a: &mut Complex<T>, b: &mut Complex<T>, w:Complex<T> )
     *b = temp_b;
 }
 
-/// Shared fft processor for fft and ifft.
-/// Requires bit-reversion afterwards.
-fn fft_processor<T>( array: &mut [Complex<T>], dir: T )
+fn calculate_twiddle_factors<T>( n: usize, dir: T) -> crate::Vec<Complex<T>>
     where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase
 {
-    let n = array.len();
-
     // Create heap-allocated vector
-    let mut w = Vec::<Complex<T>>::with_capacity(n/2);
+    let mut w = crate::Vec::<Complex<T>>::new_with_capacity(n/2);
 
     // Calculate Twiddle factor W.
-    w.push( Complex::new( <T>::mixed_from_num(1), <T>::mixed_from_num(0) ) );
+    w.push_back( Complex::new( <T>::mixed_from_num(1), <T>::mixed_from_num(0) ) );
 
-    let mut angle:T = dir*-<T>::mixed_pi()*T::mixed_from_num(2);
+    let mut angle:T = dir*-<T>::mixed_tau();
     for _i in 0..log2(n)
     {
         angle = angle / <T>::mixed_from_num(2);
@@ -218,8 +216,19 @@ fn fft_processor<T>( array: &mut [Complex<T>], dir: T )
 
         phase_inc = phase_inc+angle;
 
-        w.push( Complex::new( real, imag ) );
+        w.push_back( Complex::new( real, imag ) );
     }
+    return w;
+}
+
+/// Shared fft processor for fft and ifft.
+/// Requires bit-reversion afterwards.
+fn fft_processor<T>( array: &mut [Complex<T>], dir: T )
+    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase
+{
+    let n = array.len();
+
+    let w = calculate_twiddle_factors(n, dir);
 
     // Number of butterfly computations per block.
     let mut num_butt:   usize = n/2;

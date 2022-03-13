@@ -5,7 +5,7 @@ use ndsp::*;
 #[test]
 fn fft_plot(  )
 {
-    fn plot( vec: &ndsp::Vec<f32>, path: &str, caption: &str ) -> Result<(), Box<dyn std::error::Error>>
+    fn plot( vec: &ndsp::Vec<f64>, path: &str, caption: &str ) -> Result<(), Box<dyn std::error::Error>>
     {
         let root = BitMapBackend::new(path, (1000, 500)).into_drawing_area();
         root.fill(&WHITE)?;
@@ -36,15 +36,10 @@ fn fft_plot(  )
         Ok(())
     }
 
-    let mut complex_vec = Vec::osc(0.2f32,0f32,256);
+    let mut complex_vec = Vec::osc(0.1f64,0f64,1024);
     
     plot(&complex_vec.re(), "./figures/osc_plot_real.png", "Osc real").unwrap();
     plot(&complex_vec.im(), "./figures/osc_plot_imag.png", "Osc imag").unwrap();
-    
-    let mut absolute = complex_vec.clone();
-    absolute.abs();
-    plot(&absolute.re(), "./figures/osc_plot_abs.png", "Osc abs").unwrap();
-    
 
     complex_vec.fft();
     complex_vec.abs();

@@ -129,7 +129,7 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
     /// let theta = 0f32; 
     /// 
     /// let signal = Vec::osc(omega, theta, 4);
-    /// assert_eq!(signal.to_string(), "[ 1+0i, 0.9238795+0.38268346i, 0.70710677+0.70710677i, 0.38268343+0.9238795i ]" )
+    /// assert_eq!(signal.to_string(), "[ 1+0i, 0.9238795+0.38268346i, 0.70710677+0.70710677i, 0.38268346+0.9238795i ]" )
     /// ```
     pub fn osc( angular_freq_rad: T, phase_rad: T, numb: usize ) -> Vec<Complex<T>>
     {
@@ -139,8 +139,7 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
         {   
             sample_phase_rad = sample_phase_rad.mixed_wrap_phase();
             
-            let real = sample_phase_rad.mixed_cos();
-            let imag = sample_phase_rad.mixed_sin();
+            let (imag, real) = sample_phase_rad.mixed_sincos();
 
             vec.push_back( num::Complex::new( real, imag ) );
 
