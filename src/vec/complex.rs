@@ -7,6 +7,9 @@ use num;
 use num::complex::Complex;
 
 use mixed_num::traits::*;
+mod fft;
+pub use fft::*;
+
 
 use crate::traits::*;
 use crate::vec::*;
@@ -46,7 +49,7 @@ impl <T: MixedNum> traits::Re<T> for Vec<Complex<T>> {
     /// let mut signal = Vec::new_with_capacity(2);
     /// signal.push_back( num::Complex::new( 0f32, 1f32 ) );
     /// signal.push_back( num::Complex::new( 1f32, 0f32 ) );
-    /// assert_eq!(signal.as_real().to_string(), "[ 0, 1 ]" )
+    /// assert_eq!(signal.re().to_string(), "[ 0, 1 ]" )
     /// ```
     fn re(&self) -> Vec<T>
     {
@@ -70,7 +73,7 @@ impl <T: MixedNum> traits::Im<T> for Vec<Complex<T>> {
     /// let mut signal = Vec::new_with_capacity(2);
     /// signal.push_back( num::Complex::new( 0f32, 1f32 ) );
     /// signal.push_back( num::Complex::new( 1f32, 0f32 ) );
-    /// assert_eq!(signal.as_real().to_string(), "[ 1, 0 ]" )
+    /// assert_eq!(signal.im().to_string(), "[ 1, 0 ]" )
     /// ```
     fn im(&self) -> Vec<T>
     {
@@ -147,8 +150,7 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
     }
 }
 
-
-impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt> traits::Fft for Vec<Complex<T>> {
+impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt + MixedWrapPhase> traits::Fft for Vec<Complex<T>> {
     /// Calculate the Raddix-2 FFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
@@ -158,11 +160,11 @@ impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt> traits::Fft 
     /// 
     /// The method utilizes fixed point approximations for square root, sine, cosine and atan calculations.
     fn fft(&mut self){
-        fixed_trigonometry::fft::fft( &mut self.vec);
+        fft( &mut self.vec);
     }
 }
 
-impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt> traits::Ifft for Vec<Complex<T>> {
+impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt + MixedWrapPhase> traits::Ifft for Vec<Complex<T>> {
     /// Calculate the Raddix-2 IFFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
@@ -172,7 +174,7 @@ impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt> traits::Ifft
     /// 
     /// The method utilizes fixed point approximations for square root, sine, cosine and atan calculations.
     fn ifft(&mut self){
-        fixed_trigonometry::fft::ifft( &mut self.vec);
+        ifft( &mut self.vec);
     }
 }
 /*
