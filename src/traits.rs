@@ -1,9 +1,8 @@
-//-----------------------------------------------------------------//
-// Copyright 2021 Norsk Datateknikk AS                             //
-//-----------------------------------------------------------------//
-// This file is subject to the terms and conditions defined in the //
-// file 'LICENSE', which is part of this source code package.      //
-//-----------------------------------------------------------------//
+//----------------------//
+// Norsk Datateknikk AS //
+//----------------------//
+
+extern crate alloc;
 
 use num::Complex;
 use crate::vec::Vec;
@@ -31,12 +30,12 @@ pub trait PushBack<T> {
 
 pub trait Ones {
     /// Create a vector of ones.
-    fn ones()      -> Self;
+    fn ones() -> Self;
 }
 
 pub trait Zeros {
     /// Create a vector of zeros.
-    fn zeros()      -> Self;
+    fn zeros() -> Self;
 }
 
 pub trait LinRange<T>{
@@ -89,11 +88,35 @@ pub trait Fft {
     fn fft( &mut self );
 }
 
-/// The type of the items in a binary file file.
-#[derive(Clone, Debug, PartialEq)]
-pub enum ItemType {
-    Complex32,
-    Float32,
+pub trait Ifft {
+    /// Compute the the FFT of `self`. Computed-in-place.
+    fn ifft( &mut self );
+}
+
+
+pub trait Max<T> {
+    // Return the value of the highest item in the vector 
+    fn max( &self ) -> T;
+}
+
+pub trait Min<T> {
+    // Return the value of the lowest item in the vector 
+    fn min( &self ) -> T;
+}
+
+pub trait MinMax<T> {
+    // Returns a touple with the value of the highest and lowest items in the vector. 
+    fn minmax( &self ) -> (T,T);
+}
+
+pub trait ToRange<T> {
+    // Returns the minmax as a `Range<T>`.
+    fn to_range( &self ) -> core::ops::Range<T>;
+}
+
+pub trait Indices<T> {
+    // Returns the indices of the vector on `0..N-1` for self.
+    fn indices( &self ) -> Vec<T>;
 }
 
 pub trait AsReal<T> {
@@ -107,7 +130,26 @@ pub trait AsComplex<T> {
 }
 
 // Traits requiring std
-pub trait FromFile {
+
+/// The type of the items in a binary file file.
+#[derive(Clone, Debug, PartialEq)]
+pub enum ItemType {
+    Complex32,
+    Float32,
+}
+
+pub trait FromBinary {
     // Load signal of type T in a binary file into vector. 
-    fn from_file( item_type: ItemType, path: &str ) -> Self;
+    fn from_binary( item_type: ItemType, path: &str ) -> Self;
+}
+
+pub trait ToBinary {
+    // Load signal of type T in a binary file into vector. 
+    fn to_binary( &self, path: &str );
+}
+
+
+pub trait ToTouples<T>{
+    // Load signal of type T in a binary file into vector. 
+    fn to_touples( &self ) -> alloc::vec::Vec<(T, T)>;
 }

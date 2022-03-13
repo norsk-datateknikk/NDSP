@@ -1,26 +1,24 @@
-//-----------------------------------------------------------------//
-// Copyright 2021 Norsk Datateknikk AS                             //
-//-----------------------------------------------------------------//
-// This file is subject to the terms and conditions defined in the //
-// file 'LICENSE', which is part of this source code package.      //
-//-----------------------------------------------------------------//
+//----------------------//
+// Norsk Datateknikk AS //
+//----------------------//
 
 use crate::*;
+use crate::traits;
+
+pub mod real;
+pub mod complex;
+//#[cfg(feature = "std")]
+//pub mod plot;
 
 extern crate alloc;
-extern crate num;
 use alloc::string::ToString;
 
-use crate::traits;
-use crate::traits::*;
+extern crate num;
 
 #[cfg(feature = "std")]
 use std::fmt;
 #[cfg(feature = "std")]
 use alloc::string::String;
-
-pub mod real;
-pub mod complex;
 
 /// Numeric vector of real, fixed-point numbers.
 #[derive(Clone, Default, Debug, PartialEq)]
@@ -37,13 +35,21 @@ impl<T> Vec<T> {
     /// * `capacity` - The capacity of the new vector.
     ///
     #[allow(dead_code)]
-    fn new_with_capacity( capacity: usize ) -> Vec<T>
+    pub fn new_with_capacity( capacity: usize ) -> Vec<T>
     {
         let mut vec = alloc::vec::Vec::<T>::new(); 
         vec.reserve_exact(capacity);
         Vec {
             vec: vec,
         }
+    }
+
+    /// Expose the alloc::vec::Vec containing the data contents.
+    #[allow(dead_code)]
+    pub fn to_alloc_vec(&self) -> &alloc::vec::Vec<T>
+        where T: Clone
+    {
+        return &self.vec;
     }
 }
 
@@ -92,8 +98,34 @@ impl <T> traits::PushBack<T> for Vec<T> {
     }
 }
 
+impl <T> IntoIterator for Vec<T> {
+    type Item = T;
+    type IntoIter = alloc::vec::IntoIter<Self::Item>;
+
+    /// Conversion into an [`Iterator`].
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// let mut iterator = test_vec.into_iter();
+    /// assert_eq!(iterator.next().unwrap(), 0f32 )
+    /// ```
+    #[inline(always)]
+    fn into_iter(self) -> Self::IntoIter {
+        self.vec.into_iter()
+    }
+}
+
 #[cfg(feature = "std")]
 impl <T: fmt::Display> fmt::Display for Vec<T> {
+    /// # Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// assert_eq!(test_vec.to_string(), "[ 0, 1, 2, 3 ]" )
+    /// ```
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut temp_string = String::from("[ ");
         for i in 0..self.len()
@@ -109,13 +141,14 @@ impl <T: fmt::Display> fmt::Display for Vec<T> {
     }
 }
 
+
+// We prefer doctests, as they provide documentation additionally.
 #[cfg(test)]
 mod tests {
-    use super::*;
+    //use super::*;
 
     #[test]
-    fn to_string() {
-        let test_vec = Vec::lin_range(0f32, 3f32, 4);
-        assert_eq!(test_vec.to_string(), "[ 0, 1, 2, 3 ]" )
+    fn test() {
+        assert_eq!(true, true )
     }
 }

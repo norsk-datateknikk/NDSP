@@ -1,8 +1,23 @@
 # Roadmap
 
-- [x] Create a common vector type for a generic number type T.
-- [ ] Implement an easy way of generating a simple vector.
-- [x] Implement methods for real and fixed numbers in separate submodules.
-- [ ] Implement methods for conversion between real and complex vectors.
+## Numerics
+
+- [x] implement FFT from complex vectors, ad-hoc twiddle factor calculation.
+- [x] implement IFFT from complex vectors, ad-hoc twiddle factor calculation.
+- [ ] implement FFT from complex vectors, precomputation of twiddle factor.
+- [ ] implement IFFT from complex vectors, precomputation of twiddle factor.
+
+- [ ] implement WGN for real vectors.
+- [ ] implement WGN for complex vectors.
+
+## IO
+
+- [ ] load from hdf5.
+- [ ] store to hdf5.
+- [ ] store to binary.
+
+## Usability
+
 - [ ] Implement a simplified plotting interface/example.
-- [ ] Consider adding from string method to simplify test-writing.
+- [ ] Implement an easy way of generating a simple vector.
+- [ ] Consider adding from_string method to simplify test-writing.
