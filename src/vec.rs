@@ -19,6 +19,7 @@ extern crate num;
 use std::fmt;
 #[cfg(feature = "std")]
 use alloc::string::String;
+
 /// Numeric vector of real, fixed-point numbers.
 #[derive(Clone, Default, Debug, PartialEq)]
 pub struct Vec<T>
@@ -41,6 +42,14 @@ impl<T> Vec<T> {
         Vec {
             vec: vec,
         }
+    }
+
+    /// Expose the alloc::vec::Vec containing the data contents.
+    #[allow(dead_code)]
+    pub fn to_alloc_vec(&self) -> &alloc::vec::Vec<T>
+        where T: Clone
+    {
+        return &self.vec;
     }
 }
 
@@ -86,6 +95,25 @@ impl <T> traits::PushBack<T> for Vec<T> {
     #[inline]
     fn push_back(&mut self, value: T) {
         self.vec.push(value);
+    }
+}
+
+impl <T> IntoIterator for Vec<T> {
+    type Item = T;
+    type IntoIter = alloc::vec::IntoIter<Self::Item>;
+
+    /// Conversion into an [`Iterator`].
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// let mut iterator = test_vec.into_iter();
+    /// assert_eq!(iterator.next().unwrap(), 0f32 )
+    /// ```
+    #[inline(always)]
+    fn into_iter(self) -> Self::IntoIter {
+        self.vec.into_iter()
     }
 }
 

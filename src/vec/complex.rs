@@ -138,8 +138,22 @@ impl <T: MixedNumSigned + MixedNum + MixedTrigonometry> traits::Fft for Vec<Comp
     }
 }
 
+impl <T: MixedNumSigned + MixedNum + MixedTrigonometry> traits::Ifft for Vec<Complex<T>> {
+    /// Calculate the Raddix-2 IFFT for self.
+    /// Scaled for each butterfly computation.
+    /// Requires input size to be a power of two.
+    /// 
+    /// Computed-in-place.
+    /// Decimation-in-freqency.
+    /// 
+    /// The method utilizes fixed point approximations for square root, sine, cosine and atan calculations.
+    fn ifft(&mut self){
+        fixed_trigonometry::fft::ifft( &mut self.vec);
+    }
+}
+/*
 #[cfg(any(feature = "std"))]
-impl <T> traits::FromFile for Vec<Complex<T>>
+impl <T> traits::FromBinary for Vec<Complex<T>>
     where T: MixedNum
 {
     /// Read a binary file from e.g. Gnu Radio Companion into a vector.
@@ -189,6 +203,7 @@ impl <T> traits::FromFile for Vec<Complex<T>>
         return vec;
     }
 }
+ */
 
 // We prefer doctests, as they provide documentation additionally.
 #[cfg(test)]

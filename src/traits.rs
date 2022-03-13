@@ -86,14 +86,25 @@ pub trait Fft {
     fn fft( &mut self );
 }
 
+pub trait Ifft {
+    /// Compute the the FFT of `self`. Computed-in-place.
+    fn ifft( &mut self );
+}
+
+
 pub trait Max<T> {
-    // Return the value of the greats item in the vector 
+    // Return the value of the highest item in the vector 
     fn max( &self ) -> T;
 }
 
 pub trait Min<T> {
-    // Return the value of the greats item in the vector 
+    // Return the value of the lowest item in the vector 
     fn min( &self ) -> T;
+}
+
+pub trait MinMax<T> {
+    // Returns a touple with the value of the highest and lowest items in the vector. 
+    fn minmax( &self ) -> (T,T);
 }
 
 pub trait AsReal<T> {
@@ -115,7 +126,12 @@ pub enum ItemType {
     Float32,
 }
 
-pub trait FromFile {
+pub trait FromBinary {
     // Load signal of type T in a binary file into vector. 
     fn from_binary( item_type: ItemType, path: &str ) -> Self;
+}
+
+pub trait ToBinary {
+    // Load signal of type T in a binary file into vector. 
+    fn to_binary( &self, path: &str );
 }

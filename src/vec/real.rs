@@ -12,8 +12,31 @@ use crate::traits;
 use crate::traits::*;
 use crate::vec::*;
 
+#[cfg(any(feature = "std"))]
+use std::fs::File;
+#[cfg(any(feature = "std"))]
+use std::io::{BufReader, Read};
+
 impl <T: MixedNum> Vec<T> {
-    
+    /// Returns the vector as a vector of touples, where ```outvec[1] = (in_vec[n], n)```.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// assert_eq!(test_vec.to_touples()[1], (1f32,1f32) )
+    /// ```
+    pub fn to_touples<T2>( &self ) -> std::vec::Vec<(T2, T2)> 
+        where T2: mixed_num::traits::MixedNum, T: mixed_num::traits::MixedNumConversion<T2>
+    {
+        let mut outvec = alloc::vec::Vec::<(T2, T2)>::new();
+        for idx in 0..self.len() {
+            let tuple = (self[idx].mixed_to_num(), T::mixed_from_num(idx as f32).mixed_to_num());
+            outvec.push(tuple);
+        }
+        return outvec;
+    }
 }
 
 impl <T: MixedNum> LinRange<T> for Vec<T>
@@ -132,15 +155,15 @@ impl <T: MixedNum> traits::Max<T> for Vec<T> {
     fn max(&self) -> T
     {
         let len = *&self.len();
-        let mut max_value = T::mixed_min_value();
+        let mut value = T::mixed_min_value();
         for i in 0..len
         {
-            if max_value < self[i]
+            if value < self[i]
             {
-                max_value = self[i]
+                value = self[i]
             }
         }
-        return max_value;
+        return value;
     }
 }
 
@@ -155,17 +178,99 @@ impl <T: MixedNum> traits::Min<T> for Vec<T> {
     fn min(&self) -> T
     {
         let len = *&self.len();
-        let mut max_value = T::mixed_max_value();
+        let mut value = T::mixed_max_value();
         for i in 0..len
         {
-            if self[i] < max_value
+            if self[i] < value
+            {
+                value = self[i]
+            }
+        }
+        return value;
+    }
+}
+
+impl <T: MixedNum> traits::MinMax<T> for Vec<T> {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// assert_eq!(test_vec.minmax(), (0f32,3f32) )
+    /// ```
+    fn minmax(&self) -> (T,T)
+    {
+        let len = *&self.len();
+        let mut max_value = T::mixed_min_value();
+        let mut min_value = T::mixed_max_value();
+        for i in 0..len
+        {
+            if self[i] < min_value
+            {
+                min_value = self[i]
+            }
+            if max_value < self[i]
             {
                 max_value = self[i]
             }
         }
-        return max_value;
+        return (min_value, max_value);
     }
 }
+
+/*
+#[cfg(any(feature = "std"))]
+impl <T> traits::FromBinary for Vec<T>
+    where T: MixedNum
+{
+    /// Read a binary file from e.g. Gnu Radio Companion into a vector.
+    /// Assuming a binary file containing complex32.
+    fn from_binary( _item_type: ItemType, path: &str ) -> Self
+    {
+
+        let file = File::open(path).expect("file wasn't found.");
+        let mut reader = BufReader::new(&file);
+
+        let file_size_bytes = &file.metadata().unwrap().len();
+
+        // Currently only float32 and complex32 is supported.
+        const ITEM_SIZE_BYTES:usize = 4;
+        
+        let mut vec = Self::new_with_capacity(*file_size_bytes as usize/ITEM_SIZE_BYTES);
+        
+        // Counter to keep track of I/Q sample. Even = I, odd = Q.
+        let mut counter:usize = 0;
+
+        let mut temp_complex = Complex::new(T::mixed_from_num(0), T::mixed_from_num(0));
+
+        loop {
+            use std::io::ErrorKind;
+            let mut buffer = [0u8; std::mem::size_of::<f32>()];
+            
+            let res = reader.read_exact(&mut buffer);
+            match res {
+                Err(error) if error.kind() == ErrorKind::UnexpectedEof => break,
+                _ => {}
+            }
+            res.expect("Unexpected error during read");
+
+            if &counter%2==0
+            {
+                // Use `from_be_bytes` if numbers in file is big-endian
+                temp_complex.re = T::mixed_from_num(f32::from_le_bytes(buffer));
+            }
+            else {
+                // Use `from_be_bytes` if numbers in file is big-endian
+                temp_complex.im = T::mixed_from_num(f32::from_le_bytes(buffer));
+                vec.push_back(temp_complex);
+            }
+            counter +=1;
+        }
+
+        return vec;
+    }
+}
+*/
 
 // We prefer doctests, as they provide documentation additionally.
 #[cfg(test)]

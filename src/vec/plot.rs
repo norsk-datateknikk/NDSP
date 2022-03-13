@@ -3,21 +3,58 @@
 //----------------------//
 
 use plotters::prelude::*;
+
 use std::vec;
+use std::string::String;
+use std::boxed::Box;
+
+#[macro_export]
+macro_rules! sci_chart {
+    ($path:item) => {
+        let root = BitMapBackend::new( &*path, (1000, 500)).into_drawing_area();
+        root.fill(&WHITE);
+        let mut chart = ChartBuilder::on(&root)
+            .margin(10i32)
+            .x_label_area_size(40i32)
+            .y_label_area_size(50i32)
+            .build_cartesian_2d( 0f32..1f32, 0f32..1f32 ).unwrap();
+        
+        return chart;
+    };
+}
 
 /// Plots comparison between various sqrt implementations.
-fn plot( x: &[T], y: &[T] ) -> Result<(), Box<dyn std::error::Error>> 
+/// 
+/// ## Example
+/// 
+/// ```
+/// use ndsp::plot::*;  
+/// let path = "figures/polynomial_sine_comparison.png"
+/// 
+/// let mut chart = sci_chart!(path);
+/// 
+/// let root = BitMapBackend::new( &*path, (1000, 500)).into_drawing_area();
+/// root.fill(&WHITE);
+/// let mut chart = ChartBuilder::on(&root)
+///     .margin(10i32)
+///     .x_label_area_size(40i32)
+///     .y_label_area_size(50i32)
+///     .build_cartesian_2d( 0f32..1f32, 0f32..1f32 ).unwrap();
+/// chart..caption("title", ("sans-serif", 25).into_font())
+/// 
+/// plot(&chart, [0,1], [2,4]) 
+/// ```
+fn plot<'a, 'b, T, DB, CT>( &chart: &ChartContext<DB, CT>, x: &[T], y: &[T] ) -> Result<(), Box<dyn std::error::Error>> 
+    where DB: DrawingBackend, 
+          CT: CoordTranslate,
 {
     use mixed_num::trigonometry;
     use std::f32::consts::PI as PI;
 
-    let root = BitMapBackend::new("figures/polynomial_sine_comparison.png", (1000, 500)).into_drawing_area();
-    root.fill(&WHITE)?;
-    let mut chart = ChartBuilder::on(&root)
-        //.caption("title", ("sans-serif", 25).into_font())
-        .margin(10)
-        .x_label_area_size(40)
-        .y_label_area_size(50)
+    chart
+        .configure_mesh()
+        .x_label_area_size(40i32)
+        .y_label_area_size(50i32)
         .build_cartesian_2d( -PI..PI, -1.1f32..1.1f32 )?;
 
     chart
@@ -30,16 +67,6 @@ fn plot( x: &[T], y: &[T] ) -> Result<(), Box<dyn std::error::Error>>
         .draw()?;
 
     chart.configure_mesh().draw()?;
-
-    let poly_sin_series = LineSeries::new(
-        (-500..=500).map(|x| x as f32 *PI / 500.0).map(|x| (x, trigonometry::sin(x) )),
-        &RED);
-
-    // Draws a sinle line
-    chart
-        .draw_series( poly_sin_series )?
-        .label("Polynomial Sin")
-        .legend(|(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], &RED));
 
     let std_sin_series = LineSeries::new(
         (-500..=500).map(|x| x as f32 *PI / 500.0).map(|x| (x, x.sin() )),
