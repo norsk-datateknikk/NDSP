@@ -107,6 +107,16 @@ pub trait MinMax<T> {
     fn minmax( &self ) -> (T,T);
 }
 
+pub trait ToRange<T> {
+    // Returns the minmax as a `Range<T>`.
+    fn to_range( &self ) -> core::ops::Range<T>;
+}
+
+pub trait Indices<T> {
+    // Returns the indices of the vector on `0..N-1` for self.
+    fn indices( &self ) -> Vec<T>;
+}
+
 pub trait AsReal<T> {
     /// Returns the real part of the vector as a real only vector.
     fn as_real(&self) -> Vec<T>;

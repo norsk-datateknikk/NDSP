@@ -18,21 +18,22 @@ use std::fs::File;
 use std::io::{BufReader, Read};
 
 impl <T: MixedNum> Vec<T> {
-    /// Returns the vector as a vector of touples, where ```outvec[1] = (in_vec[n], n)```.
+    /// Returns the vector as a vector of touples (x,y), where `outvec[1] = (n, in_vec[n])`.
     /// 
     /// ## Example
     /// 
     /// ```
     /// use ndsp::*;
     /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
-    /// assert_eq!(test_vec.to_touples()[1], (1f32,1f32) )
+    /// assert_eq!(test_vec.to_touples()[1], (1f32,1f32) );
+    /// assert_eq!(test_vec.to_touples()[2], (2f32,2f32) );
     /// ```
     pub fn to_touples<T2>( &self ) -> std::vec::Vec<(T2, T2)> 
         where T2: mixed_num::traits::MixedNum, T: mixed_num::traits::MixedNumConversion<T2>
     {
         let mut outvec = alloc::vec::Vec::<(T2, T2)>::new();
         for idx in 0..self.len() {
-            let tuple = (self[idx].mixed_to_num(), T::mixed_from_num(idx as f32).mixed_to_num());
+            let tuple = (T::mixed_from_num(idx as f32).mixed_to_num(), self[idx].mixed_to_num());
             outvec.push(tuple);
         }
         return outvec;
@@ -215,6 +216,30 @@ impl <T: MixedNum> traits::MinMax<T> for Vec<T> {
             }
         }
         return (min_value, max_value);
+    }
+}
+
+impl <T: MixedNum> ToRange<T> for Vec<T>{
+    #[inline]
+    fn to_range( &self ) -> core::ops::Range<T>
+    {
+        let (min_value, max_value) = self.minmax();
+        return core::ops::Range{start: min_value, end: max_value};
+    }
+}
+
+impl <T: MixedNum> Indices<T> for Vec<T> {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// assert_eq!(test_vec.indices().to_string(), "[ 0, 1, 2, 3 ]" )
+    /// ```
+    #[inline(always)]
+    fn indices( &self ) -> Vec<T>
+    {
+        return Self::lin_range(T::mixed_zero(), T::mixed_from_num((self.len()-1usize) as u32), self.len());
     }
 }
 
