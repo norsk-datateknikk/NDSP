@@ -282,6 +282,74 @@ impl <T: DbMag + DbPow> Decibel<T> for Vec<T>{
     }
 }
 
+impl <T: MixedNum> Sum<T> for Vec<T>{
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// assert_eq!(test_vec.sum(), 2f32+3f32+4f32+5f32 )
+    /// ```
+    fn sum( &self ) -> T
+    {
+        let mut r_val:T = <T>::mixed_zero();
+        for idx in 0..self.len() {
+            r_val = r_val+self[idx];
+        }
+        return r_val;
+    }
+}
+
+impl <T: MixedNum> Mean<T> for Vec<T>{
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// assert_eq!(test_vec.mean(), 3.5f32 )
+    /// ```
+    fn mean( &self ) -> T
+    {
+        return self.sum()/T::mixed_from_num(self.len() as i32);
+    }
+}
+
+impl <T: MixedNum> Power<T> for Vec<T>{
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// test_vec.power();
+    /// assert_eq!(test_vec.to_string(), "[ 4, 9, 16, 25 ]" )
+    /// ```
+    fn power( &mut self )
+    {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_powi(2);
+        }
+    }
+}
+
+impl <T: MixedNum> Energy<T> for Vec<T>{
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// assert_eq!(test_vec.energy(), 54f32 )
+    /// ```
+    fn energy( &self ) -> T
+    {
+        let mut r_val:T = <T>::mixed_zero();
+        for idx in 0..self.len() {
+            r_val = r_val+self[idx].mixed_powi(2);
+        }
+        return r_val;
+    }
+}
+
+
 /*
 #[cfg(any(feature = "std"))]
 impl <T> traits::FromBinary for Vec<T>

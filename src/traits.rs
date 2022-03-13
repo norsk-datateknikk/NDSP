@@ -154,6 +154,26 @@ pub trait Decibel<T>{
     fn db2pow( &mut self );
 }
 
+pub trait Sum<T>{
+    /// Sum of vector.
+    fn sum( &self ) -> T;
+}
+
+pub trait Mean<T>{
+    /// Mean of vector.
+    fn mean( &self ) -> T;
+}
+
+pub trait Energy<T>{
+    /// Energy of vector.
+    fn energy( &self ) -> T;
+}
+
+pub trait Power<T>{
+    /// Power of the vector
+    fn power( &mut self );
+}
+
 pub trait FromBinary {
     // Load signal of type T in a binary file into vector. 
     fn from_binary( item_type: ItemType, path: &str ) -> Self;

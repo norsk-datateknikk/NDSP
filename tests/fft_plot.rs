@@ -5,7 +5,7 @@ use ndsp::*;
 #[test]
 fn fft_plot(  )
 {
-    fn plot( vec: &ndsp::Vec<f64>, path: &str, caption: &str ) -> Result<(), Box<dyn std::error::Error>>
+    fn plot( vec: &ndsp::Vec<f64>, path: &str, caption: &str, xlabel: &str, ylabel: &str ) -> Result<(), Box<dyn std::error::Error>>
     {
         let root = BitMapBackend::new(path, (1000, 500)).into_drawing_area();
         root.fill(&WHITE)?;
@@ -20,8 +20,8 @@ fn fft_plot(  )
             .configure_mesh()
             .disable_x_mesh()
             .bold_line_style(&WHITE.mix(0.3))
-            .y_desc("y")
-            .x_desc("x [idx]")
+            .y_desc(ylabel)
+            .x_desc(xlabel)
             .axis_desc_style(("sans-serif", 15))
             .draw()?;
 
@@ -36,12 +36,16 @@ fn fft_plot(  )
         Ok(())
     }
 
-    let mut complex_vec = Vec::osc(0.1f64,0f64,1024);
+    let mut complex_vec = Vec::osc(3f64,0f64,1024);
     
-    plot(&complex_vec.re(), "./figures/osc_plot_real.png", "Osc real").unwrap();
-    plot(&complex_vec.im(), "./figures/osc_plot_imag.png", "Osc imag").unwrap();
+    plot(&complex_vec.re(), "./figures/osc_plot_real.png", "Osc real", "idx", "").unwrap();
+    plot(&complex_vec.im(), "./figures/osc_plot_imag.png", "Osc imag", "idx", "").unwrap();
 
     complex_vec.fft();
+    
     complex_vec.abs();
-    plot(&complex_vec.re(), "./figures/fft_plot.png", "FFT example").unwrap();
+    let mut abs_vec = complex_vec.re();
+    abs_vec.mag2db();
+
+    plot(&abs_vec, "./figures/fft_plot.png", "FFT example", "idx", "Power [dB]").unwrap();
 }
