@@ -101,7 +101,7 @@ impl <T: MixedNum + MixedNumSigned + MixedSqrt> traits::Abs<C> for Vec<Complex<T
     /// ```
     fn abs(&mut self) {
         for idx in 0..self.len() {
-            self[idx].re = fixed_trigonometry::complex::abs(self[idx]);
+            self[idx].re = crate::complex::abs(self[idx]);
             self[idx].im = T::mixed_zero();
         }
     }

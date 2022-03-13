@@ -61,7 +61,6 @@ extern crate std;
 extern crate std;
 
 extern crate mixed_num;
-extern crate fixed_trigonometry;
 
 pub mod traits;
 pub use traits::*;
@@ -70,4 +69,4 @@ pub use traits::*;
 pub mod vec;
 pub use vec::*;
 
-mod complex;
+pub mod complex;

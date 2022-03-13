@@ -27,7 +27,8 @@ pub fn to_polar<T>( x: Complex<T> ) -> Polar<T>
 /// 
 /// ```
 /// use num::complex::Complex;
-/// use fixed_trigonometry::complex::*;
+/// use ndsp::*;
+/// use ndsp::complex::*;
 /// 
 /// let mut x = Complex{re:1f32, im:0f32};
 /// assert_eq!{ abs(x), 1f32 };
@@ -56,7 +57,7 @@ pub struct Polar<T> {
 /// 
 /// ```
 /// use num::complex::Complex;
-/// use fixed_trigonometry::complex::*;
+/// use ndsp::complex::*;
 /// 
 /// let mut x = Polar{r:1f32, theta:0f32};
 /// assert_eq!{ to_cartsian(x).to_string(), "1+0i" };
@@ -146,15 +147,14 @@ pub fn mul_cartesian<T>( a: Complex<T>, b: Complex<T> ) -> Complex<T>
 /// ## Example
 /// 
 /// ```
-/// use fixed_trigonometry as trig;
 /// use fixed::{types::extra::U22, FixedI32};
 /// use num::complex::Complex;
 /// 
 /// 
 /// let x = Complex::new( FixedI32::<U22>::from_num(1), FixedI32::<U22>::from_num(1) );
-/// let y = trig::complex::powi( x, 2 );
+/// let y = ndsp::complex::powi( x, 2 );
 /// 
-/// let result = Complex::new( FixedI32::<U22>::from_num( -0.019603, ), FixedI32::<U22>::from_num( 1.9959388 ));
+/// let result = Complex::new( FixedI32::<U22>::from_num( -0.0000038, ), FixedI32::<U22>::from_num( 1.996035 ));
 /// assert_eq!{ y, result };
 /// ```
 /// 

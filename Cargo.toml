@@ -22,7 +22,6 @@ test  = true
 crate-type = ["lib"]
 
 [dependencies]
-fixed_trigonometry = "0.4" 
 mixed-num          = "0.1.9"
 fixed              = "1.13"
 

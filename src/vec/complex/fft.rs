@@ -13,7 +13,7 @@ use num::complex::Complex;
 /// ## Example
 /// 
 /// ```
-/// use fixed_trigonometry::fft::*;
+/// use ndsp::vec::complex::*;
 /// 
 /// assert_eq!( is_power_of_two(6), false  );
 /// assert_eq!( is_power_of_two(4), true );
@@ -37,7 +37,7 @@ pub fn is_power_of_two<T>( x: T) -> bool
 /// ## Example
 /// 
 /// ```
-/// use fixed_trigonometry::fft::*;
+/// use ndsp::vec::complex::*;
 /// 
 /// assert_eq!( log2(8), 3 );
 /// ```
@@ -104,22 +104,22 @@ fn bitreverse_order<T>( arr: &mut [Complex<T>] )
 /// ## Example
 /// 
 /// ```
-/// use fixed_trigonometry::fft::*;
+/// use ndsp::vec::complex::*;
 /// 
 /// use fixed::FixedI32 as F;
 /// use fixed::types::extra::U28 as U;
 /// use num::complex::Complex;
 /// 
 /// const N:usize = 4;
-/// let mut arr  = vec![ Complex::<F<U>>::new(F::<U>::from_num(1), F::<U>::from_num(0) ); N  ];
+/// let mut arr  = vec![ Complex::new(1f32, 0f32 ); N  ];
 ///
-/// arr[3].re = F::<U>::from_num(0);
+/// arr[3].re = 0f32;
 /// 
 /// fft( &mut arr );
-/// assert_eq!( arr, vec![  Complex::<F<U>>::new(F::<U>::from_num(0.75),            F::<U>::from_num(0)             ),
-///                         Complex::<F<U>>::new(F::<U>::from_num(0),               F::<U>::from_num(-0.2503761)    ),
-///                         Complex::<F<U>>::new(F::<U>::from_num(0.250376098),     F::<U>::from_num(0.0)           ),
-///                         Complex::<F<U>>::new(F::<U>::from_num(-0.000000007),    F::<U>::from_num(0.250737797)   )] );
+/// assert_eq!( arr, vec![  Complex::new(0.75, 0.0  ),
+///                         Complex::new(0.0, -0.25 ),
+///                         Complex::new(0.25, 0.0  ),
+///                         Complex::new(0.0,  0.25 )] );
 /// ```
 pub fn fft<T>( array: &mut [Complex<T>] )
     where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase
@@ -146,22 +146,22 @@ pub fn fft<T>( array: &mut [Complex<T>] )
 /// ## Example
 /// 
 /// ```
-/// use fixed_trigonometry::fft::*;
+/// use ndsp::vec::complex::*;
 /// 
 /// use fixed::FixedI32 as F;
 /// use fixed::types::extra::U28 as U;
 /// use num::complex::Complex;
 /// 
 /// const N:usize = 4;
-/// let mut arr  = vec![ Complex::<F<U>>::new(F::<U>::from_num(1), F::<U>::from_num(0) ); N  ];
+/// let mut arr  = vec![ Complex::new(1f32, 0f32 ); N  ];
 ///
-/// arr[3].re = F::<U>::from_num(0);
+/// arr[3].re = 0f32;
 /// 
 /// ifft( &mut arr );
-/// assert_eq!( arr, vec![  Complex::<F<U>>::new(F::<U>::from_num(0.75),         F::<U>::from_num(0.0)      ),
-///                         Complex::<F<U>>::new(F::<U>::from_num(-0.000000004), F::<U>::from_num(0.2503761)),
-///                         Complex::<F<U>>::new(F::<U>::from_num(0.250376098),  F::<U>::from_num(0.0)      ),
-///                         Complex::<F<U>>::new(F::<U>::from_num(0.00000001),   F::<U>::from_num(-0.2507378) )] );
+/// assert_eq!( arr, vec![  Complex::new(0.75, 0.0  ),
+///                         Complex::new(0.0,  0.25 ),
+///                         Complex::new(0.25, 0.0  ),
+///                         Complex::new(0.0, -0.25 )] );
 /// ```
 pub fn ifft<T>( vec: &mut Vec<Complex<T>> )
     where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase
@@ -214,8 +214,7 @@ fn fft_processor<T>( array: &mut [Complex<T>], dir: T )
     for _i in 1..n/2
     {
         // Calculate twiddle factor for W_i.
-        let imag = phase_inc.mixed_sin();
-        let real = phase_inc.mixed_cos();
+        let (imag, real) = phase_inc.mixed_sincos();
 
         phase_inc = phase_inc+angle;
 
