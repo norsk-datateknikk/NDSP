@@ -143,6 +143,17 @@ pub enum ItemType {
     Float32,
 }
 
+pub trait Decibel<T>{
+    // Computed-in-place.
+    fn mag2db( &mut self );
+    // Computed-in-place.
+    fn db2mag( &mut self );
+    // Computed-in-place.
+    fn pow2db( &mut self );
+    // Computed-in-place.
+    fn db2pow( &mut self );
+}
+
 pub trait FromBinary {
     // Load signal of type T in a binary file into vector. 
     fn from_binary( item_type: ItemType, path: &str ) -> Self;

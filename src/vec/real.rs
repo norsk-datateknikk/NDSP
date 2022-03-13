@@ -255,6 +255,33 @@ impl <T: MixedNum> Indices<T> for Vec<T> {
     }
 }
 
+impl <T: DbMag + DbPow> Decibel<T> for Vec<T>{
+    fn mag2db( &mut self )
+    {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_mag2db();
+        }
+    }
+    fn db2mag( &mut self )
+    {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_db2mag();
+        }
+    }
+    fn pow2db( &mut self )
+    {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_pow2db();
+        }
+    }
+    fn db2pow( &mut self )
+    {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_db2pow();
+        }
+    }
+}
+
 /*
 #[cfg(any(feature = "std"))]
 impl <T> traits::FromBinary for Vec<T>
