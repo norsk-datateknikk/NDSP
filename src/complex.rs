@@ -124,6 +124,57 @@ pub fn mul_polar<T>( a: Polar<T>, b: Polar<T> ) -> Polar<T>
     }
 }
 
+/// Multiply a complex number with a real scalar.
+/// 
+/// ## Arguments
+/// 
+/// * `a` - The complex number.
+/// * `a` - The real scalar.
+/// 
+/// ## Example
+/// 
+/// ```
+/// use num::complex::Complex;
+/// use ndsp::complex::*;
+/// 
+/// let mut x = Complex{re:1f32, im:1f32};
+/// assert_eq!{ scale_cartesian(x,2f32).to_string(), "2+2i" };
+/// ``` 
+/// 
+pub fn scale_cartesian<T>( a: Complex<T>, b: T ) -> Complex<T>
+    where T:  MixedNum + core::ops::MulAssign
+{
+    let mut c = a;
+    c.re *= b;
+    c.im *= b;
+    return c;
+}
+
+/// Add a complex number with a real scalar.
+/// 
+/// ## Arguments
+/// 
+/// * `a` - The complex number.
+/// * `a` - The real scalar.
+/// 
+/// ## Example
+/// 
+/// ```
+/// use num::complex::Complex;
+/// use ndsp::complex::*;
+/// 
+/// let mut x = Complex{re:1f32, im:1f32};
+/// assert_eq!{ bias_cartesian(x,2f32).to_string(), "3+1i" };
+/// ``` 
+/// 
+pub fn bias_cartesian<T>( a: Complex<T>, b: T ) -> Complex<T>
+    where T:  MixedNum + core::ops::MulAssign
+{
+    let mut c = a;
+    c.re += b;
+    return c;
+}
+
 /// Multiply two polar numbers by transforming to polar, multiplying and transfomring back.
 /// 
 pub fn mul_cartesian<T>( a: Complex<T>, b: Complex<T> ) -> Complex<T>

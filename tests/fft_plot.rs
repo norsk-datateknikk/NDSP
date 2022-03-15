@@ -4,7 +4,7 @@ use ndsp::Vec;
 
 
 
-use rustfft::{FftPlanner, num_complex::Complex};
+use rustfft::{FftPlanner};
 
 
 /// Plots comparison between various sqrt implementations.
@@ -46,14 +46,14 @@ fn fft_plot(  )
     let mut planner = FftPlanner::new();
     let fft = planner.plan_fft_forward(1024);
 
-    let mut complex_vec = Vec::osc(0.2f64,0f64,1024);
+    let complex_vec = Vec::osc(0.2f64,0f64,1024);
     let mut buffer = complex_vec.to_alloc_vec().clone(); 
     fft.process(&mut buffer);
 
     let mut complex_vec =  Vec::new_from_vec(buffer);
 
     complex_vec.abs();
-    let mut abs_vec = complex_vec.re();
+    let abs_vec = complex_vec.re();
 
     plot(&abs_vec, "./figures/rustfft_plot.png", "Osc example", "idx", "Power [dB]").unwrap();
 
@@ -61,7 +61,7 @@ fn fft_plot(  )
 
 
 
-    let mut complex_vec = Vec::osc(0.2f64,0f64,1024);
+    let complex_vec = Vec::osc(0.2f64,0f64,1024);
     let real_component = complex_vec.re();
 
     let mut complex_vec = real_component.as_complex();

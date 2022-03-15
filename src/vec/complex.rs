@@ -10,6 +10,8 @@ use mixed_num::traits::*;
 mod fft;
 pub use fft::*;
 
+mod ops;
+pub use ops::*;
 
 use crate::traits::*;
 use crate::vec::*;
