@@ -42,11 +42,13 @@ fn fft_plot(  )
         Ok(())
     }
 
+    let N = 8;
+
     //___________________________________________________________________________
     let mut planner = FftPlanner::new();
-    let fft = planner.plan_fft_forward(1024);
+    let fft = planner.plan_fft_forward(N);
 
-    let complex_vec = Vec::osc(0.2f64,0f64,1024);
+    let complex_vec = Vec::osc(1f64,0f64,N);
     let mut buffer = complex_vec.to_alloc_vec().clone(); 
     fft.process(&mut buffer);
 
@@ -55,13 +57,13 @@ fn fft_plot(  )
     complex_vec.abs();
     let abs_vec = complex_vec.re();
 
-    plot(&abs_vec, "./figures/rustfft_plot.png", "Osc example", "idx", "Power [dB]").unwrap();
+    plot(&abs_vec, "./figures/rustfft_plot.png", "Rust FFT example", "idx", "Power [dB]").unwrap();
 
     //___________________________________________________________________________
 
 
 
-    let complex_vec = Vec::osc(0.2f64,0f64,1024);
+    let complex_vec = Vec::osc(1f64,0f64,8);
     let real_component = complex_vec.re();
 
     let mut complex_vec = real_component.as_complex();
@@ -73,7 +75,7 @@ fn fft_plot(  )
     
     complex_vec.abs();
     let mut abs_vec = complex_vec.re();
-    abs_vec.mag2db();
+    //abs_vec.mag2db();
 
     plot(&abs_vec, "./figures/fft_plot.png", "FFT example", "idx", "Power [dB]").unwrap();
 }

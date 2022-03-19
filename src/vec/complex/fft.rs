@@ -244,21 +244,23 @@ fn fft_processor<T>( array: &mut [Complex<T>], dir: T )
         for block in 0..num_blocks
         {   
             // Calculate indexes
-            let pa = block*n/num_blocks;
-            let pb = block*n/num_blocks + num_butt;
+            //_________________________________________________________________________________________
+            let pa = (block*n)/num_blocks;
+            let pb = (block*n)/num_blocks + num_butt;
+            //_________________________________________________________________________________________
 
             // Iterate over butterflies in current block.
-            for j in 0..num_butt
+            for butt in 0..num_butt
             {
                 // Scale values to avoid overflow.
-                let mut a = crate::complex::div_cartesian( array[pa+j], T::mixed_from_num(2) );
-                let mut b = crate::complex::div_cartesian( array[pb+j], T::mixed_from_num(2) );
-                let w_temp = w[ stage*j ];
+                let mut a = crate::complex::div_cartesian( array[pa+butt], T::mixed_from_num(2) );
+                let mut b = crate::complex::div_cartesian( array[pb+butt], T::mixed_from_num(2) );
+                let w_temp = w[ stage*butt ];
                 
                 butterfly_df( &mut a, &mut b, w_temp );
                 
-                array[pa+j] = a;
-                array[pb+j] = b;
+                array[pa+butt] = a;
+                array[pb+butt] = b;
             }
         }
         num_blocks = num_blocks * 2;
