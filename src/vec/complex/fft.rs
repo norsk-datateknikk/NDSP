@@ -250,7 +250,6 @@ fn fft_processor<T>( array: &mut [Complex<T>], dir: T )
             // Iterate over butterflies in current block.
             for butt in 0..num_butt
             {
-                //println!("stage {}, block {}, butt {}, a {}, b {}", stage, block, butt, pa+butt, pb+butt);
                 // Scale values to avoid overflow.
                 let mut a = crate::complex::div_cartesian( array[pa+butt], T::mixed_from_num(2) );
                 let mut b = crate::complex::div_cartesian( array[pb+butt], T::mixed_from_num(2) );
