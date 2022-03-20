@@ -1,4 +1,5 @@
 extern crate alloc;
+
 use alloc::vec::Vec;
 
 use mixed_num::traits::*;
@@ -124,7 +125,7 @@ fn bitreverse_order<T>( arr: &mut [Complex<T>] )
 ///                         Complex::new(0.0,  0.25 )] );
 /// ```
 pub fn fft<T>( array: &mut [Complex<T>] )
-    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase
+    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi
 {
     // Process fft.
     fft_processor(array, T::mixed_from_num(1));
@@ -166,7 +167,7 @@ pub fn fft<T>( array: &mut [Complex<T>] )
 ///                         Complex::new(0.0, -0.25 )] );
 /// ```
 pub fn ifft<T>( vec: &mut Vec<Complex<T>> )
-    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase
+    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedOps + MixedPowi
 {
     // Process fft.
     fft_processor(vec, T::mixed_from_num(-1));
@@ -183,24 +184,22 @@ pub fn ifft<T>( vec: &mut Vec<Complex<T>> )
 /// * `w` - twiddle factor.
 /// 
 fn butterfly_df<T>( a: &mut Complex<T>, b: &mut Complex<T>, w:Complex<T> )
-    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase
+    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPowi
 {
-    let temp_a = crate::complex::add(*a,*b);
-    //  let temp_b = complex::mul_cartesian(complex::sub(*a, complex::scale_cartesian(T::from_num(2), *b)), w);
-    let temp_b = crate::complex::mul_cartesian(crate::complex::sub(*a, *b), w);
+    let temp_a  = crate::complex::add(*a,*b);
+    let temp_b  = crate::complex::mul_cartesian(crate::complex::sub(*a, *b), w);
     
     *a = temp_a;
     *b = temp_b;
 }
 
-fn calculate_twiddle_factors<T>( n: usize, dir: T) -> crate::Vec<Complex<T>>
-    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase
+pub fn calculate_twiddle_factors<T>( n: usize, dir: T) -> crate::Vec<Complex<T>>
+    where T: MixedNum + MixedNumSigned + MixedOps + MixedZero + MixedTrigonometry + MixedSqrt + MixedPi + MixedWrapPhase
 {
     // Create heap-allocated vector
     let mut w = crate::Vec::<Complex<T>>::new_with_capacity(n/2);
 
     // Calculate Twiddle factor W.
-    w.push_back( Complex::new( <T>::mixed_from_num(1), <T>::mixed_from_num(0) ) );
 
     let mut angle:T = dir*-<T>::mixed_tau();
     for _i in 0..log2(n)
@@ -208,13 +207,13 @@ fn calculate_twiddle_factors<T>( n: usize, dir: T) -> crate::Vec<Complex<T>>
         angle = angle / <T>::mixed_from_num(2);
     }
 
-    let mut phase_inc = angle;
-    for _i in 1..n/2
+    let mut phase_inc = T::mixed_zero();
+    for _i in 0..n/2
     {
         // Calculate twiddle factor for W_i.
         let (imag, real) = phase_inc.mixed_sincos();
 
-        phase_inc = phase_inc+angle;
+        phase_inc += angle;
 
         w.push_back( Complex::new( real, imag ) );
     }
@@ -224,7 +223,7 @@ fn calculate_twiddle_factors<T>( n: usize, dir: T) -> crate::Vec<Complex<T>>
 /// Shared fft processor for fft and ifft.
 /// Requires bit-reversion afterwards.
 fn fft_processor<T>( array: &mut [Complex<T>], dir: T )
-    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase
+    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi
 {
     let n = array.len();
 
@@ -236,26 +235,28 @@ fn fft_processor<T>( array: &mut [Complex<T>], dir: T )
     let mut num_blocks: usize = 1;
     // Bumber of stages (Left-to-right movement).
     let stages = log2(n);
+    let mut w_idx_step_size = 1;
 
     // Iterate over stages
-    for stage in 1..=stages
+    for _stage in 1..=stages
     {
         // Iterate over blocks.
         for block in 0..num_blocks
         {   
             // Calculate indexes
-            //_________________________________________________________________________________________
             let pa = (block*n)/num_blocks;
             let pb = (block*n)/num_blocks + num_butt;
-            //_________________________________________________________________________________________
 
             // Iterate over butterflies in current block.
             for butt in 0..num_butt
             {
+                //println!("stage {}, block {}, butt {}, a {}, b {}", stage, block, butt, pa+butt, pb+butt);
                 // Scale values to avoid overflow.
                 let mut a = crate::complex::div_cartesian( array[pa+butt], T::mixed_from_num(2) );
                 let mut b = crate::complex::div_cartesian( array[pb+butt], T::mixed_from_num(2) );
-                let w_temp = w[ stage*butt ];
+
+                let w_idx:usize = w_idx_step_size*(butt);
+                let w_temp = w[ w_idx ];
                 
                 butterfly_df( &mut a, &mut b, w_temp );
                 
@@ -263,7 +264,8 @@ fn fft_processor<T>( array: &mut [Complex<T>], dir: T )
                 array[pb+butt] = b;
             }
         }
-        num_blocks = num_blocks * 2;
-        num_butt   = num_butt / 2;
+        w_idx_step_size *= 2;
+        num_blocks *= 2;
+        num_butt   /= 2;
     }
 }

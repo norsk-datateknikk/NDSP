@@ -49,7 +49,7 @@ impl <T: MixedNum + MixedNumConversion<T2>, T2: MixedNum> ToTouples<T2> for Vec<
     }
 }
 
-impl <T: MixedNum> LinRange<T> for Vec<T>
+impl <T: MixedNum + MixedOps> LinRange<T> for Vec<T>
 {
     /// Returns a 1D vector of evenly spaced numbers of type T.
     /// 
@@ -244,7 +244,7 @@ impl <T: MixedNum> ToRange<T> for Vec<T>{
     }
 }
 
-impl <T: MixedNum> Indices<T> for Vec<T> {
+impl <T: MixedNum + MixedOps + MixedZero> Indices<T> for Vec<T> {
     /// ## Example
     /// 
     /// ```
@@ -286,7 +286,7 @@ impl <T: DbMag + DbPow> Decibel<T> for Vec<T>{
     }
 }
 
-impl <T: MixedNum> Sum<T> for Vec<T>{
+impl <T: MixedNum + MixedZero + MixedOps> Sum<T> for Vec<T>{
     /// ## Example
     /// 
     /// ```
@@ -304,7 +304,7 @@ impl <T: MixedNum> Sum<T> for Vec<T>{
     }
 }
 
-impl <T: MixedNum> Mean<T> for Vec<T>{
+impl <T: MixedNum + MixedZero + MixedOps> Mean<T> for Vec<T>{
     /// ## Example
     /// 
     /// ```
@@ -318,7 +318,7 @@ impl <T: MixedNum> Mean<T> for Vec<T>{
     }
 }
 
-impl <T: MixedNum> Power<T> for Vec<T>{
+impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Power<T> for Vec<T>{
     /// ## Example
     /// 
     /// ```
@@ -335,7 +335,7 @@ impl <T: MixedNum> Power<T> for Vec<T>{
     }
 }
 
-impl <T: MixedNum> Energy<T> for Vec<T>{
+impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Energy<T> for Vec<T>{
     /// ## Example
     /// 
     /// ```

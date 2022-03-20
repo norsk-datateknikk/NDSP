@@ -8,7 +8,7 @@ use mixed_num::traits::*;
 /// * `x` - The number transform.
 ///
 pub fn to_polar<T>( x: Complex<T> ) -> Polar<T>
-    where T:  MixedNum + MixedNumSigned + MixedSqrt + MixedAtan
+    where T:  MixedNum + MixedNumSigned + MixedSqrt + MixedAtan + MixedOps + MixedPowi
 {
     let c_polar = Polar::<T>{
         r:     abs(x),
@@ -35,7 +35,7 @@ pub fn to_polar<T>( x: Complex<T> ) -> Polar<T>
 /// ``` 
 /// 
 pub fn abs<T>( a: Complex<T> ) -> T
-where T: MixedNum + MixedNumSigned + MixedSqrt
+where T: MixedNum + MixedNumSigned + MixedSqrt + MixedOps + MixedPowi
 {
     let r_sqr = a.re.mixed_powi(2) + a.im.mixed_powi(2);
     return r_sqr.mixed_sqrt();
@@ -64,7 +64,7 @@ pub struct Polar<T> {
 /// ``` 
 /// 
 pub fn to_cartsian<T>( a: Polar<T> ) -> Complex<T>
-    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedWrapPhase
+    where T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedWrapPhase + MixedOps
 {
     let theta = a.theta.mixed_wrap_phase();
     let (imag_s, real_s) = theta.mixed_sincos();
@@ -79,7 +79,7 @@ pub fn to_cartsian<T>( a: Polar<T> ) -> Complex<T>
 /// Add two complex fixed-point numbers in cartesian form.
 /// 
 pub fn add<T>( a: Complex<T>, b: Complex<T> ) -> Complex<T>
-    where T: MixedNum
+    where T: MixedNum + MixedOps
 {
     let c_cartesian = Complex::<T>{
         re: a.re + b.re,
@@ -92,7 +92,7 @@ pub fn add<T>( a: Complex<T>, b: Complex<T> ) -> Complex<T>
 /// c = a-b
 /// 
 pub fn sub<T>( a: Complex<T>, b: Complex<T> ) -> Complex<T>
-    where T: MixedNum + MixedNumSigned
+    where T: MixedNum + MixedNumSigned + MixedOps
 {
     let c_cartesian = Complex::<T>{
         re: a.re - b.re,
@@ -104,7 +104,7 @@ pub fn sub<T>( a: Complex<T>, b: Complex<T> ) -> Complex<T>
 /// Multiply fixed-point complex numbers in polar form.
 /// 
 pub fn mul_polar<T>( a: Polar<T>, b: Polar<T> ) -> Polar<T>
-    where T: MixedNum + MixedNumSigned
+    where T: MixedNum + MixedNumSigned + MixedOps
 {
     if a.r==T::mixed_from_num(0) || b.r==T::mixed_from_num(0)
     {
@@ -168,7 +168,7 @@ pub fn scale_cartesian<T>( a: Complex<T>, b: T ) -> Complex<T>
 /// ``` 
 /// 
 pub fn bias_cartesian<T>( a: Complex<T>, b: T ) -> Complex<T>
-    where T:  MixedNum + core::ops::MulAssign
+    where T:  MixedNum + MixedOps
 {
     let mut c = a;
     c.re += b;
@@ -177,14 +177,17 @@ pub fn bias_cartesian<T>( a: Complex<T>, b: T ) -> Complex<T>
 
 /// Multiply two polar numbers by transforming to polar, multiplying and transfomring back.
 /// 
-pub fn mul_cartesian<T>( a: Complex<T>, b: Complex<T> ) -> Complex<T>
-    where T:  MixedNum + MixedNumSigned  + MixedTrigonometry + MixedSqrt + MixedWrapPhase
-{
-    let a_pol = to_polar(a);
-    let b_pol = to_polar(b);
+pub fn mul_cartesian<T>( ab: Complex<T>, bc: Complex<T> ) -> Complex<T>
+    where T:  MixedNum + MixedNumSigned + MixedOps
+{   
+    let a = ab.re;
+    let b = ab.im;
+    let c = bc.re;
+    let d = bc.im;
 
-    let c_pol = mul_polar(a_pol, b_pol);
-    return to_cartsian(c_pol);
+    let re = (a*c) - (b*d);
+    let im = (a*d) + (b*c);
+    return Complex{re:re, im:im}
 }
 
 /// Rase a complex fixed-point number to an real-valued integer power.
@@ -210,7 +213,7 @@ pub fn mul_cartesian<T>( a: Complex<T>, b: Complex<T> ) -> Complex<T>
 /// ```
 /// 
 pub fn powi<T>( base: num::complex::Complex<T>, power:usize ) -> num::complex::Complex<T>
-    where T: MixedNum + MixedNumSigned + MixedAtan + MixedSin + MixedSqrt
+    where T: MixedNum + MixedNumSigned + MixedAtan + MixedSin + MixedSqrt + MixedOps + MixedPowi
 {   
     // Calculate raised magnitude.
     let temp:T = base.re.mixed_powi(2) + base.im.mixed_powi( 2 );
@@ -230,7 +233,7 @@ pub fn powi<T>( base: num::complex::Complex<T>, power:usize ) -> num::complex::C
 /// c = a/b
 /// 
 pub fn div_cartesian<T>( a: Complex<T>, b: T  ) -> Complex<T>
-    where T: MixedNum + MixedNumSigned
+    where T: MixedNum + MixedNumSigned + MixedOps
 {
     let mut c = a;
 

@@ -90,7 +90,7 @@ impl <T: MixedNum> traits::Im<T> for Vec<Complex<T>> {
     }
 }
 
-impl <T: MixedNum + MixedNumSigned + MixedSqrt> traits::Abs<C> for Vec<Complex<T>> {
+impl <T: MixedNum + MixedNumSigned + MixedSqrt + MixedZero + MixedOps + MixedPowi> traits::Abs<C> for Vec<Complex<T>> {
     /// Take the elemtent-wise absolute value.
     /// ## Example
     /// 
@@ -153,7 +153,31 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
     }
 }
 
-impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt + MixedWrapPhase> traits::Fft for Vec<Complex<T>> {
+impl <T: MixedNum + MixedNumSigned + MixedAtan> Ang<T> for Vec<Complex<T>> {
+    fn ang( &mut self ) -> Vec<T>
+    {
+        let mut rvec = Vec::new_with_capacity(self.len());
+        for i in 0..self.len()
+        {
+            rvec.push_back(self[i].im.mixed_atan2(self[i].re));
+        }
+        return rvec;
+    }
+}
+
+impl <T: MixedNum + MixedNumSigned + MixedSqrt + MixedOps + MixedPowi> Mag<T> for Vec<Complex<T>> {
+    fn mag( &mut self ) -> Vec<T>
+    {
+        let mut rvec = Vec::new_with_capacity(self.len());
+        for i in 0..self.len()
+        {
+            rvec.push_back(crate::complex::abs(self[i]));
+        }
+        return rvec;
+    }
+}
+
+impl <T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Fft for Vec<Complex<T>> {
     /// Calculate the Raddix-2 FFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
@@ -167,7 +191,7 @@ impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt + MixedWrapPh
     }
 }
 
-impl <T: MixedNumSigned + MixedNum + MixedTrigonometry + MixedSqrt + MixedWrapPhase> traits::Ifft for Vec<Complex<T>> {
+impl <T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Ifft for Vec<Complex<T>> {
     /// Calculate the Raddix-2 IFFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.

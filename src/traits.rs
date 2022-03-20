@@ -83,6 +83,16 @@ pub trait Atan {
     fn atan( &mut self );
 }
 
+pub trait Ang<T> {
+    /// Element-wise angle of complex numbers.
+    fn ang( &mut self ) -> Vec<T>;
+}
+
+pub trait Mag<T> {
+    /// Element-wise magnitude of complex numbers.
+    fn mag( &mut self ) -> Vec<T>;
+}
+
 pub trait WrapPhase {
     /// Wrapps `self` to the -π=<x<π range. Computed-in-place.
     fn wrap_phase( &mut self );

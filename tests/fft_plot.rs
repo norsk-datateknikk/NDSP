@@ -1,9 +1,7 @@
 use plotters::prelude::*;
 use ndsp::*;
 use ndsp::Vec;
-
-
-
+use mixed_num;
 use rustfft::{FftPlanner};
 
 
@@ -42,40 +40,40 @@ fn fft_plot(  )
         Ok(())
     }
 
-    let N = 8;
+    let n = 1024;
 
     //___________________________________________________________________________
     let mut planner = FftPlanner::new();
-    let fft = planner.plan_fft_forward(N);
+    let fft = planner.plan_fft_forward(n);
 
-    let complex_vec = Vec::osc(1f64,0f64,N);
+    let mut complex_vec = Vec::osc(1f64,0f64,n);
     let mut buffer = complex_vec.to_alloc_vec().clone(); 
     fft.process(&mut buffer);
 
-    let mut complex_vec =  Vec::new_from_vec(buffer);
+    let mut processed_complex_vec =  Vec::new_from_vec(buffer);
+    processed_complex_vec.im();
 
-    complex_vec.abs();
-    let abs_vec = complex_vec.re();
-
-    plot(&abs_vec, "./figures/rustfft_plot.png", "Rust FFT example", "idx", "Power [dB]").unwrap();
+    let mag_vec = processed_complex_vec.ang();//processed_complex_vec.mag();
+    
+    plot(&mag_vec, "./figures/rustfft_plot.png", "Rust FFT example", "idx", "Power [dB]").unwrap();
 
     //___________________________________________________________________________
 
 
 
-    let complex_vec = Vec::osc(1f64,0f64,8);
-    let real_component = complex_vec.re();
-
-    let mut complex_vec = real_component.as_complex();
-    
-    plot(&complex_vec.re(), "./figures/osc_plot_real.png", "Osc real", "idx", "").unwrap();
-    plot(&complex_vec.im(), "./figures/osc_plot_imag.png", "Osc imag", "idx", "").unwrap();
+    //let mut complex_vec = Vec::osc(1f64,0f64,n);
 
     complex_vec.fft();
-    
-    complex_vec.abs();
-    let mut abs_vec = complex_vec.re();
-    //abs_vec.mag2db();
+    complex_vec.im();
 
-    plot(&abs_vec, "./figures/fft_plot.png", "FFT example", "idx", "Power [dB]").unwrap();
+    plot(&complex_vec.ang(), "./figures/fft_plot.png", "FFT example", "idx", "Magnitude").unwrap();
+
+    //___________________________________________________________________________
+
+    let mut w = ndsp::vec::complex::calculate_twiddle_factors(n, 1f64);
+
+    let ang_vec = w.ang();
+
+    plot(&ang_vec, "./figures/twiddle_factor_plot.png", "W", "idx", "Angle [rad]").unwrap();
+
 }
