@@ -7,8 +7,8 @@ use crate::traits;
 
 pub mod real;
 pub mod complex;
-//#[cfg(feature = "std")]
-//pub mod plot;
+#[cfg(feature = "std")]
+pub mod plot;
 
 extern crate alloc;
 use alloc::string::ToString;
@@ -25,6 +25,14 @@ use alloc::string::String;
 pub struct Vec<T>
 {
     vec: alloc::vec::Vec<T>
+}
+
+impl <T> NewFromVec<T> for Vec<T> {
+    /// Create a new vector from an std or alloc vector.
+    fn new_from_vec( vec: alloc::vec::Vec<T> ) -> Vec<T>
+    {
+        return Vec{ vec:vec };
+    }
 }
 
 impl<T> Vec<T> {

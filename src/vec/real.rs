@@ -11,11 +11,17 @@ use mixed_num::traits::*;
 use crate::traits;
 use crate::traits::*;
 use crate::vec::*;
+/* 
+mod ops;
+pub use ops::*;
+*/
 
+/*
 #[cfg(any(feature = "std"))]
 use std::fs::File;
 #[cfg(any(feature = "std"))]
 use std::io::{BufReader, Read};
+*/
 
 impl <T: MixedNum> Vec<T> {
     
@@ -43,7 +49,7 @@ impl <T: MixedNum + MixedNumConversion<T2>, T2: MixedNum> ToTouples<T2> for Vec<
     }
 }
 
-impl <T: MixedNum> LinRange<T> for Vec<T>
+impl <T: MixedNum + MixedOps> LinRange<T> for Vec<T>
 {
     /// Returns a 1D vector of evenly spaced numbers of type T.
     /// 
@@ -238,7 +244,7 @@ impl <T: MixedNum> ToRange<T> for Vec<T>{
     }
 }
 
-impl <T: MixedNum> Indices<T> for Vec<T> {
+impl <T: MixedNum + MixedOps + MixedZero> Indices<T> for Vec<T> {
     /// ## Example
     /// 
     /// ```
@@ -252,6 +258,101 @@ impl <T: MixedNum> Indices<T> for Vec<T> {
         return Self::lin_range(T::mixed_zero(), T::mixed_from_num((self.len()-1usize) as u32), self.len());
     }
 }
+
+impl <T: DbMag + DbPow> Decibel<T> for Vec<T>{
+    fn mag2db( &mut self )
+    {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_mag2db();
+        }
+    }
+    fn db2mag( &mut self )
+    {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_db2mag();
+        }
+    }
+    fn pow2db( &mut self )
+    {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_pow2db();
+        }
+    }
+    fn db2pow( &mut self )
+    {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_db2pow();
+        }
+    }
+}
+
+impl <T: MixedNum + MixedZero + MixedOps> Sum<T> for Vec<T>{
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// assert_eq!(test_vec.sum(), 2f32+3f32+4f32+5f32 )
+    /// ```
+    fn sum( &self ) -> T
+    {
+        let mut r_val:T = <T>::mixed_zero();
+        for idx in 0..self.len() {
+            r_val = r_val+self[idx];
+        }
+        return r_val;
+    }
+}
+
+impl <T: MixedNum + MixedZero + MixedOps> Mean<T> for Vec<T>{
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// assert_eq!(test_vec.mean(), 3.5f32 )
+    /// ```
+    fn mean( &self ) -> T
+    {
+        return self.sum()/T::mixed_from_num(self.len() as i32);
+    }
+}
+
+impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Power<T> for Vec<T>{
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// test_vec.power();
+    /// assert_eq!(test_vec.to_string(), "[ 4, 9, 16, 25 ]" )
+    /// ```
+    fn power( &mut self )
+    {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_powi(2);
+        }
+    }
+}
+
+impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Energy<T> for Vec<T>{
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// assert_eq!(test_vec.energy(), 54f32 )
+    /// ```
+    fn energy( &self ) -> T
+    {
+        let mut r_val:T = <T>::mixed_zero();
+        for idx in 0..self.len() {
+            r_val = r_val+self[idx].mixed_powi(2);
+        }
+        return r_val;
+    }
+}
+
 
 /*
 #[cfg(any(feature = "std"))]

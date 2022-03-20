@@ -17,6 +17,11 @@ pub trait Len {
     fn len( &self ) -> usize;
 }
 
+pub trait NewFromVec<T> {
+    /// Create a new vector from an std or alloc vector.
+    fn new_from_vec( vec: alloc::vec::Vec<T> ) -> Vec<T>;
+}
+
 pub trait Cap {
     /// The capacity of the vector. The amount of allocated positions.
     fn capacity( &self ) -> usize;
@@ -78,6 +83,16 @@ pub trait Atan {
     fn atan( &mut self );
 }
 
+pub trait Ang<T> {
+    /// Element-wise angle of complex numbers.
+    fn ang( &mut self ) -> Vec<T>;
+}
+
+pub trait Mag<T> {
+    /// Element-wise magnitude of complex numbers.
+    fn mag( &mut self ) -> Vec<T>;
+}
+
 pub trait WrapPhase {
     /// Wrapps `self` to the -π=<x<π range. Computed-in-place.
     fn wrap_phase( &mut self );
@@ -119,10 +134,15 @@ pub trait Indices<T> {
     fn indices( &self ) -> Vec<T>;
 }
 
-pub trait AsReal<T> {
+pub trait Re<T> {
     /// Returns the real part of the vector as a real only vector.
-    fn as_real(&self) -> Vec<T>;
+    fn re(&self) -> Vec<T>;
 }
+pub trait Im<T> {
+    /// Returns the real part of the vector as a real only vector.
+    fn im(&self) -> Vec<T>;
+}
+
 
 pub trait AsComplex<T> {
     /// Returns the real part of the vector in a complex vector.
@@ -136,6 +156,37 @@ pub trait AsComplex<T> {
 pub enum ItemType {
     Complex32,
     Float32,
+}
+
+pub trait Decibel<T>{
+    // Computed-in-place.
+    fn mag2db( &mut self );
+    // Computed-in-place.
+    fn db2mag( &mut self );
+    // Computed-in-place.
+    fn pow2db( &mut self );
+    // Computed-in-place.
+    fn db2pow( &mut self );
+}
+
+pub trait Sum<T>{
+    /// Sum of vector.
+    fn sum( &self ) -> T;
+}
+
+pub trait Mean<T>{
+    /// Mean of vector.
+    fn mean( &self ) -> T;
+}
+
+pub trait Energy<T>{
+    /// Energy of vector.
+    fn energy( &self ) -> T;
+}
+
+pub trait Power<T>{
+    /// Power of the vector
+    fn power( &mut self );
 }
 
 pub trait FromBinary {

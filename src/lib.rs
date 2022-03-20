@@ -46,7 +46,7 @@
 //!     Ok(())
 //! }
 //! 
-//! let test_vec = Vec::lin_range(0f32, 1f32, 50);
+//! let test_vec = Vec::lin_range(0f32, 1f32, 64);
 //! plot(&test_vec).unwrap();
 //! ``` 
 
@@ -61,7 +61,6 @@ extern crate std;
 extern crate std;
 
 extern crate mixed_num;
-extern crate fixed_trigonometry;
 
 pub mod traits;
 pub use traits::*;
@@ -69,3 +68,5 @@ pub use traits::*;
 #[macro_use]
 pub mod vec;
 pub use vec::*;
+
+pub mod complex;
