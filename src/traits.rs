@@ -4,12 +4,9 @@
 
 extern crate alloc;
 
-use num::Complex;
-use crate::vec::Vec;
+use mixed_num::{Cartesian, Polar};
 
-// structs to enable separation between real and complex implementations of the same trait.
-pub struct R;
-pub struct C;
+use crate::vec::Vec;
 
 // Generic vector operations.
 pub trait Len {
@@ -54,7 +51,7 @@ pub trait Powi {
     fn powi( &mut self, power:u32 );
 }
 
-pub trait Abs<T> {
+pub trait Abs {
     /// Element-wise absolute value of `self`. Computed-in-place.
     fn abs( &mut self );
 }
@@ -121,11 +118,11 @@ pub trait Min<T> {
 
 pub trait MinMax<T> {
     // Returns a touple with the value of the highest and lowest items in the vector. 
-    fn minmax( &self ) -> (T,T);
+    fn min_max( &self ) -> (T,T);
 }
 
 pub trait ToRange<T> {
-    // Returns the minmax as a `Range<T>`.
+    // Returns the min_max as a `Range<T>`.
     fn to_range( &self ) -> core::ops::Range<T>;
 }
 
@@ -143,10 +140,14 @@ pub trait Im<T> {
     fn im(&self) -> Vec<T>;
 }
 
+pub trait AsComplexCartesian<T> {
+    /// Returns the real part of the vector in a complex cartesian vector.
+    fn as_complex_cartesian(&self) -> Vec<Cartesian<T>>;
+}
 
-pub trait AsComplex<T> {
-    /// Returns the real part of the vector in a complex vector.
-    fn as_complex(&self) -> Vec<Complex<T>>;
+pub trait AsComplexPolar<T> {
+    /// Returns the real part of the vector in a complex cartesian vector.
+    fn as_complex_polar(&self) -> Vec<Polar<T>>;
 }
 
 // Traits requiring std

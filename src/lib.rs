@@ -68,5 +68,3 @@ pub use traits::*;
 #[macro_use]
 pub mod vec;
 pub use vec::*;
-
-pub mod complex;

@@ -22,7 +22,7 @@ test  = true
 crate-type = ["lib"]
 
 [dependencies]
-mixed-num          = "0.2"
+mixed-num          = "0.4"
 fixed              = "1.13"
 
 plotters           = {version ="^0.3.1", optional=true }
