@@ -7,7 +7,7 @@ use crate::traits;
 
 use mixed_num::traits::*;
 
-mod ops;
+pub mod ops;
 pub use ops::*;
 
 pub mod math_impl;
