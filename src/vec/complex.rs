@@ -128,20 +128,32 @@ impl<T: MixedNum + MixedWrapPhase + MixedSin + MixedOps>  Vec<Cartesian<T>> {
     }
 }
 
-impl <T: MixedNum + Arg<T>> Ang<T> for Vec<T> {
-    fn ang( &mut self ) -> Vec<T>
+impl <T: MixedNum + MixedAtan> Ang<T> for Vec<Cartesian<T>> {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let signal = Vec::osc(omega, theta, 4);
+    /// assert_eq!(signal.ang().to_string(), "[ 0, 0.39269912, 0.7853982, 1.1780972 ]" )
+    /// ```
+    fn ang( &self ) -> Vec<T>
     {
         let mut rvec = Vec::new_with_capacity(self.len());
         for i in 0..self.len()
         {
-            rvec.push_back(self[i].ang());
+            rvec.push_back(self[i].im.mixed_atan2(self[i].re));
         }
         return rvec;
     }
 }
 
 impl <T: MixedAbs> crate::traits::Mag<T> for Vec<T> {
-    fn mag( &mut self ) -> Vec<T>
+    fn mag( &self ) -> Vec<T>
     {
         let mut rvec = Vec::new_with_capacity(self.len());
         for i in 0..self.len()

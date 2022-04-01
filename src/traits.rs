@@ -82,12 +82,12 @@ pub trait Atan {
 
 pub trait Ang<T> {
     /// Element-wise angle of complex numbers.
-    fn ang( &mut self ) -> Vec<T>;
+    fn ang( &self ) -> Vec<T>;
 }
 
 pub trait Mag<T> {
     /// Element-wise magnitude of complex numbers.
-    fn mag( &mut self ) -> Vec<T>;
+    fn mag( &self ) -> Vec<T>;
 }
 
 pub trait WrapPhase {
