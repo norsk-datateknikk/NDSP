@@ -342,9 +342,19 @@ impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::AddAssign> ops:
     }
 }
 
-impl <T: MixedNum + ops::AddAssign> ops::AddAssign<T> for Vec<T> {
-    fn add_assign(&mut self, rhs: T){
-
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::AddAssign> ops::AddAssign<T1> for Vec<T2> {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    ///
+    /// signalf32 += 2f64;
+    /// assert_eq!(signalf32.to_string(), "[ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]" );
+    /// ```
+    fn add_assign(&mut self, rhs: T1){
+        let rhs = rhs.mixed_to_num();
         for idx in 0..self.len() {
             self[idx] += rhs;
         }
