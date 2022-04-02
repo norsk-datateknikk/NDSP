@@ -52,6 +52,55 @@ impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::Mul<Output = T2
     }
 }
 
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::Mul<Output = T2>> ops::Mul<&Vec<T1>> for &Vec<T2> {
+    type Output = Vec<T2>;
+
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    /// let signalf64 = Vec::lin_range(2f64, 11f64, 10);
+    ///
+    /// let result = &signalf32*&signalf64;
+    /// assert_eq!(result.to_string(), "[ 0, 3, 8, 15, 24, 35, 48, 63, 80, 99 ]" );
+    /// 
+    /// let signal1f32 = Vec::lin_range(2f64, 11f64, 10);
+    ///
+    /// let result = &signalf32*&signal1f32;
+    /// assert_eq!(result.to_string(), "[ 0, 3, 8, 15, 24, 35, 48, 63, 80, 99 ]" );
+    /// ```
+    /// 
+    /// This implementation simulataneously support complex numbers.
+    /// 
+    /// ## Example
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let mut signal = Vec::osc(omega, theta, 4);
+    /// signal = &signal*&signal;
+    /// assert_eq!(signal.to_string(), "[ 1+0i, 0.7071067+0.7071068i, 0+0.99999994i, -0.7071067+0.7071068i ]" )
+    /// ```
+    fn mul(self, rhs: &Vec<T1>) -> Vec<T2> {
+
+        if rhs.len() != self.len()
+        {
+            core::panic!("Vectors must be of equal size!");
+        }
+
+        let mut outvec = Vec::<T2>::new_with_capacity(self.len());
+        for idx in 0..self.len() {
+            outvec.push_back(self[idx]* rhs[idx].mixed_to_num());
+        }
+        return outvec;
+    }
+}
+
 impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::Mul<Output = T2>> ops::Mul<T1> for Vec<T2> {
     type Output = Vec<T2>;
     /// ## Example
