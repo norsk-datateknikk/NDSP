@@ -116,15 +116,27 @@ impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::Mul<Output = T2
     /// ```
     fn mul(self, rhs: T1) -> Self {
         let mut outvec = Vec::<T2>::new_with_capacity(self.len());
+        let rhs = rhs.mixed_to_num();
         for idx in 0..self.len() {
-            outvec.push_back(self[idx]* rhs.mixed_to_num());
+            outvec.push_back(self[idx]* rhs);
         }
         return outvec;
     }
 }
 
-impl <T: MixedNum + ops::Mul<Output = T>> ops::MulAssign<Vec<T>> for Vec<T> {
-    fn mul_assign(&mut self, rhs: Self){
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::Mul<Output = T2>> ops::MulAssign<Vec<T1>> for Vec<T2> {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    /// let     signalf64 = Vec::lin_range(2f64, 11f64, 10);
+    ///
+    /// signalf32 *= signalf64;
+    /// assert_eq!(signalf32.to_string(), "[ 0, 3, 8, 15, 24, 35, 48, 63, 80, 99 ]" );
+    /// ```
+    fn mul_assign(&mut self, rhs: Vec<T1>){
 
         if rhs.len() != self.len()
         {
@@ -132,23 +144,69 @@ impl <T: MixedNum + ops::Mul<Output = T>> ops::MulAssign<Vec<T>> for Vec<T> {
         }
 
         for idx in 0..self.len() {
-            self[idx] = self[idx]* rhs[idx];
+            self[idx] = self[idx]* rhs[idx].mixed_to_num();
         }
     }
 }
 
-impl <T: ops::MulAssign + Copy> ops::MulAssign<T> for Vec<T> {
-    fn mul_assign(&mut self, rhs: T){
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::Mul<Output = T2>> ops::MulAssign<&Vec<T1>> for Vec<T2> {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    /// let     signalf64 = Vec::lin_range(2f64, 11f64, 10);
+    ///
+    /// signalf32 *= &signalf64;
+    /// assert_eq!(signalf32.to_string(), "[ 0, 3, 8, 15, 24, 35, 48, 63, 80, 99 ]" );
+    /// ```
+    fn mul_assign(&mut self, rhs: &Vec<T1>){
 
+        if rhs.len() != self.len()
+        {
+            core::panic!("Vectors must be of equal size!");
+        }
+
+        for idx in 0..self.len() {
+            self[idx] = self[idx]* rhs[idx].mixed_to_num();
+        }
+    }
+}
+
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::MulAssign> ops::MulAssign<T1> for Vec<T2> {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    ///
+    /// signalf32 *= 2f64;
+    /// assert_eq!(signalf32.to_string(), "[ 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 ]" );
+    /// ```
+    fn mul_assign(&mut self, rhs: T1){
+        let rhs = rhs.mixed_to_num();
         for idx in 0..self.len() {
             self[idx] *= rhs;
         }
     }
 }
 
-impl <T: MixedNum + ops::Add<Output = T>> ops::Add<Vec<T>> for Vec<T> {
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::Add<Output = T2>> ops::Add<Vec<T1>> for Vec<T2> {
     type Output = Self;
-    fn add(self, rhs: Self) -> Self {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    /// let     signalf64 = Vec::lin_range(0f64, 9f64, 10);
+    ///
+    /// signalf32 = signalf32.clone() + signalf64;
+    /// assert_eq!(signalf32.to_string(), "[ 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 ]" );
+    /// ```
+    fn add(self, rhs: Vec<T1>) -> Self {
 
         if rhs.len() != self.len()
         {
@@ -157,16 +215,54 @@ impl <T: MixedNum + ops::Add<Output = T>> ops::Add<Vec<T>> for Vec<T> {
 
         let mut outvec = self.clone();
         for idx in 0..self.len() {
-            outvec[idx] = outvec[idx]+ rhs[idx];
+            outvec[idx] = outvec[idx]+ rhs[idx].mixed_to_num();
         }
         return outvec;
     }
 }
 
-impl <T: MixedNum + ops::Add<Output = T>> ops::Add<T> for Vec<T> {
-    type Output = Self;
-    fn add(self, rhs: T) -> Self {
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::Add<Output = T2>> ops::Add<&Vec<T1>> for &Vec<T2> {
+    type Output = Vec<T2>;
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    /// let     signalf64 = Vec::lin_range(0f64, 9f64, 10);
+    ///
+    /// signalf32 = &signalf32 + &signalf64;
+    /// assert_eq!(signalf32.to_string(), "[ 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 ]" );
+    /// ```
+    fn add(self, rhs: &Vec<T1>) -> Vec<T2> {
 
+        if rhs.len() != self.len()
+        {
+            core::panic!("Vectors must be of equal size!");
+        }
+
+        let mut outvec = Vec::<T2>::new_with_capacity(self.len());
+        for idx in 0..self.len() {
+            outvec.push_back(self[idx] + rhs[idx].mixed_to_num());
+        }
+        return outvec;
+    }
+}
+
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::Add<Output = T2>> ops::Add<T1> for Vec<T2> {
+    type Output = Self;
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    ///
+    /// let signalf32 = signalf32 + 2f64;
+    /// assert_eq!(signalf32.to_string(), "[ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]" );
+    /// ```
+    fn add(self, rhs: T1) -> Self {
+        let rhs = rhs.mixed_to_num();
         let mut outvec = self.clone();
         for idx in 0..self.len() {
             outvec[idx] = outvec[idx]+ rhs;
@@ -175,16 +271,73 @@ impl <T: MixedNum + ops::Add<Output = T>> ops::Add<T> for Vec<T> {
     }
 }
 
-impl <T: MixedNum + ops::AddAssign> ops::AddAssign<Vec<T>> for Vec<T> {
-    fn add_assign(&mut self, rhs: Self){
 
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::Add<Output = T2>> ops::Add<T1> for &Vec<T2> {
+    type Output = Vec<T2>;
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    ///
+    /// let signalf32 = &signalf32 + 2f64;
+    /// assert_eq!(signalf32.to_string(), "[ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]" );
+    /// ```
+    fn add(self, rhs: T1) -> Vec<T2> {
+        let rhs = rhs.mixed_to_num();
+        let mut outvec = self.clone();
+        for idx in 0..self.len() {
+            outvec[idx] = outvec[idx]+ rhs;
+        }
+        return outvec;
+    }
+}
+
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::AddAssign> ops::AddAssign<Vec<T1>> for Vec<T2> {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    /// let mut signalf64 = Vec::lin_range(0f64, 9f64, 10);
+    ///
+    /// signalf32 += signalf64;
+    /// assert_eq!(signalf32.to_string(), "[ 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 ]" );
+    /// ```
+    fn add_assign(&mut self, rhs: Vec<T1>){
         if rhs.len() != self.len()
         {
             core::panic!("Vectors must be of equal size!");
         }
 
         for idx in 0..self.len() {
-            self[idx] += rhs[idx];
+            self[idx] += rhs[idx].mixed_to_num();
+        }
+    }
+}
+
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::AddAssign> ops::AddAssign<&Vec<T1>> for Vec<T2> {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut signalf32 = Vec::lin_range(0f32, 9f32, 10);
+    /// let mut signalf64 = Vec::lin_range(0f64, 9f64, 10);
+    ///
+    /// signalf32 += &signalf64;
+    /// assert_eq!(signalf32.to_string(), "[ 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 ]" );
+    /// ```
+    fn add_assign(&mut self, rhs: &Vec<T1>){
+        if rhs.len() != self.len()
+        {
+            core::panic!("Vectors must be of equal size!");
+        }
+
+        for idx in 0..self.len() {
+            self[idx] += rhs[idx].mixed_to_num();
         }
     }
 }
