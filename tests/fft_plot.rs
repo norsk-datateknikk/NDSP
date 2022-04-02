@@ -1,8 +1,6 @@
 use plotters::prelude::*;
 use ndsp::*;
 use ndsp::Vec;
-use rustfft::{FftPlanner};
-
 
 /// Plots comparison between various sqrt implementations.
 #[test]
@@ -61,7 +59,9 @@ fn fft_plot(  )
     complex_vec.fft();
     complex_vec.im();
 
-    plot(&complex_vec.mag(), "./figures/fft_plot.png", "FFT example", "idx", "Magnitude").unwrap();
+    let vec = complex_vec.mag();
+
+    plot(&vec.re(), "./figures/fft_plot.png", "FFT example", "idx", "Magnitude").unwrap();
 
     //___________________________________________________________________________
     /*

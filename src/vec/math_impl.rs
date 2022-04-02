@@ -5,16 +5,12 @@
 
 extern crate alloc;
 
-use num::Complex;
+use mixed_num::{Cartesian, Polar};
 use mixed_num::traits::*;
 
 use crate::traits;
 use crate::traits::*;
 use crate::vec::*;
-/* 
-mod ops;
-pub use ops::*;
-*/
 
 /*
 #[cfg(any(feature = "std"))]
@@ -25,28 +21,6 @@ use std::io::{BufReader, Read};
 
 impl <T: MixedNum> Vec<T> {
     
-}
-
-impl <T: MixedNum + MixedNumConversion<T2>, T2: MixedNum> ToTouples<T2> for Vec<T> {
-    /// Returns the vector as a vector of touples (x,y), where `outvec[1] = (n, in_vec[n])`.
-    /// 
-    /// ## Example
-    /// 
-    /// ```
-    /// use ndsp::*;
-    /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
-    /// assert_eq!(test_vec.to_touples()[1], (1f32,1f32) );
-    /// assert_eq!(test_vec.to_touples()[2], (2f32,2f32) );
-    /// ```
-    fn to_touples( &self ) -> alloc::vec::Vec<(T2, T2)>
-    {
-        let mut outvec = alloc::vec::Vec::<(T2, T2)>::new();
-        for idx in 0..self.len() {
-            let tuple = (T::mixed_from_num(idx as f32).mixed_to_num(), self[idx].mixed_to_num());
-            outvec.push(tuple);
-        }
-        return outvec;
-    }
 }
 
 impl <T: MixedNum + MixedOps> LinRange<T> for Vec<T>
@@ -120,19 +94,19 @@ impl <T: MixedSqrt> traits::Sqrt for Vec<T> {
     }
 }
 
-impl <T: MixedNum + MixedNumSigned> traits::Abs<R> for Vec<T> {
+impl <T: MixedReal + MixedNumSigned + MixedAbs> traits::Abs for Vec<T> {
     /// Take the elemtent-wise absolute value.
     fn abs(&mut self) {
         for idx in 0..self.len() {
             if self[idx]< T::mixed_from_num(0)
             {
-                self[idx]=-self[idx];
+                self[idx]=self[idx].mixed_abs();
             }
         }
     }
 }
 
-impl <T: MixedNum> traits::AsComplex<T> for Vec<T> {
+impl <T: MixedReal> traits::AsComplexCartesian<T> for Vec<T> {
     /// Returns the real part of the vector as a real only vector.
     /// 
     /// ## Example
@@ -140,21 +114,43 @@ impl <T: MixedNum> traits::AsComplex<T> for Vec<T> {
     /// ```
     /// use ndsp::*;
     /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
-    /// assert_eq!(test_vec.as_complex().to_string(), "[ 0+0i, 1+0i, 2+0i, 3+0i ]" )
+    /// assert_eq!(test_vec.as_complex_cartesian().to_string(), "[ 0+0i, 1+0i, 2+0i, 3+0i ]" )
     /// ```
-    fn as_complex(&self) -> Vec<Complex<T>>
+    fn as_complex_cartesian(&self) -> Vec<Cartesian<T>>
     {
         let len = *&self.len();
-        let mut r_vec = Vec::<Complex<T>>::new_with_capacity(len);
+        let mut r_vec = Vec::<Cartesian<T>>::new_with_capacity(len);
         for i in 0..len
         {
-            r_vec.push_back( Complex::new( self[i], T::mixed_from_num(0)));
+            r_vec.push_back( Cartesian::new( self[i], T::mixed_from_num(0)));
         }
         return r_vec;
     }
 }
 
-impl <T: MixedNum> traits::Max<T> for Vec<T> {
+impl <T: MixedReal> traits::AsComplexPolar<T> for Vec<T> {
+    /// Returns the real part of the vector as a real only vector.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// assert_eq!(test_vec.as_complex_polar().to_string(), "[ 0∠0, 1∠0, 2∠0, 3∠0 ]" )
+    /// ```
+    fn as_complex_polar(&self) -> Vec<Polar<T>>
+    {
+        let len = *&self.len();
+        let mut r_vec = Vec::<Polar<T>>::new_with_capacity(len);
+        for i in 0..len
+        {
+            r_vec.push_back( Polar::new( self[i], T::mixed_from_num(0)));
+        }
+        return r_vec;
+    }
+}
+
+impl <T: MixedReal> traits::Max<T> for Vec<T> {
     /// ## Example
     /// 
     /// ```
@@ -177,7 +173,7 @@ impl <T: MixedNum> traits::Max<T> for Vec<T> {
     }
 }
 
-impl <T: MixedNum> traits::Min<T> for Vec<T> {
+impl <T: MixedReal> traits::Min<T> for Vec<T> {
     /// ## Example
     /// 
     /// ```
@@ -200,15 +196,15 @@ impl <T: MixedNum> traits::Min<T> for Vec<T> {
     }
 }
 
-impl <T: MixedNum> traits::MinMax<T> for Vec<T> {
+impl <T: MixedReal> traits::MinMax<T> for Vec<T> {
     /// ## Example
     /// 
     /// ```
     /// use ndsp::*;
     /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
-    /// assert_eq!(test_vec.minmax(), (0f32,3f32) )
+    /// assert_eq!(test_vec.min_max(), (0f32,3f32) )
     /// ```
-    fn minmax(&self) -> (T,T)
+    fn min_max(&self) -> (T,T)
     {
         let len = *&self.len();
         let mut max_value = T::mixed_min_value();
@@ -228,7 +224,7 @@ impl <T: MixedNum> traits::MinMax<T> for Vec<T> {
     }
 }
 
-impl <T: MixedNum> ToRange<T> for Vec<T>{
+impl <T: MixedReal> ToRange<T> for Vec<T>{
     /// ## Example
     /// 
     /// ```
@@ -239,12 +235,12 @@ impl <T: MixedNum> ToRange<T> for Vec<T>{
     #[inline]
     fn to_range( &self ) -> core::ops::Range<T>
     {
-        let (min_value, max_value) = self.minmax();
+        let (min_value, max_value) = self.min_max();
         return core::ops::Range{start: min_value, end: max_value};
     }
 }
 
-impl <T: MixedNum + MixedOps + MixedZero> Indices<T> for Vec<T> {
+impl <T: MixedReal + MixedOps + MixedZero> Indices<T> for Vec<T> {
     /// ## Example
     /// 
     /// ```

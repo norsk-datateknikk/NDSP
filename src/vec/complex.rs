@@ -3,17 +3,11 @@
 //----------------------//
 
 extern crate alloc;
-use num;
-use num::complex::Complex;
+use mixed_num::Cartesian;
 
 use mixed_num::traits::*;
 mod fft;
 pub use fft::*;
-
-/*
-mod ops;
-pub use ops::*;
-*/
 
 use crate::traits::*;
 use crate::vec::*;
@@ -28,31 +22,32 @@ use std::io::{BufReader, Read};
 use crate::traits;
 
 
-impl<T: MixedNum> Vec<Complex<T>> {
+impl<T: MixedReal> Vec<Cartesian<T>> {
     /// Create a complex vector from a real one.
     #[allow(dead_code)]
-    fn new_from_real( real_vec: Vec<T> ) -> Vec<Complex<T>>
+    fn new_from_real( real_vec: Vec<T> ) -> Vec<Cartesian<T>>
     {
-        let mut vec = Vec::<Complex<T>>::new_with_capacity(real_vec.len());
+        let mut vec = Vec::<Cartesian<T>>::new_with_capacity(real_vec.len());
 
         for idx in 0..real_vec.len()
         {
-            vec.push_back(Complex::new(real_vec[idx], T::mixed_from_num(0)))
+            vec.push_back(Cartesian::new(real_vec[idx], T::mixed_from_num(0)))
         }
         return vec;
     }
 }
 
-impl <T: MixedNum> traits::Re<T> for Vec<Complex<T>> {
+impl <T: MixedNum> traits::Re<T> for Vec<Cartesian<T>> {
     /// Returns the real part of the vector as a real only vector.
     /// ## Example
     /// 
     /// ```
     /// use ndsp::*;
+    /// use mixed_num::Cartesian;
     /// 
     /// let mut signal = Vec::new_with_capacity(2);
-    /// signal.push_back( num::Complex::new( 0f32, 1f32 ) );
-    /// signal.push_back( num::Complex::new( 1f32, 0f32 ) );
+    /// signal.push_back( Cartesian::new( 0f32, 1f32 ) );
+    /// signal.push_back( Cartesian::new( 1f32, 0f32 ) );
     /// assert_eq!(signal.re().to_string(), "[ 0, 1 ]" )
     /// ```
     fn re(&self) -> Vec<T>
@@ -67,16 +62,17 @@ impl <T: MixedNum> traits::Re<T> for Vec<Complex<T>> {
 }
 
 
-impl <T: MixedNum> traits::Im<T> for Vec<Complex<T>> {
+impl <T: MixedNum> traits::Im<T> for Vec<Cartesian<T>> {
     /// Returns the real part of the vector as a real only vector.
     /// ## Example
     /// 
     /// ```
     /// use ndsp::*;
+    /// use mixed_num::Cartesian;
     /// 
     /// let mut signal = Vec::new_with_capacity(2);
-    /// signal.push_back( num::Complex::new( 0f32, 1f32 ) );
-    /// signal.push_back( num::Complex::new( 1f32, 0f32 ) );
+    /// signal.push_back( Cartesian::new( 0f32, 1f32 ) );
+    /// signal.push_back( Cartesian::new( 1f32, 0f32 ) );
     /// assert_eq!(signal.im().to_string(), "[ 1, 0 ]" )
     /// ```
     fn im(&self) -> Vec<T>
@@ -90,29 +86,8 @@ impl <T: MixedNum> traits::Im<T> for Vec<Complex<T>> {
     }
 }
 
-impl <T: MixedNum + MixedNumSigned + MixedSqrt + MixedZero + MixedOps + MixedPowi> traits::Abs<C> for Vec<Complex<T>> {
-    /// Take the elemtent-wise absolute value.
-    /// ## Example
-    /// 
-    /// ```
-    /// use ndsp::*;
-    /// 
-    /// let mut signal = Vec::new_with_capacity(2);
-    /// signal.push_back( num::Complex::new( 0f32, 1f32 ) );
-    /// signal.push_back( num::Complex::new( 1f32, 0f32 ) );
-    /// signal.abs();
-    /// assert_eq!(signal.to_string(), "[ 1+0i, 1+0i ]" )
-    /// ```
-    fn abs(&mut self) {
-        for idx in 0..self.len() {
-            self[idx].re = crate::complex::abs(self[idx]);
-            self[idx].im = T::mixed_zero();
-        }
-    }
-}
 
-
-impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
+impl<T: MixedNum + MixedWrapPhase + MixedSin + MixedOps>  Vec<Cartesian<T>> {
     /// Creates a rotating phasor with a specific angular frequency.
     /// 
     ///  `s[n] = cos(ωn+θ) + i sin(n+θ), n ∈ {0,1,...N-1}`.
@@ -135,7 +110,7 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
     /// let signal = Vec::osc(omega, theta, 4);
     /// assert_eq!(signal.to_string(), "[ 1+0i, 0.9238795+0.38268346i, 0.70710677+0.70710677i, 0.38268346+0.9238795i ]" )
     /// ```
-    pub fn osc( angular_freq_rad: T, phase_rad: T, numb: usize ) -> Vec<Complex<T>>
+    pub fn osc( angular_freq_rad: T, phase_rad: T, numb: usize ) -> Vec<Cartesian<T>>
     {
         let mut vec = Vec::new_with_capacity(numb);
         let mut sample_phase_rad= phase_rad;
@@ -145,7 +120,7 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
             
             let (imag, real) = sample_phase_rad.mixed_sincos();
 
-            vec.push_back( num::Complex::new( real, imag ) );
+            vec.push_back( Cartesian::new( real, imag ) );
 
             sample_phase_rad += angular_freq_rad;
         }
@@ -153,8 +128,20 @@ impl<T: MixedOps + MixedTrigonometry + MixedWrapPhase>  Vec<Complex<T>> {
     }
 }
 
-impl <T: MixedNum + MixedNumSigned + MixedAtan> Ang<T> for Vec<Complex<T>> {
-    fn ang( &mut self ) -> Vec<T>
+impl <T: MixedNum + MixedAtan> Ang<T> for Vec<Cartesian<T>> {
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let signal = Vec::osc(omega, theta, 4);
+    /// assert_eq!(signal.ang().to_string(), "[ 0, 0.39269912, 0.7853982, 1.1780972 ]" )
+    /// ```
+    fn ang( &self ) -> Vec<T>
     {
         let mut rvec = Vec::new_with_capacity(self.len());
         for i in 0..self.len()
@@ -165,19 +152,19 @@ impl <T: MixedNum + MixedNumSigned + MixedAtan> Ang<T> for Vec<Complex<T>> {
     }
 }
 
-impl <T: MixedNum + MixedNumSigned + MixedSqrt + MixedOps + MixedPowi> Mag<T> for Vec<Complex<T>> {
-    fn mag( &mut self ) -> Vec<T>
+impl <T: MixedAbs> crate::traits::Mag<T> for Vec<T> {
+    fn mag( &self ) -> Vec<T>
     {
         let mut rvec = Vec::new_with_capacity(self.len());
         for i in 0..self.len()
         {
-            rvec.push_back(crate::complex::abs(self[i]));
+            rvec.push_back(self[i].mixed_abs());
         }
         return rvec;
     }
 }
 
-impl <T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Fft for Vec<Complex<T>> {
+impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Fft for Vec<Cartesian<T>> {
     /// Calculate the Raddix-2 FFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
@@ -191,7 +178,7 @@ impl <T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPh
     }
 }
 
-impl <T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Ifft for Vec<Complex<T>> {
+impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Ifft for Vec<Cartesian<T>> {
     /// Calculate the Raddix-2 IFFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
@@ -204,6 +191,8 @@ impl <T: MixedNum + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPh
         ifft( &mut self.vec);
     }
 }
+
+
 /*
 #[cfg(any(feature = "std"))]
 impl <T> traits::FromBinary for Vec<Complex<T>>
@@ -266,8 +255,8 @@ mod tests {
     #[test]
     fn to_string() {
         let mut signal = Vec::new_with_capacity(2);
-        signal.push_back( num::Complex::new( 0f32, 1f32 ) );
-        signal.push_back( num::Complex::new( 1f32, 0f32 ) );
+        signal.push_back( mixed_num::Cartesian::new( 0f32, 1f32 ) );
+        signal.push_back( mixed_num::Cartesian::new( 1f32, 0f32 ) );
         assert_eq!(signal.to_string(), "[ 0+1i, 1+0i ]" )
     }
 }

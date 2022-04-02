@@ -5,7 +5,12 @@
 use crate::*;
 use crate::traits;
 
-pub mod real;
+use mixed_num::traits::*;
+
+pub mod ops;
+pub use ops::*;
+
+pub mod math_impl;
 pub mod complex;
 #[cfg(feature = "std")]
 pub mod plot;
@@ -15,9 +20,7 @@ use alloc::string::ToString;
 
 extern crate num;
 
-#[cfg(feature = "std")]
-use std::fmt;
-#[cfg(feature = "std")]
+use core::fmt;
 use alloc::string::String;
 
 /// Numeric vector of real, fixed-point numbers.
@@ -125,7 +128,6 @@ impl <T> IntoIterator for Vec<T> {
     }
 }
 
-#[cfg(feature = "std")]
 impl <T: fmt::Display> fmt::Display for Vec<T> {
     /// # Example
     /// 
@@ -146,6 +148,28 @@ impl <T: fmt::Display> fmt::Display for Vec<T> {
         }
         temp_string.push_str(" ]");
         write!(f, "{}", temp_string)
+    }
+}
+
+impl <T: MixedReal + MixedNumConversion<T2>, T2: MixedReal> ToTouples<T2> for Vec<T> {
+    /// Returns the vector as a vector of touples (x,y), where `outvec[1] = (n, in_vec[n])`.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// assert_eq!(test_vec.to_touples()[1], (1f32,1f32) );
+    /// assert_eq!(test_vec.to_touples()[2], (2f32,2f32) );
+    /// ```
+    fn to_touples( &self ) -> alloc::vec::Vec<(T2, T2)>
+    {
+        let mut outvec = alloc::vec::Vec::<(T2, T2)>::new();
+        for idx in 0..self.len() {
+            let tuple = (T::mixed_from_num(idx as f32).mixed_to_num(), self[idx].mixed_to_num());
+            outvec.push(tuple);
+        }
+        return outvec;
     }
 }
 
