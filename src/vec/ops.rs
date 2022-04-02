@@ -3,6 +3,23 @@ use mixed_num::*;
 
 use core::ops;
 
+impl <T> ops::Index<usize> for Vec<T> {
+    type Output = T;
+    /// Trait for returning an indexed value of the array.
+    #[inline]
+    fn index(&self, index: usize) -> &T {
+        return &self.vec[index];
+    }
+}
+
+impl <T> ops::IndexMut<usize> for Vec<T> {
+    /// Trait for returning a mutable reference to indexed item.
+    #[inline]
+    fn index_mut(&mut self, index: usize) -> &mut T {
+        return &mut self.vec[index];
+    }
+}
+
 macro_rules! impl_assign_ops_for_vec {
     ($trait:tt, $fn:tt, $symb:tt) => {
         impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum + ops::$trait<Output = T2>> ops::$trait<Vec<T1>> for Vec<T2> {

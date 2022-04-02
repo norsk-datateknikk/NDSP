@@ -107,23 +107,6 @@ impl<T> Vec<T> {
     }
 }
 
-impl <T> core::ops::Index<usize> for Vec<T> {
-    type Output = T;
-    /// Trait for returning an indexed value of the array.
-    #[inline]
-    fn index(&self, index: usize) -> &T {
-        return &self.vec[index];
-    }
-}
-
-impl <T> core::ops::IndexMut<usize> for Vec<T> {
-    /// Trait for returning a mutable reference to indexed item.
-    #[inline]
-    fn index_mut(&mut self, index: usize) -> &mut T {
-        return &mut self.vec[index];
-    }
-}
-
 impl <T> traits::Len for Vec<T> {
     /// Function returning the size of the vector.
     /// 
