@@ -173,6 +173,21 @@ impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapP
     /// Decimation-in-freqency.
     /// 
     /// The method utilizes fixed point approximations for square root, sine, cosine and atan calculations.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let n = 512;
+    /// let mut complex_vec = Vec::osc(1f32,0f32,n);
+    ///
+    /// complex_vec.fft();
+    ///
+    /// let vec = complex_vec.mag();
+    /// 
+    /// vec.re().simple_plot("./figures/fft_demonstration.png", "FFT Demonstration");
+    /// ```
     fn fft(&mut self){
         fft( &mut self.vec);
     }
