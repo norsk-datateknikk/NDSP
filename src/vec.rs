@@ -202,6 +202,29 @@ impl <T: MixedReal + MixedNumConversion<T2>, T2: MixedReal> ToTouples<T2> for Ve
     }
 }
 
+impl <T1: MixedNum + MixedNumConversion<T2>, T2: MixedNum> VecNumConversion<T1, T2> for Vec<T1> 
+{
+    /// Create a `Vec<T1>` form `Vec<T2>`
+    fn vec_from_num( in_vec: &Vec<T2>) -> Self
+    {
+        let mut out_vec = Vec::<T1>::new_with_capacity(in_vec.len());
+        for idx in 0..in_vec.len()
+        {
+            out_vec.push_back(T1::mixed_from_num(in_vec[idx]));
+        }
+        return out_vec;
+    }
+    // Create a `Vec<T2>` form `Vec<T1>`
+    fn vec_to_num(&self) -> Vec<T2>
+    {
+        let mut out_vec = Vec::<T2>::new_with_capacity(self.len());
+        for idx in 0..self.len()
+        {
+            out_vec.push_back(self[idx].mixed_to_num());
+        }
+        return out_vec;
+    }
+}
 
 // We prefer doctests, as they provide documentation additionally.
 #[cfg(test)]
