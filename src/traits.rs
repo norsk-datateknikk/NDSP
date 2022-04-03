@@ -19,6 +19,35 @@ pub trait NewFromVec<T> {
     fn new_from_vec( vec: alloc::vec::Vec<T> ) -> Vec<T>;
 }
 
+pub trait VecNumConversion<T1, T2> {
+    /// Create a `Vec<T2>` form `Vec<T1>`
+    /// 
+    /// ### Example
+    ///
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec_f32 = Vec::lin_range(0f32, 3f32, 4);
+    /// let test_vec_f64 = Vec::<f64>::vec_from_num(&test_vec_f32);
+    /// 
+    /// let result_vec = Vec::lin_range(0f64, 3f64, 4);
+    /// assert_eq!( test_vec_f64, result_vec );
+    /// ```
+    fn vec_from_num( in_vec: &Vec<T2>) -> Self;
+    /// Create a `Vec<T2>` form `Vec<T1>`
+    /// 
+    /// ### Example
+    ///
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec_f32 = Vec::lin_range(0f32, 3f32, 4);
+    /// let test_vec_f64: Vec<f64> = test_vec_f32.vec_to_num();
+    /// 
+    /// let result_vec = Vec::lin_range(0f64, 3f64, 4);
+    /// assert_eq!( test_vec_f64, result_vec );
+    /// ```
+    fn vec_to_num(&self) -> Vec<T2>;
+}
+
 pub trait Cap {
     /// The capacity of the vector. The amount of allocated positions.
     fn capacity( &self ) -> usize;
