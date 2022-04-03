@@ -52,7 +52,7 @@ impl <T: MixedNum + MixedOps> LinRange<T> for Vec<T>
 
 
 impl <T: MixedTrigonometry> traits::Sin for Vec<T> {
-    /// Take the elemtent-wise sine using a Taylor approximation of sin(x).
+    /// Take the elemtent-wise sin(x).
     /// Self must be wrapped to the -π=<x<π range.
     fn sin(&mut self) {
         for idx in 0..self.len() {
@@ -62,7 +62,7 @@ impl <T: MixedTrigonometry> traits::Sin for Vec<T> {
 }
 
 impl <T: MixedTrigonometry> traits::Cos for Vec<T> {
-    /// Take the elemtent-wise cosine using a shifted Taylor approximation of sin(x).
+    /// Take the elemtent-wise cos(x).
     /// Self must be wrapped to the -π=<x<π range.
     fn cos(&mut self) {
         for idx in 0..self.len() {
@@ -404,7 +404,7 @@ impl <T> traits::FromBinary for Vec<T>
 }
 */
 
-// We prefer doctests, as they provide documentation additionally.
+// We prefer doctests, as they also provide documentation.
 #[cfg(test)]
 mod tests {
     //use super::*;

@@ -11,7 +11,10 @@ pub mod ops;
 pub use ops::*;
 
 pub mod math_impl;
+
 pub mod complex;
+pub use complex::*;
+
 #[cfg(feature = "std")]
 pub mod plot;
 
@@ -23,7 +26,35 @@ extern crate num;
 use core::fmt;
 use alloc::string::String;
 
-/// Numeric vector of real, fixed-point numbers.
+/// Numeric vector of real, comples, fixed or floaring-point numbers.
+/// 
+/// ## Example
+/// 
+/// ```
+/// use ndsp::*;
+/// 
+/// let signalf32 = Vec::lin_range(0f32, 9f32, 10);
+/// let signalf64 = Vec::lin_range(2f64, 11f64, 10);
+///
+/// let result = signalf32.clone()*signalf64;
+/// assert_eq!(result.to_string(), "[ 0, 3, 8, 15, 24, 35, 48, 63, 80, 99 ]" ); 
+/// ```
+/// 
+/// This vec simulataneously support complex numbers.
+/// 
+/// ## Example
+/// 
+/// ```
+/// use ndsp::*;
+/// use mixed_num::*;
+/// 
+/// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+/// let theta = 0f32; 
+/// 
+/// let mut signal = Vec::osc(omega, theta, 4);
+/// signal = &signal*&signal;
+/// assert_eq!(signal.to_string(), "[ 1+0i, 0.7071067+0.7071068i, 0+0.99999994i, -0.7071067+0.7071068i ]" )
+/// ```
 #[derive(Clone, Default, Debug, PartialEq)]
 pub struct Vec<T>
 {
@@ -45,6 +76,21 @@ impl<T> Vec<T> {
     /// 
     /// * `capacity` - The capacity of the new vector.
     ///
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// // Allocate memory for vec.
+    /// let mut vec = Vec::<f32>::new_with_capacity(4);
+    /// 
+    /// // Add values to the vec.
+    /// vec.push_back(2f32);
+    /// vec.push_back(1f32);
+    /// vec.push_back(4f32);
+    /// vec.push_back(4f32);
+    /// 
+    /// assert_eq!(vec.to_string(), "[ 2, 1, 4, 4 ]" );
+    /// ```
     #[allow(dead_code)]
     pub fn new_with_capacity( capacity: usize ) -> Vec<T>
     {
@@ -61,23 +107,6 @@ impl<T> Vec<T> {
         where T: Clone
     {
         return &self.vec;
-    }
-}
-
-impl <T> core::ops::Index<usize> for Vec<T> {
-    type Output = T;
-    /// Trait for returning an indexed value of the array.
-    #[inline]
-    fn index(&self, index: usize) -> &T {
-        return &self.vec[index];
-    }
-}
-
-impl <T> core::ops::IndexMut<usize> for Vec<T> {
-    /// Trait for returning a mutable reference to indexed item.
-    #[inline]
-    fn index_mut(&mut self, index: usize) -> &mut T {
-        return &mut self.vec[index];
     }
 }
 

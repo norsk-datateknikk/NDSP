@@ -82,6 +82,29 @@ pub trait Atan {
 
 pub trait Ang<T> {
     /// Element-wise angle of complex numbers.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let signal = Vec::osc(omega, theta, 4);
+    /// assert_eq!(signal.ang().to_string(), "[ 0, 0.39269912, 0.7853982, 1.1780972 ]" );
+    ///
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let signal = Vec::osc(omega, theta, 64);
+    /// signal.ang().simple_plot("./figures/ang_documentation.png", "Angle"); 
+    /// ```
+    /// 
+    /// ![Alt version]()
+    /// 
     fn ang( &self ) -> Vec<T>;
 }
 
@@ -199,7 +222,6 @@ pub trait ToBinary {
     // Load signal of type T in a binary file into vector. 
     fn to_binary( &self, path: &str );
 }
-
 
 pub trait ToTouples<T>{
     // Load signal of type T in a binary file into vector. 

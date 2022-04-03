@@ -1,7 +1,6 @@
 use plotters::prelude::*;
 use ndsp::*;
 
-/// Plots comparison between various sqrt implementations.
 #[test]
 fn test_vec_plot(  )
 {

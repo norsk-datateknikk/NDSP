@@ -14,10 +14,10 @@
 
 - [ ] load from hdf5.
 - [ ] store to hdf5.
+- [ ] load from binary.
 - [ ] store to binary.
 
 ## Usability
 
-- [ ] Implement a simplified plotting interface/example.
-- [ ] Implement an easy way of generating a simple vector.
+- [~] Implement a simplified plotting interface/example.
 - [ ] Consider adding from_string method to simplify test-writing.
