@@ -129,18 +129,7 @@ impl<T: MixedNum + MixedWrapPhase + MixedSin + MixedOps>  Vec<Cartesian<T>> {
 }
 
 impl <T: MixedNum + MixedAtan> Ang<T> for Vec<Cartesian<T>> {
-    /// ## Example
-    /// 
-    /// ```
-    /// use ndsp::*;
-    /// use mixed_num::*;
-    /// 
-    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
-    /// let theta = 0f32; 
-    /// 
-    /// let signal = Vec::osc(omega, theta, 4);
-    /// assert_eq!(signal.ang().to_string(), "[ 0, 0.39269912, 0.7853982, 1.1780972 ]" )
-    /// ```
+    // See documentation on the train definintion.
     fn ang( &self ) -> Vec<T>
     {
         let mut rvec = Vec::new_with_capacity(self.len());
@@ -171,8 +160,6 @@ impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapP
     /// 
     /// Computed-in-place.
     /// Decimation-in-freqency.
-    /// 
-    /// The method utilizes fixed point approximations for square root, sine, cosine and atan calculations.
     /// 
     /// ## Example
     /// 

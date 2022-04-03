@@ -11,7 +11,10 @@ pub mod ops;
 pub use ops::*;
 
 pub mod math_impl;
+
 pub mod complex;
+pub use complex::*;
+
 #[cfg(feature = "std")]
 pub mod plot;
 
