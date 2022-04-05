@@ -10,6 +10,7 @@ mod fft;
 pub use fft::*;
 
 use crate::traits::*;
+use crate::traits::Mag; 
 use crate::vec::*;
 use Vec;
 
@@ -128,28 +129,110 @@ impl<T: MixedNum + MixedWrapPhase + MixedSin + MixedOps>  Vec<Cartesian<T>> {
     }
 }
 
-impl <T: MixedNum + MixedAtan> Ang<T> for Vec<Cartesian<T>> {
-    // See documentation on the train definintion.
-    fn ang( &self ) -> Vec<T>
-    {
-        let mut rvec = Vec::new_with_capacity(self.len());
+impl <T: MixedNum + MixedAtan + MixedZero> Ang<T> for Vec<Cartesian<T>> {
+    /// Element-wise angle of complex numbers.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let mut signal = Vec::osc(omega, theta, 4);
+    /// signal.ang();
+    /// assert_eq!(signal.re().to_string(), "[ 0, 0.39269912, 0.7853982, 1.1780972 ]" );
+    ///
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let mut signal = Vec::osc(omega, theta, 64);
+    /// signal.ang();
+    /// signal.re().simple_plot("./figures/ang_documentation.png", "Angle"); 
+    /// ```
+    /// 
+    /// ![Alt version]()
+    /// 
+    fn ang( &mut self ) {
         for i in 0..self.len()
         {
-            rvec.push_back(self[i].im.mixed_atan2(self[i].re));
+            self[i].re = self[i].im.mixed_atan2(self[i].re);
+            self[i].im = T::mixed_zero();
         }
-        return rvec;
     }
 }
 
 impl <T: MixedAbs> crate::traits::Mag<T> for Vec<T> {
-    fn mag( &self ) -> Vec<T>
-    {
-        let mut rvec = Vec::new_with_capacity(self.len());
+    /// Element-wise magnitude.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(2i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let mut signal = Vec::osc(omega, theta, 4);
+    /// 
+    /// signal.mag();
+    /// assert_eq!(signal.to_string(), "[ 1+0i, 1+0i, 1+0i, 1+0i ]" );
+    /// ```
+    fn mag( &mut self ) {
         for i in 0..self.len()
         {
-            rvec.push_back(self[i].mixed_abs());
+            self[i] = self[i].mixed_abs();
         }
-        return rvec;
+    }
+}
+
+impl<T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi>  Vec<Cartesian<T>> {
+    /// Calculate the power spectrum of a signal.
+    /// Expect the signal length to be a power of two. If not, the signal is zero padded.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::traits::*;
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(4i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let signal = Vec::osc(omega, theta, 8);
+    /// let mut psd = signal.power_spectrum();
+    /// 
+    /// 
+    /// assert_eq!(psd.to_string(), "[ 0.0000000000000014432899, 1, 0.0000000000000014432899, 0.0000000000000002220446, 0.000000000000000111022296, 0.000000000000001110223, 0.000000000000000111022296, 0.0000000000000002220446 ]" );
+    /// 
+    /// let signal = Vec::osc(omega, theta, 256);
+    /// let mut psd = signal.power_spectrum();
+    /// 
+    /// psd.pow2db();
+    /// 
+    /// psd.simple_plot("./figures/psd.png", "Power Spectral Density" );
+    /// ```
+    pub fn power_spectrum( &self ) -> Vec<T>
+    {
+        let padded_len = round_to_power_of_two(self.len());
+        let mut buffer = Vec::<Cartesian<T>>::new_with_capacity(padded_len);
+        for idx in 0..self.len() {
+            buffer.push_back(self[idx]);
+        }
+        for _idx in 0..padded_len-self.len() {
+            buffer.push_back(Cartesian::<T>::mixed_zero());
+        }
+
+        buffer.fft();
+        buffer.mag();
+        let mut real_buffer = buffer.re();
+        real_buffer.powi(2);
+
+        return real_buffer;
     }
 }
 
@@ -171,9 +254,9 @@ impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapP
     ///
     /// complex_vec.fft();
     ///
-    /// let vec = complex_vec.mag();
+    /// complex_vec.mag();
     /// 
-    /// vec.re().simple_plot("./figures/fft_demonstration.png", "FFT Demonstration");
+    /// complex_vec.re().simple_plot("./figures/fft_demonstration.png", "FFT Demonstration");
     /// ```
     fn fft(&mut self){
         fft( &mut self.vec);

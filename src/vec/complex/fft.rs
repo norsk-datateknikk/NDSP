@@ -31,6 +31,32 @@ pub fn is_power_of_two<T>( x: T) -> bool
     return false
 }
 
+/// Rounds up to the closest power of 2.
+/// 
+/// ## Argument
+/// 
+/// * `number` - The number to round up.
+/// 
+/// ## Example
+/// 
+/// ```
+/// use ndsp::vec::complex::*;
+/// 
+/// assert_eq!( round_to_power_of_two(6i32), 8i32 );
+/// assert_eq!( round_to_power_of_two(9i32), 16i32 );
+/// ```
+pub fn round_to_power_of_two<T>( number: T) -> T
+    where T: MixedNumConversion<usize> + MixedPowi + num::PrimInt
+{
+    if is_power_of_two::<T>(number)
+    {
+        return number;
+    }
+    let mut temp = log2(number.mixed_to_num());
+    temp+=1;
+    return T::mixed_from_num(2).mixed_powi(temp as i32);
+}
+
 /// Calculate the base 2 logarithm of x.
 /// 
 /// ## Argument

@@ -94,14 +94,41 @@ impl <T: MixedSqrt> traits::Sqrt for Vec<T> {
     }
 }
 
-impl <T: MixedReal + MixedNumSigned + MixedAbs> traits::Abs for Vec<T> {
-    /// Take the elemtent-wise absolute value.
+impl <T: MixedReal + MixedAbs> traits::Abs for Vec<T> {
+    /// Element-wise absolute value of `self`. Computed-in-place.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(-2f32, 2f32, 5);
+    /// test_vec.abs();
+    /// assert_eq!(test_vec.to_string(), "[ 2, 1, 0, 1, 2 ]" )
+    /// ```
     fn abs(&mut self) {
         for idx in 0..self.len() {
             if self[idx]< T::mixed_from_num(0)
             {
                 self[idx]=self[idx].mixed_abs();
             }
+        }
+    }
+}
+
+impl<T: MixedPowi> Powi for Vec<T> {
+    /// Rase the vector to an integer power. Computed-in-place.
+    fn powi( &mut self, power:i32 ){
+        for idx in 0..self.len() {
+                self[idx]=self[idx].mixed_powi(power);
+        }
+    }
+}
+
+impl<T: MixedNum + MixedPow> Pow<T> for Vec<T> {
+    /// Rase the vector to an integer power. Computed-in-place.
+    fn pow( &mut self, power:T ) {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_pow(power);
         }
     }
 }

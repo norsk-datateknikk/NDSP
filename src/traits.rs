@@ -77,7 +77,12 @@ pub trait LinRange<T>{
 // Compute-In-place operations.
 pub trait Powi {
     /// Rase the vector to an integer power. Computed-in-place.
-    fn powi( &mut self, power:u32 );
+    fn powi( &mut self, power:i32 );
+}
+
+pub trait Pow<T> {
+    /// Rase the vector to an integer power. Computed-in-place.
+    fn pow( &mut self, power:T );
 }
 
 pub trait Abs {
@@ -111,35 +116,12 @@ pub trait Atan {
 
 pub trait Ang<T> {
     /// Element-wise angle of complex numbers.
-    /// 
-    /// ## Example
-    /// 
-    /// ```
-    /// use ndsp::*;
-    /// use mixed_num::*;
-    /// 
-    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
-    /// let theta = 0f32; 
-    /// 
-    /// let signal = Vec::osc(omega, theta, 4);
-    /// assert_eq!(signal.ang().to_string(), "[ 0, 0.39269912, 0.7853982, 1.1780972 ]" );
-    ///
-    /// 
-    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
-    /// let theta = 0f32; 
-    /// 
-    /// let signal = Vec::osc(omega, theta, 64);
-    /// signal.ang().simple_plot("./figures/ang_documentation.png", "Angle"); 
-    /// ```
-    /// 
-    /// ![Alt version]()
-    /// 
-    fn ang( &self ) -> Vec<T>;
+    fn ang( &mut self );
 }
 
 pub trait Mag<T> {
     /// Element-wise magnitude of complex numbers.
-    fn mag( &self ) -> Vec<T>;
+    fn mag( &mut self );
 }
 
 pub trait WrapPhase {
