@@ -47,7 +47,7 @@
 //! ```
 //! use ndsp::*;
 //! let test_vec = Vec::lin_range(0f32, 1f32, 64);
-//! test_vec.plot("./figures/plot_test.png", "Test Plot","x [idx]", "y" );
+//! test_vec.simple_plot("./figures/plot_test.png", "Test Plot");
 //! ``` 
 
 #![crate_name = "ndsp"]

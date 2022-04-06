@@ -200,21 +200,28 @@ impl<T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPh
     /// use ndsp::*;
     /// use mixed_num::traits::*;
     /// 
-    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(4i32);
-    /// let theta = 0f32; 
+    /// let phase_rad = 0f32;
     /// 
-    /// let signal = Vec::osc(omega, theta, 8);
+    /// let f_sample = 10e3;
+    /// let tone_frequency = 2e3;
+    /// let angular_frequency = tone_frequency/(2f32*f_sample)*f32::mixed_tau();
+    /// 
+    /// let signal = Vec::osc(angular_frequency, phase_rad, 8);
     /// let mut psd = signal.power_spectrum();
     /// 
     /// 
-    /// assert_eq!(psd.to_string(), "[ 0.0000000000000014432899, 1, 0.0000000000000014432899, 0.0000000000000002220446, 0.000000000000000111022296, 0.000000000000001110223, 0.000000000000000111022296, 0.0000000000000002220446 ]" );
+    /// assert_eq!(psd.to_string(), "[ 0.056531776, 0.87694174, 0.026191715, 0.009336119, 0.005968219, 0.0054317378, 0.006799792, 0.012798772 ]" );
     /// 
-    /// let signal = Vec::osc(omega, theta, 256);
+    /// let signal = Vec::osc(angular_frequency, phase_rad, 256);
     /// let mut psd = signal.power_spectrum();
+    /// 
+    /// 
+    /// let step:f32 = 2f32*f_sample/(psd.len() as f32);
+    /// let x_vec = Vec::lin_range(0f32, 2f32*f_sample-step, psd.len());
     /// 
     /// psd.pow2db();
     /// 
-    /// psd.simple_plot("./figures/psd.png", "Power Spectral Density" );
+    /// x_vec.plot(&psd, "./figures/osc_psd.png", "Power Spectral Density", "[Hz]", "dBW/Hz" );
     /// ```
     pub fn power_spectrum( &self ) -> Vec<T>
     {

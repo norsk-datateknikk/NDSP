@@ -180,7 +180,7 @@ impl <T: fmt::Display> fmt::Display for Vec<T> {
     }
 }
 
-impl <T: MixedReal + MixedNumConversion<T2>, T2: MixedReal> ToTouples<T2> for Vec<T> {
+impl <T: MixedReal + MixedNumConversion<T2>, T2: MixedReal + MixedNumConversion<usize>> ToTouples<T2> for Vec<T> {
     /// Returns the vector as a vector of touples (x,y), where `outvec[1] = (n, in_vec[n])`.
     /// 
     /// ## Example
@@ -195,7 +195,28 @@ impl <T: MixedReal + MixedNumConversion<T2>, T2: MixedReal> ToTouples<T2> for Ve
     {
         let mut outvec = alloc::vec::Vec::<(T2, T2)>::new();
         for idx in 0..self.len() {
-            let tuple = (T::mixed_from_num(idx as f32).mixed_to_num(), self[idx].mixed_to_num());
+            let tuple = (T2::mixed_from_num(idx), self[idx].mixed_to_num());
+            outvec.push(tuple);
+        }
+        return outvec;
+    }
+
+    /// Load two vectors self, y_vec into touple, (x,y) for plotting.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let x_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// let y_vec = Vec::lin_range(0f32, 6f32, 4);
+    /// let touple_vec = x_vec.to_xy_touples(&y_vec);
+    /// assert_eq!(touple_vec[1], (1f32,2f32) );
+    /// ```
+    fn to_xy_touples( &self, y_vec: &Self ) -> alloc::vec::Vec<(T2, T2)>
+    {
+        let mut outvec = alloc::vec::Vec::<(T2, T2)>::new();
+        for idx in 0..self.len() {
+            let tuple = (self[idx].mixed_to_num(), y_vec[idx].mixed_to_num());
             outvec.push(tuple);
         }
         return outvec;

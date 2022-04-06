@@ -237,4 +237,6 @@ pub trait ToBinary {
 pub trait ToTouples<T>{
     // Load signal of type T in a binary file into vector. 
     fn to_touples( &self ) -> alloc::vec::Vec<(T, T)>;
+    // Load two vectors self, other into touple, for plotting.
+    fn to_xy_touples( &self, other: &Self ) -> alloc::vec::Vec<(T, T)>;
 }
