@@ -224,6 +224,11 @@ pub trait Power<T>{
     fn power( &mut self );
 }
 
+pub trait Psd<T>{
+    /// Calculate the Power Spectral Density (PSD) in linear scale of a signal.
+    fn psd( &self ) -> Vec<T>;
+}
+
 pub trait FromBinary {
     // Load signal of type T in a binary file into vector. 
     fn from_binary( item_type: ItemType, path: &str ) -> Self;

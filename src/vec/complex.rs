@@ -190,10 +190,11 @@ impl <T: MixedAbs> crate::traits::Mag<T> for Vec<T> {
     }
 }
 
-impl<T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi>  Vec<Cartesian<T>> {
-    /// Calculate the power spectrum of a signal.
-    /// Expect the signal length to be a power of two. If not, the signal is zero padded.
+impl<T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> Psd<T> for Vec<Cartesian<T>> {
+    /// Calculate the Power Spectral Density (PSD) in linear scale of a signal.
     /// 
+    /// Expects the signal length to be a power of two. If not, the signal is zero padded.
+    ///  
     /// ## Example
     /// 
     /// ```
@@ -207,13 +208,13 @@ impl<T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPh
     /// let angular_frequency = tone_frequency/(2f32*f_sample)*f32::mixed_tau();
     /// 
     /// let signal = Vec::osc(angular_frequency, phase_rad, 8);
-    /// let mut psd = signal.power_spectrum();
+    /// let mut psd = signal.psd();
     /// 
     /// 
     /// assert_eq!(psd.to_string(), "[ 0.056531776, 0.87694174, 0.026191715, 0.009336119, 0.005968219, 0.0054317378, 0.006799792, 0.012798772 ]" );
     /// 
     /// let signal = Vec::osc(angular_frequency, phase_rad, 256);
-    /// let mut psd = signal.power_spectrum();
+    /// let mut psd = signal.psd();
     /// 
     /// 
     /// let step:f32 = 2f32*f_sample/(psd.len() as f32);
@@ -223,7 +224,7 @@ impl<T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPh
     /// 
     /// x_vec.plot(&psd, "./figures/osc_psd.png", "Power Spectral Density", "[Hz]", "dBW/Hz" );
     /// ```
-    pub fn power_spectrum( &self ) -> Vec<T>
+    fn psd( &self ) -> Vec<T>
     {
         let padded_len = round_to_power_of_two(self.len());
         let mut buffer = Vec::<Cartesian<T>>::new_with_capacity(padded_len);

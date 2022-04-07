@@ -2,6 +2,9 @@
 // Norsk Datateknikk AS //
 //----------------------//
 
+use mixed_num::*;
+
+
 use plotters::prelude::*;
 use crate::*;
 use std::boxed::Box;
@@ -104,4 +107,46 @@ impl Vec<f32> {
     }
 }
 
+impl <T:MixedNum + MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + mixed_num::MixedWrapPhase
+      + MixedOps + MixedPi + MixedZero + MixedPowi + MixedNumConversion<usize> + MixedNumConversion<f32>> Vec<Cartesian<T>>
+{
+    /// Calculate the Power Spectral Density (PSD) in linear scale of a signal.
+    /// 
+    /// Expects the signal length to be a power of two. If not, the signal is zero padded.
+    /// 
+    /// For signals in the magnitude<1 range, the PSD plot is in dBFS.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::traits::*;
+    /// 
+    /// let phase_rad = 0f32;
+    /// 
+    /// let f_sample = 10e3;
+    /// let tone_frequency = 2e3;
+    /// let angular_frequency = tone_frequency/f_sample*f32::mixed_tau();
+    /// 
+    /// let signal = Vec::osc(angular_frequency, phase_rad, 256);
+    /// 
+    /// signal.plot_psd( f_sample, "./figures/plot_psd.png", "Power Spectral Density" );
+    /// ```
+    pub fn plot_psd( &self, sample_rate_hz: T, path: &str, caption: &str ) -> Result<(), Box<dyn std::error::Error>>
+        where Vec<T>: Decibel<T>,
+              Vec<Cartesian<T>>: Psd<T>
+    {
+        let psd = self.psd();
+        let mut psd: Vec<f32> = psd.vec_to_num();
 
+        let sample_rate_hz:f32 = sample_rate_hz.mixed_to_num();
+        let step_hz: f32 = 2f32*sample_rate_hz/(psd.len() as f32);
+
+        let x_vec = Vec::lin_range(0f32, sample_rate_hz-step_hz, psd.len());
+        psd.pow2db();
+    
+        x_vec.plot(&psd, path, caption, "Frequency [Hz]", "dBW/Hz" )
+
+        
+    }
+}
