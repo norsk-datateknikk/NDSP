@@ -129,6 +129,21 @@ pub trait WrapPhase {
     fn wrap_phase( &mut self );
 }
 
+pub trait Clip<T> {
+    /// Clip all values to the `{lower_limit, uppeer_limit}` range.
+    fn clip( &mut self, lower_limit:T, uppeer_limit:T );
+}
+
+pub trait Minimum<T> {
+    /// Constrain `self` to be  `>=lower_limit`.
+    fn minimum( &mut self, lower_limit:T );
+}
+
+pub trait Maximum<T> {
+    /// Constrain `self` to be  `>=lower_limit`.
+    fn maximum( &mut self, upper_limit:T );
+}
+
 pub trait Fft {
     /// Compute the the FFT of `self`. Computed-in-place.
     fn fft( &mut self );

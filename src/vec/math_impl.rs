@@ -419,6 +419,90 @@ impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Energy<T> for Vec<T>{
     }
 }
 
+impl <T1: MixedNum, T2: MixedNum + MixedNumConversion<T1> + core::cmp::PartialOrd> Minimum<T1> for Vec<T2>{
+    /// Constrain `self` to be  `>= lower_limit`.
+    /// 
+    /// Computed-in-place.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// 
+    /// test_vec.minimum(3i32);
+    /// assert_eq!(test_vec.to_string(), "[ 3, 3, 4, 5 ]" )
+    /// ```
+    fn minimum( &mut self, lower_limit:T1 )
+    {
+        let lower_limit = T2::mixed_from_num(lower_limit);
+
+        for idx in 0..self.len() {
+            if self[idx] < lower_limit {
+                self[idx]=lower_limit
+            }
+        }
+    }
+}
+
+impl <T1: MixedNum, T2: MixedNum + MixedNumConversion<T1> + core::cmp::PartialOrd> Maximum<T1> for Vec<T2>{
+    /// Constrain `self` to be `<= upper_limit`.
+    /// 
+    /// Computed-in-place.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// 
+    /// test_vec.maximum(4i32);
+    /// assert_eq!(test_vec.to_string(), "[ 2, 3, 4, 4 ]" )
+    /// ```
+    fn maximum( &mut self,uppper_limit:T1 )
+    {
+        let uppper_limit = T2::mixed_from_num(uppper_limit);
+
+        for idx in 0..self.len() {
+            if uppper_limit < self[idx] {
+                self[idx]=uppper_limit
+                
+            }
+        }
+    }
+}
+
+impl <T1: MixedNum, T2: MixedNum + MixedNumConversion<T1> + core::cmp::PartialOrd> Clip<T1> for Vec<T2>{
+    /// Clip all values to the `{lower_limit, uppeer_limit}` range.
+    /// 
+    /// Computed-in-place.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// 
+    /// test_vec.clip(3i32,4i32);
+    /// assert_eq!(test_vec.to_string(), "[ 3, 3, 4, 4 ]" )
+    /// ```
+    fn clip( &mut self, lower_limit:T1, uppper_limit:T1 )
+    {
+        let lower_limit = T2::mixed_from_num(lower_limit);
+        let uppper_limit = T2::mixed_from_num(uppper_limit);
+
+        for idx in 0..self.len() {
+            if self[idx] < lower_limit {
+                self[idx]=lower_limit
+            }
+            else if uppper_limit < self[idx] {
+                self[idx]=uppper_limit
+                
+            }
+        }
+    }
+}
+
 impl <T: MixedReal + MixedZero + MixedPowi + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase +
          MixedOps + MixedPi > HilbertTransform<T> for Vec<T>
     where T: MixedNumConversion<T>
@@ -435,10 +519,12 @@ impl <T: MixedReal + MixedZero + MixedPowi + MixedNumSigned + MixedTrigonometry 
     /// use ndsp::*;
     /// use mixed_num::*;
     /// 
-    /// let mut signal = Vec::lin_range(0f32, 2f32*f32::mixed_tau(), 16);
+    /// 
+    /// let n = 128;
+    /// let mut signal = Vec::lin_range(0f32, 2f32*f32::mixed_tau(), n);
     /// signal.cos();
     /// 
-    /// let mut buffer = Vec::<Cartesian<f32>>::zeros(8);
+    /// let mut buffer = Vec::<Cartesian<f32>>::zeros(n);
     /// 
     /// signal.hilbert(&mut buffer);
     /// 
