@@ -59,14 +59,14 @@ pub trait PushBack<T> {
     fn push_back( &mut self, value: T );
 }
 
-pub trait Ones {
+pub trait Ones<T> {
     /// Create a vector of ones.
-    fn ones() -> Self;
+    fn ones(len: usize) -> Vec<T>;
 }
 
-pub trait Zeros {
+pub trait Zeros<T> {
     /// Create a vector of zeros.
-    fn zeros() -> Self;
+    fn zeros(len: usize) -> Vec<T>;
 }
 
 pub trait LinRange<T>{
@@ -139,6 +139,11 @@ pub trait Ifft {
     fn ifft( &mut self );
 }
 
+pub trait HilbertTransform<T>
+{
+    /// Compute the Discrete Hilbert Transform (DHT).
+    fn hilbert(&self, output_buffer: &mut Vec<Cartesian<T>>);
+}
 
 pub trait Max<T> {
     // Return the value of the highest item in the vector 

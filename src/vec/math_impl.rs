@@ -5,8 +5,7 @@
 
 extern crate alloc;
 
-use mixed_num::{Cartesian, Polar};
-use mixed_num::traits::*;
+use mixed_num::*;
 
 use crate::traits;
 use crate::traits::*;
@@ -48,7 +47,51 @@ impl <T: MixedNum + MixedOps> LinRange<T> for Vec<T>
         }
         return vector;
     }
-} 
+}
+
+impl <T: MixedZero> Zeros<T> for Vec<T> {
+    /// Create a vector of zeros.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::<f32>::zeros(4);
+    /// assert_eq!(test_vec.to_string(), "[ 0, 0, 0, 0 ]" )
+    /// ```
+    fn zeros( len: usize ) -> Vec<T>
+    {
+        let mut rvec = Vec::<T>::new_with_capacity(len);
+
+        for _idx in 0..len
+        {
+            rvec.push_back(T::mixed_zero());
+        }
+        return rvec;
+    }
+}
+
+impl <T: MixedOne> Ones<T> for Vec<T> {
+    /// Create a vector of ones.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::<f32>::ones(4);
+    /// assert_eq!(test_vec.to_string(), "[ 1, 1, 1, 1 ]" )
+    /// ```
+    fn ones( len: usize ) -> Vec<T>
+    {
+        let mut rvec = Vec::<T>::new_with_capacity(len);
+
+        for _idx in 0..len
+        {
+            rvec.push_back(T::mixed_one());
+        }
+        return rvec;
+    }
+}
 
 
 impl <T: MixedTrigonometry> traits::Sin for Vec<T> {
@@ -376,6 +419,50 @@ impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Energy<T> for Vec<T>{
     }
 }
 
+impl <T: MixedReal + MixedZero + MixedPowi + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase +
+         MixedOps + MixedPi > HilbertTransform<T> for Vec<T>
+    where T: MixedNumConversion<T>
+{
+    /// Compute the Discrete Hilbert Transform (DHT).
+    /// 
+    /// The transform computes the analytical signal from a real-only signal.
+    /// 
+    /// [1] [L. Marple, Computing the Discrete-Time “Analytic” Signal via FFT, IEEE, 1999](https://ieeexplore.ieee.org/document/782222)
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let mut signal = Vec::lin_range(0f32, 2f32*f32::mixed_tau(), 16);
+    /// signal.cos();
+    /// 
+    /// let mut buffer = Vec::<Cartesian<f32>>::zeros(8);
+    /// 
+    /// signal.hilbert(&mut buffer);
+    /// 
+    /// buffer.plot_psd(1e3, "./figures/plot_hilbert.png", "PSD of Analytical Signal");
+    /// 
+    /// ```
+    fn hilbert(&self, output_buffer: &mut Vec<Cartesian<T>>)
+    {        
+        output_buffer.copy_from_buffer(self);
+
+        output_buffer.fft();
+        
+        for idx in 1..(output_buffer.len()/2)
+        {
+            output_buffer[idx] = output_buffer[idx]*T::mixed_from_num(2);
+        }
+        for idx in output_buffer.len()/2+1..output_buffer.len()
+        {
+            output_buffer[idx] = Cartesian::mixed_zero();
+        }
+
+        output_buffer.ifft();
+    }
+}
 
 /*
 #[cfg(any(feature = "std"))]

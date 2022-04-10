@@ -36,6 +36,18 @@ impl<T: MixedReal> Vec<Cartesian<T>> {
         }
         return vec;
     }
+
+    /// Create a complex vector from a real one.
+    /// 
+    /// Expects buffer to be at least as large as self. 
+    #[allow(dead_code)]
+    pub fn copy_from_buffer( &mut self, buffer: &Vec<T> )
+    {
+        for idx in 0..self.len()
+        {
+            self[idx].re = buffer[idx];
+        }
+    }
 }
 
 impl <T: MixedNum> traits::Re<T> for Vec<Cartesian<T>> {
@@ -279,12 +291,25 @@ impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapP
     /// Computed-in-place.
     /// Decimation-in-freqency.
     /// 
-    /// The method utilizes fixed point approximations for square root, sine, cosine and atan calculations.
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let n = 128;
+    /// let mut buffer = Vec::<Cartesian<f32>>::zeros(128);
+    ///
+    /// buffer[4] = Cartesian::<f32>::mixed_one();
+    /// 
+    /// buffer.ifft();
+    ///
+    /// buffer.re().simple_plot("./figures/ifft_demonstration.png", "IFFT Demonstration");
+    /// ```
     fn ifft(&mut self){
         ifft( &mut self.vec);
     }
 }
-
 
 /*
 #[cfg(any(feature = "std"))]
