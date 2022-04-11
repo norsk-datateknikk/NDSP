@@ -150,3 +150,4 @@ impl <T:MixedNum + MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + 
         
     }
 }
+

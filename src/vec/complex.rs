@@ -202,7 +202,7 @@ impl <T: MixedAbs> crate::traits::Mag<T> for Vec<T> {
     }
 }
 
-impl<T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> Psd<T> for Vec<Cartesian<T>> {
+impl<T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> Psd<T> for Vec<Cartesian<T>> {
     /// Calculate the Power Spectral Density (PSD) in linear scale of a signal.
     /// 
     /// Expects the signal length to be a power of two. If not, the signal is zero padded.
@@ -225,12 +225,12 @@ impl<T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPh
     /// 
     /// assert_eq!(psd.to_string(), "[ 0.056531776, 0.87694174, 0.026191715, 0.009336119, 0.005968219, 0.0054317378, 0.006799792, 0.012798772 ]" );
     /// 
-    /// let signal = Vec::osc(angular_frequency, phase_rad, 256);
+    /// let signal = Vec::osc(angular_frequency, phase_rad, 128);
     /// let mut psd = signal.psd();
     /// 
     /// 
     /// let step:f32 = 2f32*f_sample/(psd.len() as f32);
-    /// let x_vec = Vec::lin_range(0f32, 2f32*f_sample-step, psd.len());
+    /// let x_vec    = Vec::lin_range(0f32, 2f32*f_sample-step, psd.len());
     /// 
     /// psd.pow2db();
     /// 
@@ -256,7 +256,7 @@ impl<T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPh
     }
 }
 
-impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Fft for Vec<Cartesian<T>> {
+impl <T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Fft for Vec<Cartesian<T>> {
     /// Calculate the Raddix-2 FFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
@@ -283,7 +283,7 @@ impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapP
     }
 }
 
-impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Ifft for Vec<Cartesian<T>> {
+impl <T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Ifft for Vec<Cartesian<T>> {
     /// Calculate the Raddix-2 IFFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.

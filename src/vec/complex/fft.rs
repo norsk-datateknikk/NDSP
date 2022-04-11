@@ -7,6 +7,12 @@ use mixed_num::complex::*;
 
 use crate::*;
 
+#[derive(PartialEq)]
+enum FftDirection {
+    Forward,
+    Backward,
+}
+
 /// Check if x is a power of two.
 /// 
 /// ## Argument
@@ -152,10 +158,10 @@ fn bitreverse_order<T>( arr: &mut [Cartesian<T>] )
 ///                         Cartesian::new(0.0,  0.25 )] );
 /// ```
 pub fn fft<T>( array: &mut [Cartesian<T>] )
-    where T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi
+    where T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi
 {
     // Process fft.
-    fft_processor(array, T::mixed_from_num(1));
+    fft_processor(array, FftDirection::Forward);
 
     // Decimation-in-freqency.
     bitreverse_order(array); // Bitreverse order
@@ -184,21 +190,21 @@ pub fn fft<T>( array: &mut [Cartesian<T>] )
 /// use fixed::types::extra::U28 as U;
 /// 
 /// const N:usize = 4;
-/// let mut arr  = vec![ Cartesian::new(1f32, 0f32 ); N  ];
+/// let mut arr  = vec![ Cartesian::new(0f32, 0f32 ); N  ];
 ///
-/// arr[3].re = 0f32;
+/// arr[3].re = 1f32;
 /// 
 /// ifft( &mut arr );
-/// assert_eq!( arr, vec![  Cartesian::new(0.75, 0.0  ),
-///                         Cartesian::new(0.0,  0.25 ),
-///                         Cartesian::new(0.25, 0.0  ),
-///                         Cartesian::new(0.0, -0.25 )] );
+/// assert_eq!( arr, vec![  Cartesian::new(4.0, 0.0  ),
+///                         Cartesian::new(0.0, -4.0 ),
+///                         Cartesian::new(-4.0, 0.0  ),
+///                         Cartesian::new(0.0, 4.0 )] );
 /// ```
 pub fn ifft<T>( vec: &mut Vec<Cartesian<T>> )
-    where T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedOps + MixedPowi
+    where T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedOps + MixedPowi
 {
     // Process fft.
-    fft_processor(vec, T::mixed_from_num(-1));
+    fft_processor(vec, FftDirection::Backward);
     // Decimation-in-freqency.
     bitreverse_order(vec); // Bitreverse order
 }
@@ -228,7 +234,6 @@ pub fn calculate_twiddle_factors<T>( n: usize, dir: T) -> crate::Vec<Cartesian<T
     let mut w = crate::Vec::<Cartesian<T>>::new_with_capacity(n/2);
 
     // Calculate Twiddle factor W.
-
     let mut angle:T = dir*-<T>::mixed_tau();
     for _i in 0..log2(n)
     {
@@ -246,16 +251,29 @@ pub fn calculate_twiddle_factors<T>( n: usize, dir: T) -> crate::Vec<Cartesian<T
         w.push_back( Cartesian::new( real, imag ) );
     }
     return w;
-}
+} 
 
 /// Shared fft processor for fft and ifft.
 /// Requires bit-reversion afterwards.
-fn fft_processor<T>( array: &mut [Cartesian<T>], dir: T )
-    where T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi
+fn fft_processor<T>( array: &mut [Cartesian<T>], dir: FftDirection )
+    where T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi
 {
+    let scale_factor:T;
+    let dir_val:T;
+    if dir == FftDirection::Forward
+    {
+        dir_val = T::mixed_from_num(1);
+        scale_factor=T::mixed_from_num(0.5);
+    }
+    else
+    {
+        dir_val = T::mixed_from_num(-1);
+        scale_factor=T::mixed_from_num(1);
+    }
+
     let n = array.len();
 
-    let w = calculate_twiddle_factors(n, dir);
+    let w = calculate_twiddle_factors(n, dir_val);
 
     // Number of butterfly computations per block.
     let mut num_butt:   usize = n/2;
@@ -270,7 +288,7 @@ fn fft_processor<T>( array: &mut [Cartesian<T>], dir: T )
     {
         // Iterate over blocks.
         for block in 0..num_blocks
-        {   
+        {       
             // Calculate indexes
             let pa = (block*n)/num_blocks;
             let pb = (block*n)/num_blocks + num_butt;
@@ -279,8 +297,8 @@ fn fft_processor<T>( array: &mut [Cartesian<T>], dir: T )
             for butt in 0..num_butt
             {
                 // Scale values to avoid overflow.
-                let mut a = mixed_num::div_scalar_cartesian( array[pa+butt], T::mixed_from_num(2) );
-                let mut b = mixed_num::div_scalar_cartesian( array[pb+butt], T::mixed_from_num(2) );
+                let mut a = array[pa+butt]* scale_factor;
+                let mut b = array[pb+butt]* scale_factor;
 
                 let w_idx:usize = w_idx_step_size*(butt);
                 let w_temp = w[ w_idx ];
