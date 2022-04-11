@@ -195,10 +195,10 @@ pub fn fft<T>( array: &mut [Cartesian<T>] )
 /// arr[3].re = 1f32;
 /// 
 /// ifft( &mut arr );
-/// assert_eq!( arr, vec![  Cartesian::new(4.0, 0.0  ),
-///                         Cartesian::new(0.0, -4.0 ),
-///                         Cartesian::new(-4.0, 0.0  ),
-///                         Cartesian::new(0.0, 4.0 )] );
+/// assert_eq!( arr, vec![  Cartesian::new(1.0, 0.0  ),
+///                         Cartesian::new(0.0, -1.0 ),
+///                         Cartesian::new(-1.0, 0.0  ),
+///                         Cartesian::new(0.0, 1.0 )] );
 /// ```
 pub fn ifft<T>( vec: &mut Vec<Cartesian<T>> )
     where T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedOps + MixedPowi
