@@ -5,8 +5,7 @@
 
 extern crate alloc;
 
-use mixed_num::{Cartesian, Polar};
-use mixed_num::traits::*;
+use mixed_num::*;
 
 use crate::traits;
 use crate::traits::*;
@@ -48,7 +47,51 @@ impl <T: MixedNum + MixedOps> LinRange<T> for Vec<T>
         }
         return vector;
     }
-} 
+}
+
+impl <T: MixedZero> Zeros<T> for Vec<T> {
+    /// Create a vector of zeros.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::<f32>::zeros(4);
+    /// assert_eq!(test_vec.to_string(), "[ 0, 0, 0, 0 ]" )
+    /// ```
+    fn zeros( len: usize ) -> Vec<T>
+    {
+        let mut rvec = Vec::<T>::new_with_capacity(len);
+
+        for _idx in 0..len
+        {
+            rvec.push_back(T::mixed_zero());
+        }
+        return rvec;
+    }
+}
+
+impl <T: MixedOne> Ones<T> for Vec<T> {
+    /// Create a vector of ones.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let test_vec = Vec::<f32>::ones(4);
+    /// assert_eq!(test_vec.to_string(), "[ 1, 1, 1, 1 ]" )
+    /// ```
+    fn ones( len: usize ) -> Vec<T>
+    {
+        let mut rvec = Vec::<T>::new_with_capacity(len);
+
+        for _idx in 0..len
+        {
+            rvec.push_back(T::mixed_one());
+        }
+        return rvec;
+    }
+}
 
 
 impl <T: MixedTrigonometry> traits::Sin for Vec<T> {
@@ -94,14 +137,41 @@ impl <T: MixedSqrt> traits::Sqrt for Vec<T> {
     }
 }
 
-impl <T: MixedReal + MixedNumSigned + MixedAbs> traits::Abs for Vec<T> {
-    /// Take the elemtent-wise absolute value.
+impl <T: MixedReal + MixedAbs> traits::Abs for Vec<T> {
+    /// Element-wise absolute value of `self`. Computed-in-place.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(-2f32, 2f32, 5);
+    /// test_vec.abs();
+    /// assert_eq!(test_vec.to_string(), "[ 2, 1, 0, 1, 2 ]" )
+    /// ```
     fn abs(&mut self) {
         for idx in 0..self.len() {
             if self[idx]< T::mixed_from_num(0)
             {
                 self[idx]=self[idx].mixed_abs();
             }
+        }
+    }
+}
+
+impl<T: MixedPowi> Powi for Vec<T> {
+    /// Rase the vector to an integer power. Computed-in-place.
+    fn powi( &mut self, power:i32 ){
+        for idx in 0..self.len() {
+                self[idx]=self[idx].mixed_powi(power);
+        }
+    }
+}
+
+impl<T: MixedNum + MixedPow> Pow<T> for Vec<T> {
+    /// Rase the vector to an integer power. Computed-in-place.
+    fn pow( &mut self, power:T ) {
+        for idx in 0..self.len() {
+            self[idx]=self[idx].mixed_pow(power);
         }
     }
 }
@@ -349,6 +419,136 @@ impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Energy<T> for Vec<T>{
     }
 }
 
+impl <T1: MixedNum, T2: MixedNum + MixedNumConversion<T1> + core::cmp::PartialOrd> Minimum<T1> for Vec<T2>{
+    /// Constrain `self` to be  `>= lower_limit`.
+    /// 
+    /// Computed-in-place.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// 
+    /// test_vec.minimum(3i32);
+    /// assert_eq!(test_vec.to_string(), "[ 3, 3, 4, 5 ]" )
+    /// ```
+    fn minimum( &mut self, lower_limit:T1 )
+    {
+        let lower_limit = T2::mixed_from_num(lower_limit);
+
+        for idx in 0..self.len() {
+            if self[idx] < lower_limit {
+                self[idx]=lower_limit
+            }
+        }
+    }
+}
+
+impl <T1: MixedNum, T2: MixedNum + MixedNumConversion<T1> + core::cmp::PartialOrd> Maximum<T1> for Vec<T2>{
+    /// Constrain `self` to be `<= upper_limit`.
+    /// 
+    /// Computed-in-place.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// 
+    /// test_vec.maximum(4i32);
+    /// assert_eq!(test_vec.to_string(), "[ 2, 3, 4, 4 ]" )
+    /// ```
+    fn maximum( &mut self,uppper_limit:T1 )
+    {
+        let uppper_limit = T2::mixed_from_num(uppper_limit);
+
+        for idx in 0..self.len() {
+            if uppper_limit < self[idx] {
+                self[idx]=uppper_limit
+                
+            }
+        }
+    }
+}
+
+impl <T1: MixedNum, T2: MixedNum + MixedNumConversion<T1> + core::cmp::PartialOrd> Clip<T1> for Vec<T2>{
+    /// Clip all values to the `{lower_limit, uppeer_limit}` range.
+    /// 
+    /// Computed-in-place.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(2f32, 5f32, 4);
+    /// 
+    /// test_vec.clip(3i32,4i32);
+    /// assert_eq!(test_vec.to_string(), "[ 3, 3, 4, 4 ]" )
+    /// ```
+    fn clip( &mut self, lower_limit:T1, uppper_limit:T1 )
+    {
+        let lower_limit = T2::mixed_from_num(lower_limit);
+        let uppper_limit = T2::mixed_from_num(uppper_limit);
+
+        for idx in 0..self.len() {
+            if self[idx] < lower_limit {
+                self[idx]=lower_limit
+            }
+            else if uppper_limit < self[idx] {
+                self[idx]=uppper_limit
+                
+            }
+        }
+    }
+}
+
+impl <T: MixedReal + MixedZero + MixedPowi + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase +
+         MixedOps + MixedPi > HilbertTransform<T> for Vec<T>
+    where T: MixedNumConversion<T>
+{
+    /// Compute the Discrete Hilbert Transform (DHT).
+    /// 
+    /// The transform computes the analytical signal from a real-only signal.
+    /// 
+    /// [1] [L. Marple, Computing the Discrete-Time “Analytic” Signal via FFT, IEEE, 1999](https://ieeexplore.ieee.org/document/782222)
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// 
+    /// let n = 128;
+    /// let mut signal = Vec::lin_range(0f32, 2f32*f32::mixed_tau(), n);
+    /// signal.cos();
+    /// 
+    /// let mut buffer = Vec::<Cartesian<f32>>::zeros(n);
+    /// 
+    /// signal.hilbert(&mut buffer);
+    /// 
+    /// buffer.plot_psd(1e3, "./figures/plot_hilbert.png", "PSD of Analytical Signal");
+    /// 
+    /// ```
+    fn hilbert(&self, output_buffer: &mut Vec<Cartesian<T>>)
+    {        
+        output_buffer.copy_from_buffer(self);
+
+        output_buffer.fft();
+        
+        for idx in 1..(output_buffer.len()/2)
+        {
+            output_buffer[idx] = output_buffer[idx]*T::mixed_from_num(2);
+        }
+        for idx in output_buffer.len()/2+1..output_buffer.len()
+        {
+            output_buffer[idx] = Cartesian::mixed_zero();
+        }
+
+        output_buffer.ifft();
+    }
+}
 
 /*
 #[cfg(any(feature = "std"))]

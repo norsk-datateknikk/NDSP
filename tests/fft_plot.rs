@@ -59,9 +59,9 @@ fn fft_plot(  )
     complex_vec.fft();
     complex_vec.im();
 
-    let vec = complex_vec.mag();
+    complex_vec.mag();
 
-    plot(&vec.re(), "./figures/fft_plot.png", "FFT example", "idx", "Magnitude").unwrap();
+    plot(&complex_vec.re(), "./figures/fft_plot.png", "FFT example", "idx", "Magnitude").unwrap();
 
     //___________________________________________________________________________
     /*

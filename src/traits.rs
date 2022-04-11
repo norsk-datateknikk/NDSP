@@ -59,14 +59,14 @@ pub trait PushBack<T> {
     fn push_back( &mut self, value: T );
 }
 
-pub trait Ones {
+pub trait Ones<T> {
     /// Create a vector of ones.
-    fn ones() -> Self;
+    fn ones(len: usize) -> Vec<T>;
 }
 
-pub trait Zeros {
+pub trait Zeros<T> {
     /// Create a vector of zeros.
-    fn zeros() -> Self;
+    fn zeros(len: usize) -> Vec<T>;
 }
 
 pub trait LinRange<T>{
@@ -77,7 +77,12 @@ pub trait LinRange<T>{
 // Compute-In-place operations.
 pub trait Powi {
     /// Rase the vector to an integer power. Computed-in-place.
-    fn powi( &mut self, power:u32 );
+    fn powi( &mut self, power:i32 );
+}
+
+pub trait Pow<T> {
+    /// Rase the vector to an integer power. Computed-in-place.
+    fn pow( &mut self, power:T );
 }
 
 pub trait Abs {
@@ -111,40 +116,32 @@ pub trait Atan {
 
 pub trait Ang<T> {
     /// Element-wise angle of complex numbers.
-    /// 
-    /// ## Example
-    /// 
-    /// ```
-    /// use ndsp::*;
-    /// use mixed_num::*;
-    /// 
-    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
-    /// let theta = 0f32; 
-    /// 
-    /// let signal = Vec::osc(omega, theta, 4);
-    /// assert_eq!(signal.ang().to_string(), "[ 0, 0.39269912, 0.7853982, 1.1780972 ]" );
-    ///
-    /// 
-    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
-    /// let theta = 0f32; 
-    /// 
-    /// let signal = Vec::osc(omega, theta, 64);
-    /// signal.ang().simple_plot("./figures/ang_documentation.png", "Angle"); 
-    /// ```
-    /// 
-    /// ![Alt version]()
-    /// 
-    fn ang( &self ) -> Vec<T>;
+    fn ang( &mut self );
 }
 
 pub trait Mag<T> {
     /// Element-wise magnitude of complex numbers.
-    fn mag( &self ) -> Vec<T>;
+    fn mag( &mut self );
 }
 
 pub trait WrapPhase {
     /// Wrapps `self` to the -π=<x<π range. Computed-in-place.
     fn wrap_phase( &mut self );
+}
+
+pub trait Clip<T> {
+    /// Clip all values to the `{lower_limit, uppeer_limit}` range.
+    fn clip( &mut self, lower_limit:T, uppeer_limit:T );
+}
+
+pub trait Minimum<T> {
+    /// Constrain `self` to be  `>=lower_limit`.
+    fn minimum( &mut self, lower_limit:T );
+}
+
+pub trait Maximum<T> {
+    /// Constrain `self` to be  `>=lower_limit`.
+    fn maximum( &mut self, upper_limit:T );
 }
 
 pub trait Fft {
@@ -157,6 +154,11 @@ pub trait Ifft {
     fn ifft( &mut self );
 }
 
+pub trait HilbertTransform<T>
+{
+    /// Compute the Discrete Hilbert Transform (DHT).
+    fn hilbert(&self, output_buffer: &mut Vec<Cartesian<T>>);
+}
 
 pub trait Max<T> {
     // Return the value of the highest item in the vector 
@@ -242,6 +244,11 @@ pub trait Power<T>{
     fn power( &mut self );
 }
 
+pub trait Psd<T>{
+    /// Calculate the Power Spectral Density (PSD) in linear scale of a signal.
+    fn psd( &self ) -> Vec<T>;
+}
+
 pub trait FromBinary {
     // Load signal of type T in a binary file into vector. 
     fn from_binary( item_type: ItemType, path: &str ) -> Self;
@@ -255,4 +262,6 @@ pub trait ToBinary {
 pub trait ToTouples<T>{
     // Load signal of type T in a binary file into vector. 
     fn to_touples( &self ) -> alloc::vec::Vec<(T, T)>;
+    // Load two vectors self, other into touple, for plotting.
+    fn to_xy_touples( &self, other: &Self ) -> alloc::vec::Vec<(T, T)>;
 }

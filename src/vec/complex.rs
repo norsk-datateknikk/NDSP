@@ -10,6 +10,7 @@ mod fft;
 pub use fft::*;
 
 use crate::traits::*;
+use crate::traits::Mag; 
 use crate::vec::*;
 use Vec;
 
@@ -34,6 +35,18 @@ impl<T: MixedReal> Vec<Cartesian<T>> {
             vec.push_back(Cartesian::new(real_vec[idx], T::mixed_from_num(0)))
         }
         return vec;
+    }
+
+    /// Create a complex vector from a real one.
+    /// 
+    /// Expects buffer to be at least as large as self. 
+    #[allow(dead_code)]
+    pub fn copy_from_buffer( &mut self, buffer: &Vec<T> )
+    {
+        for idx in 0..self.len()
+        {
+            self[idx].re = buffer[idx];
+        }
     }
 }
 
@@ -128,32 +141,122 @@ impl<T: MixedNum + MixedWrapPhase + MixedSin + MixedOps>  Vec<Cartesian<T>> {
     }
 }
 
-impl <T: MixedNum + MixedAtan> Ang<T> for Vec<Cartesian<T>> {
-    // See documentation on the train definintion.
-    fn ang( &self ) -> Vec<T>
-    {
-        let mut rvec = Vec::new_with_capacity(self.len());
+impl <T: MixedNum + MixedAtan + MixedZero> Ang<T> for Vec<Cartesian<T>> {
+    /// Element-wise angle of complex numbers.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let mut signal = Vec::osc(omega, theta, 4);
+    /// signal.ang();
+    /// assert_eq!(signal.re().to_string(), "[ 0, 0.39269912, 0.7853982, 1.1780972 ]" );
+    ///
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let mut signal = Vec::osc(omega, theta, 64);
+    /// signal.ang();
+    /// signal.re().simple_plot("./figures/ang_documentation.png", "Angle"); 
+    /// ```
+    /// 
+    /// ![Alt version]()
+    /// 
+    fn ang( &mut self ) {
         for i in 0..self.len()
         {
-            rvec.push_back(self[i].im.mixed_atan2(self[i].re));
+            self[i].re = self[i].im.mixed_atan2(self[i].re);
+            self[i].im = T::mixed_zero();
         }
-        return rvec;
     }
 }
 
 impl <T: MixedAbs> crate::traits::Mag<T> for Vec<T> {
-    fn mag( &self ) -> Vec<T>
-    {
-        let mut rvec = Vec::new_with_capacity(self.len());
+    /// Element-wise magnitude.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let omega = <f32>::mixed_pi()/f32::mixed_from_num(2i32);
+    /// let theta = 0f32; 
+    /// 
+    /// let mut signal = Vec::osc(omega, theta, 4);
+    /// 
+    /// signal.mag();
+    /// assert_eq!(signal.to_string(), "[ 1+0i, 1+0i, 1+0i, 1+0i ]" );
+    /// ```
+    fn mag( &mut self ) {
         for i in 0..self.len()
         {
-            rvec.push_back(self[i].mixed_abs());
+            self[i] = self[i].mixed_abs();
         }
-        return rvec;
     }
 }
 
-impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Fft for Vec<Cartesian<T>> {
+impl<T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> Psd<T> for Vec<Cartesian<T>> {
+    /// Calculate the Power Spectral Density (PSD) in linear scale of a signal.
+    /// 
+    /// Expects the signal length to be a power of two. If not, the signal is zero padded.
+    ///  
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::traits::*;
+    /// 
+    /// let phase_rad = 0f32;
+    /// 
+    /// let f_sample = 10e3;
+    /// let tone_frequency = 2e3;
+    /// let angular_frequency = tone_frequency/(2f32*f_sample)*f32::mixed_tau();
+    /// 
+    /// let signal = Vec::osc(angular_frequency, phase_rad, 8);
+    /// let mut psd = signal.psd();
+    /// 
+    /// 
+    /// assert_eq!(psd.to_string(), "[ 0.056531776, 0.87694174, 0.026191715, 0.009336119, 0.005968219, 0.0054317378, 0.006799792, 0.012798772 ]" );
+    /// 
+    /// let signal = Vec::osc(angular_frequency, phase_rad, 128);
+    /// let mut psd = signal.psd();
+    /// 
+    /// 
+    /// let step:f32 = 2f32*f_sample/(psd.len() as f32);
+    /// let x_vec    = Vec::lin_range(0f32, 2f32*f_sample-step, psd.len());
+    /// 
+    /// psd.pow2db();
+    /// 
+    /// x_vec.plot(&psd, "./figures/osc_psd.png", "Power Spectral Density", "[Hz]", "dBW/Hz" );
+    /// ```
+    fn psd( &self ) -> Vec<T>
+    {
+        let padded_len = round_to_power_of_two(self.len());
+        let mut buffer = Vec::<Cartesian<T>>::new_with_capacity(padded_len);
+        for idx in 0..self.len() {
+            buffer.push_back(self[idx]);
+        }
+        for _idx in 0..padded_len-self.len() {
+            buffer.push_back(Cartesian::<T>::mixed_zero());
+        }
+
+        buffer.fft();
+        buffer.mag();
+        let mut real_buffer = buffer.re();
+        real_buffer.powi(2);
+
+        return real_buffer;
+    }
+}
+
+impl <T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Fft for Vec<Cartesian<T>> {
     /// Calculate the Raddix-2 FFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
@@ -171,16 +274,16 @@ impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapP
     ///
     /// complex_vec.fft();
     ///
-    /// let vec = complex_vec.mag();
+    /// complex_vec.mag();
     /// 
-    /// vec.re().simple_plot("./figures/fft_demonstration.png", "FFT Demonstration");
+    /// complex_vec.re().simple_plot("./figures/fft_demonstration.png", "FFT Demonstration");
     /// ```
     fn fft(&mut self){
         fft( &mut self.vec);
     }
 }
 
-impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Ifft for Vec<Cartesian<T>> {
+impl <T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry + MixedSqrt + MixedWrapPhase + MixedOps + MixedPi + MixedZero + MixedPowi> traits::Ifft for Vec<Cartesian<T>> {
     /// Calculate the Raddix-2 IFFT for self.
     /// Scaled for each butterfly computation.
     /// Requires input size to be a power of two.
@@ -188,12 +291,25 @@ impl <T: MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + MixedWrapP
     /// Computed-in-place.
     /// Decimation-in-freqency.
     /// 
-    /// The method utilizes fixed point approximations for square root, sine, cosine and atan calculations.
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let n = 128;
+    /// let mut buffer = Vec::<Cartesian<f32>>::zeros(128);
+    ///
+    /// buffer[4] = Cartesian::<f32>::mixed_one();
+    /// 
+    /// buffer.ifft();
+    ///
+    /// buffer.re().simple_plot("./figures/ifft_demonstration.png", "IFFT Demonstration");
+    /// ```
     fn ifft(&mut self){
         ifft( &mut self.vec);
     }
 }
-
 
 /*
 #[cfg(any(feature = "std"))]

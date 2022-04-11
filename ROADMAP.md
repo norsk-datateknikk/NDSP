@@ -19,5 +19,7 @@
 
 ## Usability
 
-- [~] Implement a simplified plotting interface/example.
+- [x] Implement a simplified plotting interface/example.
+- [ ] Implement plotting for complex vectors.
+
 - [ ] Consider adding from_string method to simplify test-writing.

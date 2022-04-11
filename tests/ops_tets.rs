@@ -15,7 +15,7 @@ fn test_cartesian_vec_ang_external_interface() {
     let omega = <f32>::mixed_pi()/f32::mixed_from_num(8i32);
     let theta = 0f32; 
     
-    let signal = Vec::osc(omega, theta, 4);
-    let ang = signal.ang();
-    assert_eq!(ang.to_string(), "[ 0, 0.39269912, 0.7853982, 1.1780972 ]" )
+    let mut signal = Vec::osc(omega, theta, 4);
+    signal.ang();
+    assert_eq!(signal.re().to_string(), "[ 0, 0.39269912, 0.7853982, 1.1780972 ]" )
 }
