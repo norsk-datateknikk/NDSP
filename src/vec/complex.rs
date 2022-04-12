@@ -12,7 +12,7 @@ pub use fft::*;
 use crate::traits::*;
 use crate::traits::Mag; 
 use crate::vec::*;
-use Vec;
+use crate::vec::Vec;
 
 /*
 #[cfg(any(feature = "std"))]

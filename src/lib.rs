@@ -51,13 +51,11 @@
 //! ``` 
 
 #![crate_name = "ndsp"]
-#![no_std]
+
+#![cfg_attr(not(feature = "std"), no_std)]
 
 // Use std for test.
-#[cfg(all(not(feature = "std"), test))]
-extern crate std;
-
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", test))]
 extern crate std;
 
 extern crate mixed_num;
