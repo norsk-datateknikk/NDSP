@@ -24,6 +24,10 @@ impl Vec<f32> {
     /// let test_vec = Vec::lin_range(0f32, 1f32, 64);
     /// test_vec.simple_plot("./figures/plot_test.png", "Test Plot");
     /// ```
+    /// 
+    /// The resulitg plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_test.png) 
     pub fn simple_plot( &self, path: &str, caption: &str ) -> Result<(), Box<dyn std::error::Error>>
     {
         let x_label = "x [idx]";
@@ -75,6 +79,10 @@ impl Vec<f32> {
     /// let x_vec = Vec::lin_range(0f32, 10f32, 64);
     /// x_vec.plot(&y_vec, "./figures/plot_test.png", "Test Plot","x [idx]", "y" );
     /// ```
+    /// 
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_test.png) 
     pub fn plot( &self, y_vec: &Self, path: &str, caption: &str, x_label: &str, y_label: &str ) -> Result<(), Box<dyn std::error::Error>>
     {
         let root = BitMapBackend::new(path, (1000, 500)).into_drawing_area();
@@ -132,6 +140,10 @@ impl <T:MixedNum + MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + 
     /// 
     /// signal.plot_psd( f_sample, "./figures/plot_psd.png", "Power Spectral Density" );
     /// ```
+    /// 
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_psd.png) 
     pub fn plot_psd( &self, sample_rate_hz: T, path: &str, caption: &str ) -> Result<(), Box<dyn std::error::Error>>
         where Vec<T>: Decibel<T>,
               Vec<Cartesian<T>>: Psd<T>
@@ -145,9 +157,7 @@ impl <T:MixedNum + MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + 
         let x_vec = Vec::lin_range(0f32, sample_rate_hz-step_hz, psd.len());
         psd.pow2db();
     
-        x_vec.plot(&psd, path, caption, "Frequency [Hz]", "dBW/Hz" )
-
-        
+        x_vec.plot(&psd, path, caption, "Frequency [Hz]", "dB" )
     }
 }
 

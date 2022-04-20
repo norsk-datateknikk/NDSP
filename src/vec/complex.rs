@@ -166,7 +166,9 @@ impl <T: MixedNum + MixedAtan + MixedZero> Ang<T> for Vec<Cartesian<T>> {
     /// signal.re().simple_plot("./figures/ang_documentation.png", "Angle"); 
     /// ```
     /// 
-    /// ![Alt version]()
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/ang_documentation.png) 
     /// 
     fn ang( &mut self ) {
         for i in 0..self.len()
@@ -234,8 +236,12 @@ impl<T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry +
     /// 
     /// psd.pow2db();
     /// 
-    /// x_vec.plot(&psd, "./figures/osc_psd.png", "Power Spectral Density", "[Hz]", "dBW/Hz" );
+    /// x_vec.plot(&psd, "./figures/osc_psd.png", "Power Spectral Density", "[Hz]", "dBFS" );
     /// ```
+    /// 
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/osc_psd.png) 
     fn psd( &self ) -> Vec<T>
     {
         let padded_len = round_to_power_of_two(self.len());
@@ -278,6 +284,10 @@ impl <T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry 
     /// 
     /// complex_vec.re().simple_plot("./figures/fft_demonstration.png", "FFT Demonstration");
     /// ```
+    /// 
+    /// The resulting plot is shown below.
+    ///
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/fft_demonstration.png) 
     fn fft(&mut self){
         fft( &mut self.vec);
     }
@@ -306,6 +316,10 @@ impl <T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry 
     ///
     /// buffer.re().simple_plot("./figures/ifft_demonstration.png", "IFFT Demonstration");
     /// ```
+    ///
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/ifft_demonstration.png) 
     fn ifft(&mut self){
         ifft( &mut self.vec);
     }

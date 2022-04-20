@@ -72,7 +72,7 @@ impl <T: MixedZero> Zeros<T> for Vec<T> {
 }
 
 impl <T: MixedOne> Ones<T> for Vec<T> {
-    /// Create a vector of ones.
+    /// Create a vector of ones, 𝟙.
     /// 
     /// ## Example
     /// 
@@ -511,7 +511,7 @@ impl <T: MixedReal + MixedZero + MixedPowi + MixedNumSigned + MixedTrigonometry 
     /// 
     /// The transform computes the analytical signal from a real-only signal.
     /// 
-    /// [1] [L. Marple, Computing the Discrete-Time “Analytic” Signal via FFT, IEEE, 1999](https://ieeexplore.ieee.org/document/782222)
+    /// \[1\] [L. Marple, Computing the Discrete-Time “Analytic” Signal via FFT, IEEE, 1999](https://ieeexplore.ieee.org/document/782222)
     /// 
     /// ## Example
     /// 
@@ -531,6 +531,10 @@ impl <T: MixedReal + MixedZero + MixedPowi + MixedNumSigned + MixedTrigonometry 
     /// buffer.plot_psd(1e3, "./figures/plot_hilbert.png", "PSD of Analytical Signal");
     /// 
     /// ```
+    /// 
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_hilbert.png) 
     fn hilbert(&self, output_buffer: &mut Vec<Cartesian<T>>)
     {        
         output_buffer.copy_from_buffer(self);
