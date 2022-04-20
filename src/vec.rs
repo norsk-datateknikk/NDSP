@@ -15,7 +15,8 @@ pub mod math_impl;
 pub mod complex;
 pub use complex::*;
 
-#[cfg(feature = "std")]
+
+#[cfg(any(feature = "std", test))]
 pub mod plot;
 
 extern crate alloc;
@@ -43,7 +44,7 @@ use alloc::string::String;
 /// This vec simulataneously support complex numbers.
 /// 
 /// ## Example
-/// 
+///
 /// ```
 /// use ndsp::*;
 /// use mixed_num::*;

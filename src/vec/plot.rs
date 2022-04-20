@@ -4,9 +4,9 @@
 
 use mixed_num::*;
 
-
 use plotters::prelude::*;
 use crate::*;
+
 use std::boxed::Box;
 
 impl Vec<f32> {

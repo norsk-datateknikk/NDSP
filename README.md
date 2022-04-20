@@ -7,7 +7,7 @@ Not compute speed focused at this time.
 
 The goal is to write a library that targets embedded platforms.
 
-It utilizes the [fixed](https://crates.io/crates/fixed) library to allow flexibility in fixed point sizes and precisions.
+It utilizes the [mixed-num](https://crates.io/crates/mixed-num) library to allow flexibility in fixed and floating point sizes and precisions.
 
 The [package](https://crates.io/crates/ndsp).
 
@@ -24,5 +24,5 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ## Testing the library (for development purposes)
 
 ```shell
-cargo test
+cargo test --features "std"
 ```
