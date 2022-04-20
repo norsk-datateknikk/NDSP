@@ -49,6 +49,10 @@
 //! let test_vec = Vec::lin_range(0f32, 1f32, 64);
 //! test_vec.simple_plot("./figures/plot_test.png", "Test Plot");
 //! ``` 
+//! 
+//! The resulting plot is shown below.
+//! 
+//! ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_test.png)
 
 #![crate_name = "ndsp"]
 

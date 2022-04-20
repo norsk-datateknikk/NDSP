@@ -7,7 +7,7 @@ name = "ndsp"
 version = "0.1.0"
 authors = ["Erik Buer"]
 edition = "2021"
-description = "A package conaining DSP-related functions."
+description = "A package for Rust DSP."
 readme = "README.md"
 repository = "https://github.com/norsk-datateknikk/NDSP"
 license-file = "LICENSE"
@@ -22,8 +22,8 @@ test  = true
 crate-type = ["lib"]
 
 [dependencies]
-mixed-num          = "0.5.4"
-fixed              = "1.13"
+mixed-num          = "^0.5"
+fixed              = "^1.13"
 
 plotters           = {version ="^0.3.1", optional=true }
 
