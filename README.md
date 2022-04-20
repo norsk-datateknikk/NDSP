@@ -3,7 +3,7 @@
 Norsk Datateknikk No-STD DSP library for Rust.
 
 The focus of the module is to build up a library of DSP code.
-Not compute speed focused at this time.
+Not compute speed focused at this time. The first goal is to get basic features up and running to simplify writing.
 
 The goal is to write a library that targets embedded platforms.
 
@@ -14,12 +14,6 @@ The [package](https://crates.io/crates/ndsp).
 The [documentation](https://docs.rs/ndsp/).
 
 Release notes are found under RELEASES.md.
-
-## Rust Installation
-
-```shell
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
 
 ## Testing the library (for development purposes)
 

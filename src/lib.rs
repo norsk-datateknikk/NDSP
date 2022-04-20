@@ -50,7 +50,7 @@
 //! test_vec.simple_plot("./figures/plot_test.png", "Test Plot");
 //! ``` 
 //! 
-//! The resulitg plot is shown below.
+//! The resulting plot is shown below.
 //! 
 //! ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_test.png)
 
