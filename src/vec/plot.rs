@@ -136,7 +136,7 @@ impl Vec<f32> {
     /// 
     /// The resulting plot is shown below.
     /// 
-    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_test.png) 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_multiple_test.png) 
     pub fn plot_multiple( &self, y_vectors: &[&Self], path: &str, caption: &str, x_label: &str, y_label: &str, line_labels: &[&str] ) -> Result<(), Box<dyn std::error::Error>>
     {
         let y_range; 

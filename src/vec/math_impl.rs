@@ -93,10 +93,27 @@ impl <T: MixedOne> Ones<T> for Vec<T> {
     }
 }
 
-
 impl <T: MixedTrigonometry> traits::Sin for Vec<T> {
     /// Take the elemtent-wise sin(x).
-    /// Self must be wrapped to the -π=<x<π range.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let x_vec = Vec::lin_range(0f32, f32::mixed_tau(), 64);
+    /// let mut y_vec = x_vec.clone();
+    /// 
+    /// y_vec.sin();
+    /// 
+    //
+    /// x_vec.plot(&y_vec, "./figures/sin_test.png", "Sine", "x", "sin(x)");
+    /// ```
+    /// 
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/sin_test.png)
     fn sin(&mut self) {
         for idx in 0..self.len() {
             self[idx] = self[idx].mixed_sin();
@@ -106,7 +123,24 @@ impl <T: MixedTrigonometry> traits::Sin for Vec<T> {
 
 impl <T: MixedTrigonometry> traits::Cos for Vec<T> {
     /// Take the elemtent-wise cos(x).
-    /// Self must be wrapped to the -π=<x<π range.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let x_vec = Vec::lin_range(0f32, f32::mixed_tau(), 64);
+    /// let mut y_vec = x_vec.clone();
+    /// 
+    /// y_vec.cos();
+    /// 
+    /// x_vec.plot(&y_vec, "./figures/cos_test.png", "Cosine", "x", "cos(x)");
+    /// ```
+    /// 
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/cos_test.png)
     fn cos(&mut self) {
         for idx in 0..self.len() {
             self[idx] = self[idx].mixed_cos();
@@ -121,6 +155,24 @@ impl <T: MixedWrapPhase> traits::WrapPhase for Vec<T> {
     ///
     /// * `phi` - The unwrapped phase in radians.
     /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// let x_vec = Vec::lin_range(0f32, 4f32*f32::mixed_tau(), 256);
+    /// let org_phase = x_vec.clone();
+    /// let mut wrapped_phase = x_vec.clone();
+    /// 
+    /// wrapped_phase.wrap_phase();
+    /// 
+    /// x_vec.plot_multiple(&[&org_phase,&wrapped_phase], "./figures/wrap_phase_test.png", "Wrapped phase", "", "Phase", &["Original","Wrapped"]);
+    /// ```
+    /// 
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/wrap_phase_test.png)
     fn wrap_phase(&mut self) {
         for idx in 0..self.len() {
             self[idx] = self[idx].mixed_wrap_phase();
@@ -481,11 +533,28 @@ impl <T1: MixedNum, T2: MixedNum + MixedNumConversion<T1> + core::cmp::PartialOr
     /// 
     /// ```
     /// use ndsp::*;
+    /// use mixed_num::*;
     /// let mut test_vec = Vec::lin_range(2f32, 5f32, 4);
     /// 
     /// test_vec.clip(3i32,4i32);
-    /// assert_eq!(test_vec.to_string(), "[ 3, 3, 4, 4 ]" )
+    /// assert_eq!(test_vec.to_string(), "[ 3, 3, 4, 4 ]" );
+    /// 
+    /// 
+    /// // Example plot
+    /// let x_vec = Vec::lin_range(0f32, f32::mixed_tau(), 64);
+    /// let mut y_vec = x_vec.clone();
+    /// 
+    /// y_vec.cos();
+    /// 
+    /// let mut z_vec = y_vec.clone();
+    /// z_vec.clip(-0.2f32, 0.6f32);
+    //
+    /// x_vec.plot_multiple(&[&y_vec, &z_vec], "./figures/clip_test.png", "Clip","Phase [rad]", "y", &["y", "z"] );
     /// ```
+    /// 
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/clip_test.png)
     fn clip( &mut self, lower_limit:T1, uppper_limit:T1 )
     {
         let lower_limit = T2::mixed_from_num(lower_limit);
