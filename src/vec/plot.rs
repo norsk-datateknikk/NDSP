@@ -113,6 +113,90 @@ impl Vec<f32> {
 
         Ok(())
     }
+
+    /// Plots self in its own figure.
+    ///
+    /// ## Arguments
+    /// 
+    /// * `path` - The path and name of the file ot be generated.
+    /// * `capion` - The plot caption.
+    /// * `x_label` - The label shown below the x axis.
+    /// * `y_label` - The label shown next to y axis
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let y_vec = Vec::lin_range(0f32, 1f32, 64);
+    /// let x_vec = Vec::lin_range(0f32, 10f32, 64);
+    /// let z_vec = Vec::lin_range(1.5f32, 0f32, 64);
+    /// 
+    /// x_vec.plot_multiple(&[&y_vec, &z_vec], "./figures/plot_multiple_test.png", "MultiPlot","x [idx]", "y", &["y", "z"] );
+    /// ```
+    /// 
+    /// The resulting plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_multiple_test.png) 
+    pub fn plot_multiple( &self, y_vectors: &[&Self], path: &str, caption: &str, x_label: &str, y_label: &str, line_labels: &[&str] ) -> Result<(), Box<dyn std::error::Error>>
+    {
+        let y_range; 
+        {
+            let mut min_max_vec = Vec::<f32>::new_with_capacity(2*y_vectors.len());
+            for vec in y_vectors
+            {
+                let (min, max) = vec.min_max();
+                min_max_vec.push_back(min);
+                min_max_vec.push_back(max);
+            }
+
+            y_range = min_max_vec.to_range();
+        }
+        
+
+        let root = BitMapBackend::new(path, (1000, 500)).into_drawing_area();
+        root.fill(&WHITE)?;
+        let mut chart = ChartBuilder::on(&root)
+            .caption(caption, ("sans-serif", 25).into_font())
+            .margin(10i32)
+            .x_label_area_size(40i32)
+            .y_label_area_size(50i32)
+            .build_cartesian_2d( self.to_range(), y_range )?;
+
+        chart
+            .configure_mesh()
+            .disable_x_mesh()
+            .bold_line_style(&WHITE.mix(0.3))
+            .y_desc(y_label)
+            .x_desc(x_label)
+            .axis_desc_style(("sans-serif", 15))
+            .draw()?;
+
+        chart.configure_mesh().draw()?;
+
+        let colors = [&BLUE, &RED, &GREEN, &MAGENTA, &CYAN];
+
+        for idx in 0..line_labels.len()
+        {
+            // Line color
+            let color = colors[idx%y_vectors.len()];
+            // Draws a sinle line.
+            chart
+                .draw_series( LineSeries::new(
+                    self.to_xy_touples(y_vectors[idx]),
+                    color.clone()) )?     // Loop through colors.
+                .label(line_labels[idx])
+                .legend(|(x, y)| PathElement::new([(x, y), (x + 20, y)], color.clone()));
+        }
+
+        // Apply legend
+        chart
+        .configure_series_labels()
+        .background_style(&WHITE.mix(0.8))
+        .border_style(&BLACK)
+        .draw()?;
+
+        Ok(())
+    }
 }
 
 impl <T:MixedNum + MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + mixed_num::MixedWrapPhase

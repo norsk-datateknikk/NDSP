@@ -27,7 +27,7 @@ extern crate num;
 use core::fmt;
 use alloc::string::String;
 
-/// Numeric vector of real, comples, fixed or floaring-point numbers.
+/// Numeric vector of real, complex, fixed or floating-point numbers.
 /// 
 /// ## Example
 /// 
@@ -41,7 +41,7 @@ use alloc::string::String;
 /// assert_eq!(result.to_string(), "[ 0, 3, 8, 15, 24, 35, 48, 63, 80, 99 ]" ); 
 /// ```
 /// 
-/// This vec simulataneously support complex numbers.
+/// This vec simulataneously support complex numbers, and operations with real ones.
 /// 
 /// ## Example
 ///
@@ -54,8 +54,12 @@ use alloc::string::String;
 /// 
 /// let mut signal = Vec::osc(omega, theta, 4);
 /// signal = &signal*&signal;
-/// assert_eq!(signal.to_string(), "[ 1+0i, 0.7071067+0.7071068i, 0+0.99999994i, -0.7071067+0.7071068i ]" )
+/// assert_eq!(signal.to_string(), "[ 1+0i, 0.7071067+0.7071068i, 0+0.99999994i, -0.7071067+0.7071068i ]" );
+/// 
+/// signal /= 2f32;
+/// assert_eq!(signal.to_string(), "[ 0.25-0.25i, 0.35355338+0.000000029802322i, 0.24999999+0.24999999i, 0.000000029802322+0.35355338i ]" )
 /// ```
+
 #[derive(Clone, Default, Debug, PartialEq)]
 pub struct Vec<T>
 {
