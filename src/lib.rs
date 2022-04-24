@@ -4,7 +4,11 @@
 
 //! This is an experimental library for DSP in Rust, including for no-std environments.
 //! 
-//! It uses trait implementation from the `mixed_num` crate to enable both fixed point and floating point support. 
+//! It uses trait implementation from the `mixed_num` crate to enable both fixed point and floating point support.
+//! 
+//! Most of the functionality in this library is no-std, but requires alloc.
+//! 
+//! The STD feature can be used to unlock plotting functionality, e.g. for testing purposes.
 //! 
 //! ### Example
 //! 
@@ -35,7 +39,10 @@
 //! 
 //! let mut signal = Vec::osc(omega, theta, 4);
 //! signal = &signal*&signal;
-//! assert_eq!(signal.to_string(), "[ 1+0i, 0.7071067+0.7071068i, 0+0.99999994i, -0.7071067+0.7071068i ]" )
+//! assert_eq!(signal.to_string(), "[ 1+0i, 0.7071067+0.7071068i, 0+0.99999994i, -0.7071067+0.7071068i ]" );
+//! 
+//! signal /= 2f32;
+//! assert_eq!(signal.to_string(), "[ 0.25-0.25i, 0.35355338+0.000000029802322i, 0.24999999+0.24999999i, 0.000000029802322+0.35355338i ]" )
 //! ```
 //! 
 //! ## Plotting

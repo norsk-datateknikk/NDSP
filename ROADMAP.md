@@ -7,6 +7,8 @@
 - [ ] implement FFT from complex vectors, precomputation of twiddle factor.
 - [ ] implement IFFT from complex vectors, precomputation of twiddle factor.
 
+- [ ] Implement vector-scalar operations for vectors with complex items.
+
 - [ ] implement WGN for real vectors.
 - [ ] implement WGN for complex vectors.
 
