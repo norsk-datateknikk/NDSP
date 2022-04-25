@@ -31,8 +31,16 @@ impl <T: MixedNum + MixedOps> LinRange<T> for Vec<T>
     /// ```
     /// use ndsp::*;
     /// let test_vec = Vec::lin_range(0f32, 3f32, 4);
-    /// assert_eq!(test_vec.to_string(), "[ 0, 1, 2, 3 ]" )
+    /// assert_eq!(test_vec.to_string(), "[ 0, 1, 2, 3 ]" );
+    /// 
+    /// 
+    /// let test_vec = Vec::lin_range(0f32, 1f32, 64);
+    /// test_vec.simple_plot("./figures/lin_range_test.png", "Test Plot");
     /// ```
+    /// 
+    /// The resulitg plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/lin_range_test.png) 
     #[allow(dead_code)]
     fn lin_range( start:T, stop:T, num:usize ) -> Vec<T> {
         let step = (stop-start)/T::mixed_from_num((num-1) as i32);
@@ -182,6 +190,19 @@ impl <T: MixedWrapPhase> traits::WrapPhase for Vec<T> {
 
 impl <T: MixedSqrt> traits::Sqrt for Vec<T> {
     /// Take the element-wise square root.
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut vec = Vec::lin_range(0f32, 1f32, 64);
+    /// vec.sqrt();
+    /// 
+    /// vec.simple_plot("./figures/sqrt_test.png", "SQRT");
+    /// ```
+    /// 
+    /// The resulitg plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/sqrt_test.png)
     fn sqrt(&mut self) {
         for idx in 0..self.len() {
             self[idx] = self[idx].mixed_sqrt();
@@ -190,7 +211,9 @@ impl <T: MixedSqrt> traits::Sqrt for Vec<T> {
 }
 
 impl <T: MixedReal + MixedAbs> traits::Abs for Vec<T> {
-    /// Element-wise absolute value of `self`. Computed-in-place.
+    /// Element-wise absolute value of `self`. 
+    /// 
+    /// Computed-in-place.
     /// 
     /// ## Example
     /// 
@@ -200,6 +223,19 @@ impl <T: MixedReal + MixedAbs> traits::Abs for Vec<T> {
     /// test_vec.abs();
     /// assert_eq!(test_vec.to_string(), "[ 2, 1, 0, 1, 2 ]" )
     /// ```
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut vec = Vec::lin_range(-1f32, 1f32, 64);
+    /// vec.abs();
+    /// 
+    /// vec.simple_plot("./figures/abs_test.png", "abs()");
+    /// ```
+    /// 
+    /// The resulitg plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/abs_test.png)
     fn abs(&mut self) {
         for idx in 0..self.len() {
             if self[idx]< T::mixed_from_num(0)
@@ -211,7 +247,32 @@ impl <T: MixedReal + MixedAbs> traits::Abs for Vec<T> {
 }
 
 impl<T: MixedPowi> Powi for Vec<T> {
-    /// Rase the vector to an integer power. Computed-in-place.
+    /// Rase the vector to an integer power. 
+    /// 
+    /// Computed-in-place.
+    ///
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// test_vec.powi(2);
+    /// 
+    /// assert_eq!(test_vec.to_string(), "[ 0, 1, 4, 9 ]" )
+    /// ```
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut vec = Vec::lin_range(-1f32, 1f32, 64);
+    /// vec.powi(2);
+    /// 
+    /// vec.simple_plot("./figures/powi_test.png", "abs()");
+    /// ```
+    /// 
+    /// The resulitg plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/powi_test.png)
     fn powi( &mut self, power:i32 ){
         for idx in 0..self.len() {
                 self[idx]=self[idx].mixed_powi(power);
@@ -220,7 +281,31 @@ impl<T: MixedPowi> Powi for Vec<T> {
 }
 
 impl<T: MixedNum + MixedPow> Pow<T> for Vec<T> {
-    /// Rase the vector to an integer power. Computed-in-place.
+    /// Rais the vector to a power. 
+    /// 
+    /// Computed-in-place.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// test_vec.pow(2.0);
+    /// assert_eq!(test_vec.to_string(), "[ 0, 1, 4, 9 ]" )
+    /// ```
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let mut vec = Vec::lin_range(-1f32, 1f32, 64);
+    /// vec.pow(1.2);
+    /// 
+    /// vec.simple_plot("./figures/pow_test.png", "abs()");
+    /// ```
+    /// 
+    /// The resulitg plot is shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/pow_test.png)
     fn pow( &mut self, power:T ) {
         for idx in 0..self.len() {
             self[idx]=self[idx].mixed_pow(power);
@@ -273,6 +358,8 @@ impl <T: MixedReal> traits::AsComplexPolar<T> for Vec<T> {
 }
 
 impl <T: MixedReal> traits::Max<T> for Vec<T> {
+    /// 
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -296,6 +383,8 @@ impl <T: MixedReal> traits::Max<T> for Vec<T> {
 }
 
 impl <T: MixedReal> traits::Min<T> for Vec<T> {
+    /// Find the minimum value in a vector. 
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -319,6 +408,8 @@ impl <T: MixedReal> traits::Min<T> for Vec<T> {
 }
 
 impl <T: MixedReal> traits::MinMax<T> for Vec<T> {
+    /// Find the minimum and maximum values in a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -347,6 +438,8 @@ impl <T: MixedReal> traits::MinMax<T> for Vec<T> {
 }
 
 impl <T: MixedReal> ToRange<T> for Vec<T>{
+    /// Return the range of a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -378,24 +471,69 @@ impl <T: MixedReal + MixedOps + MixedZero> Indices<T> for Vec<T> {
 }
 
 impl <T: DbMag + DbPow> Decibel<T> for Vec<T>{
+    /// Convert linear scale magnitude to Decibel.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut vec = Vec::lin_range(0f32, 1f32, 5);
+    /// vec.mag2db();
+    /// 
+    /// assert_eq!(vec.to_string(), "[ -inf, -12.041201, -6.0206003, -2.4987748, 0 ]" )
+    /// ```
     fn mag2db( &mut self )
     {
         for idx in 0..self.len() {
             self[idx]=self[idx].mixed_mag2db();
         }
     }
+    /// Convert Decibel to linear scale magnitude.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut vec = Vec::lin_range(0f32, -9f32, 4);
+    /// vec.db2mag();
+    /// 
+    /// assert_eq!(vec.to_string(), "[ 1, 0.70794576, 0.5011872, 0.3548134 ]" )
+    /// ```
     fn db2mag( &mut self )
     {
         for idx in 0..self.len() {
             self[idx]=self[idx].mixed_db2mag();
         }
     }
+    /// Convert linear scale power to Decibel.
+    /// 
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut vec = Vec::lin_range(0f32, 1f32, 5);
+    /// vec.pow2db();
+    /// 
+    /// assert_eq!(vec.to_string(), "[ -inf, -6.0206003, -3.0103002, -1.2493874, 0 ]" )
+    /// ```
     fn pow2db( &mut self )
     {
         for idx in 0..self.len() {
             self[idx]=self[idx].mixed_pow2db();
         }
     }
+    /// Convert Decibel to linear scale power.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut vec = Vec::lin_range(0f32, -9f32, 4);
+    /// vec.db2pow();
+    /// 
+    /// assert_eq!(vec.to_string(), "[ 1, 0.5011872, 0.25118864, 0.12589255 ]" )
+    /// ```
     fn db2pow( &mut self )
     {
         for idx in 0..self.len() {
@@ -405,6 +543,8 @@ impl <T: DbMag + DbPow> Decibel<T> for Vec<T>{
 }
 
 impl <T: MixedNum + MixedZero + MixedOps> Sum<T> for Vec<T>{
+    /// Compute the sum of all items in a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -423,6 +563,8 @@ impl <T: MixedNum + MixedZero + MixedOps> Sum<T> for Vec<T>{
 }
 
 impl <T: MixedNum + MixedZero + MixedOps> Mean<T> for Vec<T>{
+    /// Estimate the mean of a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -437,6 +579,8 @@ impl <T: MixedNum + MixedZero + MixedOps> Mean<T> for Vec<T>{
 }
 
 impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Power<T> for Vec<T>{
+    /// Calculate the item-wise power of a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -454,6 +598,8 @@ impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Power<T> for Vec<T>{
 }
 
 impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Energy<T> for Vec<T>{
+    /// Calculate the energy of a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
