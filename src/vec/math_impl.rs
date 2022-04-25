@@ -497,7 +497,7 @@ impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Power<T> for Vec<T>{
 }
 
 impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Energy<T> for Vec<T>{
-    /// Calckulate the energy of a vector.
+    /// Calculate the energy of a vector.
     /// 
     /// ## Example
     /// 
