@@ -56,11 +56,26 @@
 //! let test_vec = Vec::lin_range(0f32, 1f32, 64);
 //! test_vec.simple_plot("./figures/plot_test.png", "Test Plot");
 //! ``` 
-//! 
+//!
 //! The resulting plot is shown below.
 //! 
 //! ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_test.png)
-
+//! 
+//! 
+//! ```
+//! use ndsp::*;
+//! use mixed_num::*;
+//! 
+//! let x_vec = Vec::lin_range(0f32, f32::mixed_tau(), 64);
+//! let mut y_vec = x_vec.clone();
+//! 
+//! y_vec.cos();
+//! 
+//! x_vec.plot(&y_vec, "./figures/lib_plot_x_y.png", "Cosine", "x", "cos(x)");
+//! ```
+//! 
+//! ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/lib_plot_x_y.png)
+//! 
 #![crate_name = "ndsp"]
 
 #![cfg_attr(not(feature = "std"), no_std)]

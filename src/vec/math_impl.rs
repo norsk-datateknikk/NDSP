@@ -190,7 +190,9 @@ impl <T: MixedSqrt> traits::Sqrt for Vec<T> {
 }
 
 impl <T: MixedReal + MixedAbs> traits::Abs for Vec<T> {
-    /// Element-wise absolute value of `self`. Computed-in-place.
+    /// Element-wise absolute value of `self`. 
+    /// 
+    /// Computed-in-place.
     /// 
     /// ## Example
     /// 
@@ -211,7 +213,19 @@ impl <T: MixedReal + MixedAbs> traits::Abs for Vec<T> {
 }
 
 impl<T: MixedPowi> Powi for Vec<T> {
-    /// Rase the vector to an integer power. Computed-in-place.
+    /// Rase the vector to an integer power. 
+    /// 
+    /// Computed-in-place.
+    ///
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// test_vec.powi(2);
+    /// 
+    /// assert_eq!(test_vec.to_string(), "[ 0, 1, 4, 9 ]" )
+    /// ```
     fn powi( &mut self, power:i32 ){
         for idx in 0..self.len() {
                 self[idx]=self[idx].mixed_powi(power);
@@ -220,7 +234,18 @@ impl<T: MixedPowi> Powi for Vec<T> {
 }
 
 impl<T: MixedNum + MixedPow> Pow<T> for Vec<T> {
-    /// Rase the vector to an integer power. Computed-in-place.
+    /// Rais the vector to a power. 
+    /// 
+    /// Computed-in-place.
+    /// 
+    /// ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// let mut test_vec = Vec::lin_range(0f32, 3f32, 4);
+    /// test_vec.pow(2.0);
+    /// assert_eq!(test_vec.to_string(), "[ 0, 1, 4, 9 ]" )
+    /// ```
     fn pow( &mut self, power:T ) {
         for idx in 0..self.len() {
             self[idx]=self[idx].mixed_pow(power);
@@ -273,6 +298,8 @@ impl <T: MixedReal> traits::AsComplexPolar<T> for Vec<T> {
 }
 
 impl <T: MixedReal> traits::Max<T> for Vec<T> {
+    /// 
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -296,6 +323,8 @@ impl <T: MixedReal> traits::Max<T> for Vec<T> {
 }
 
 impl <T: MixedReal> traits::Min<T> for Vec<T> {
+    /// Find the minimum value in a vector. 
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -319,6 +348,8 @@ impl <T: MixedReal> traits::Min<T> for Vec<T> {
 }
 
 impl <T: MixedReal> traits::MinMax<T> for Vec<T> {
+    /// Find the minimum and maximum values in a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -347,6 +378,8 @@ impl <T: MixedReal> traits::MinMax<T> for Vec<T> {
 }
 
 impl <T: MixedReal> ToRange<T> for Vec<T>{
+    /// Return the range of a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -378,24 +411,28 @@ impl <T: MixedReal + MixedOps + MixedZero> Indices<T> for Vec<T> {
 }
 
 impl <T: DbMag + DbPow> Decibel<T> for Vec<T>{
+    /// Convert linear scale magnitude to Decibel.
     fn mag2db( &mut self )
     {
         for idx in 0..self.len() {
             self[idx]=self[idx].mixed_mag2db();
         }
     }
+    /// Convert Decibel to linear scale magnitude.
     fn db2mag( &mut self )
     {
         for idx in 0..self.len() {
             self[idx]=self[idx].mixed_db2mag();
         }
     }
+    /// Convert linear scale power to Decibel.
     fn pow2db( &mut self )
     {
         for idx in 0..self.len() {
             self[idx]=self[idx].mixed_pow2db();
         }
     }
+    /// Convert Decibel to linear scale power.
     fn db2pow( &mut self )
     {
         for idx in 0..self.len() {
@@ -405,6 +442,8 @@ impl <T: DbMag + DbPow> Decibel<T> for Vec<T>{
 }
 
 impl <T: MixedNum + MixedZero + MixedOps> Sum<T> for Vec<T>{
+    /// Compute the sum of all items in a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -423,6 +462,8 @@ impl <T: MixedNum + MixedZero + MixedOps> Sum<T> for Vec<T>{
 }
 
 impl <T: MixedNum + MixedZero + MixedOps> Mean<T> for Vec<T>{
+    /// Estimate the mean of a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -437,6 +478,8 @@ impl <T: MixedNum + MixedZero + MixedOps> Mean<T> for Vec<T>{
 }
 
 impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Power<T> for Vec<T>{
+    /// Calculate the item-wise power of a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
@@ -454,6 +497,8 @@ impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Power<T> for Vec<T>{
 }
 
 impl <T: MixedNum + MixedZero + MixedOps + MixedPowi> Energy<T> for Vec<T>{
+    /// Calckulate the energy of a vector.
+    /// 
     /// ## Example
     /// 
     /// ```
