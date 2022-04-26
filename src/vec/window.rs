@@ -15,10 +15,10 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
     /// 
     /// let mut vec = Vec::<f32>::hamming(512);
     /// 
-    /// vec.simple_plot("./figures/hamming_test.png", "Blackman Window Function");
+    /// vec.simple_plot("./figures/hamming_test.png", "Hamming Window Function");
     /// 
     /// let c_vec = Vec::<Cartesian<f32>>::new_from_real(vec);
-    /// c_vec.plot_psd( 1f32, "./figures/hamming_psd_test.png", "Blackman Window Function" );
+    /// c_vec.plot_psd( 1f32, "./figures/hamming_psd_test.png", "Hamming Window Function" );
     /// ```
     /// 
     /// The resulitg plots are shown below.
