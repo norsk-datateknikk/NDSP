@@ -7,10 +7,16 @@
 - [ ] implement FFT from complex vectors, precomputation of twiddle factor.
 - [ ] implement IFFT from complex vectors, precomputation of twiddle factor.
 
-- [ ] Implement vector-scalar operations for vectors with complex items.
+- [x] Implement vector-scalar operations for vectors with complex items.
+- [ ] Implement popular window funcitons.
 
 - [ ] implement WGN for real vectors.
 - [ ] implement WGN for complex vectors.
+
+## Estimation
+
+- [ ] Variance estimate.
+- [ ] Implement argmin and argmax.
 
 ## IO
 

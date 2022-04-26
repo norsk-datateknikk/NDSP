@@ -12,6 +12,8 @@ pub use ops::*;
 
 pub mod math_impl;
 
+pub mod window;
+
 pub mod complex;
 pub use complex::*;
 
