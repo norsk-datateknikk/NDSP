@@ -227,7 +227,7 @@ impl <T: MixedReal + MixedAbs> traits::Abs for Vec<T> {
     /// ```
     /// use ndsp::*;
     /// 
-    /// let mut vec = Vec::lin_range(-1f32, 1f32, 64);
+    /// let mut vec = Vec::lin_range(-1f32, 1f32, 128);
     /// vec.abs();
     /// 
     /// vec.simple_plot("./figures/abs_test.png", "abs()");
@@ -264,10 +264,10 @@ impl<T: MixedPowi> Powi for Vec<T> {
     /// ```
     /// use ndsp::*;
     /// 
-    /// let mut vec = Vec::lin_range(-1f32, 1f32, 64);
+    /// let mut vec = Vec::lin_range(-1f32, 1f32, 128);
     /// vec.powi(2);
     /// 
-    /// vec.simple_plot("./figures/powi_test.png", "abs()");
+    /// vec.simple_plot("./figures/powi_test.png", "powi()");
     /// ```
     /// 
     /// The resulitg plot is shown below.
@@ -297,10 +297,10 @@ impl<T: MixedNum + MixedPow> Pow<T> for Vec<T> {
     /// ```
     /// use ndsp::*;
     /// 
-    /// let mut vec = Vec::lin_range(-1f32, 1f32, 64);
+    /// let mut vec = Vec::lin_range(-1f32, 1f32, 128);
     /// vec.pow(1.2);
     /// 
-    /// vec.simple_plot("./figures/pow_test.png", "abs()");
+    /// vec.simple_plot("./figures/pow_test.png", "pow()");
     /// ```
     /// 
     /// The resulitg plot is shown below.
