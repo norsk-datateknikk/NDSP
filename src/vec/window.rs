@@ -5,8 +5,41 @@
 use crate::*;
 use mixed_num::*;
 
-impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCos> Vec<T>
+impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCos + MixedOne> Vec<T>
 {
+    /// Generate a Hammin window funciton.
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::Cartesian;
+    /// 
+    /// let mut vec = Vec::<f32>::hamming(512);
+    /// 
+    /// vec.simple_plot("./figures/hamming_test.png", "Blackman Window Function");
+    /// 
+    /// let c_vec = Vec::<Cartesian<f32>>::new_from_real(vec);
+    /// c_vec.plot_psd( 1f32, "./figures/hamming_psd_test.png", "Blackman Window Function" );
+    /// ```
+    /// 
+    /// The resulitg plots are shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/hamming_test.png)
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/hammming_psd_test.png)
+    pub fn hamming(len: usize) -> Self {
+        let a0: T = T::mixed_from_num(25) / T::mixed_from_num(46);
+
+        let mut r_vec = crate::Vec::<T>::new_with_capacity(len);
+        let size:T = T::mixed_from_num(len) - T::mixed_one();
+
+        for idx in 0..len {
+            let n = T::mixed_from_num(idx);
+            let v = a0 - (T::mixed_one() - a0) * (T::mixed_tau() * n / size).mixed_cos();
+            r_vec.push_back(v);
+        }
+        return r_vec;
+    }
+
     /// Generate a Blackman window funciton.
     /// 
     /// ```
@@ -21,7 +54,7 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
     /// c_vec.plot_psd( 1f32, "./figures/blackman_psd_test.png", "Blackman Window Function" );
     /// ```
     /// 
-    /// The resulitg plot is shown below.
+    /// The resulitg plots are shown below.
     /// 
     /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/blackman_test.png)
     /// 
@@ -37,7 +70,7 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
         for idx in 0..len {
             let n = T::mixed_from_num(idx);
             let v = a0 - a1 * (T::mixed_tau() * n / size).mixed_cos()
-                        + a2 * (T::mixed_from_num(2) * T::mixed_tau() * n / size).mixed_cos();
+                      + a2 * (T::mixed_from_num(2) * T::mixed_tau() * n / size).mixed_cos();
             r_vec.push_back(v);
         }
         return r_vec;
