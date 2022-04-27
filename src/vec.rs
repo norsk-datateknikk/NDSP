@@ -112,7 +112,7 @@ impl<T> Vec<T> {
     /// 
     /// self must have capacity to append the vec.
     /// 
-    /// /// ```
+    /// ```
     /// use ndsp::*;
     /// use mixed_num::*;
     /// 
@@ -128,7 +128,7 @@ impl<T> Vec<T> {
     /// 
     /// a.append(b);
     /// 
-    /// assert_eq!(vec.to_string(), "[ 2, 1, 4, 4 ]" );
+    /// assert_eq!(a.to_string(), "[ 2, 1, 4, 4 ]" );
     /// ```
     pub fn append( &mut self, vec: Vec<T> )
     {
