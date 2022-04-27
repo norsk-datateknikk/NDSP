@@ -222,15 +222,16 @@ impl <T:MixedNum + MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + 
     /// 
     /// let signal = Vec::osc(angular_frequency, phase_rad, 256);
     /// 
-    /// signal.plot_psd( f_sample, "./figures/plot_psd.png", "Power Spectral Density" );
+    /// signal.plot_psd( f_sample, -180f32, "./figures/plot_psd.png", "Power Spectral Density" );
     /// ```
     /// 
     /// The resulting plot is shown below.
     /// 
     /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/plot_psd.png) 
-    pub fn plot_psd( &self, sample_rate_hz: T, path: &str, caption: &str ) -> Result<(), Box<dyn std::error::Error>>
+    pub fn plot_psd( &self, sample_rate_hz: T, floor_db: T, path: &str, caption: &str ) -> Result<(), Box<dyn std::error::Error>>
         where Vec<T>: Decibel<T>,
-              Vec<Cartesian<T>>: Psd<T>
+              Vec<Cartesian<T>>: Psd<T>,
+              f32: MixedNumConversion<T>
     {
         let psd = self.psd();
         let mut psd: Vec<f32> = psd.vec_to_num();
@@ -240,6 +241,8 @@ impl <T:MixedNum + MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + 
 
         let x_vec = Vec::lin_range(0f32, sample_rate_hz-step_hz, psd.len());
         psd.pow2db();
+
+        psd.minimum( floor_db);
     
         x_vec.plot(&psd, path, caption, "Frequency [Hz]", "dB" )
     }

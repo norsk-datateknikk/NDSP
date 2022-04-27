@@ -5,9 +5,9 @@
 use crate::*;
 use mixed_num::*;
 
-impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCos + MixedOne> Vec<T>
+impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCos + MixedZero + MixedOne + MixedAbs> Vec<T>
 {
-    /// Generate a Hammin window funciton.
+    /// Generate a Hamming window funciton.
     /// 
     /// ```
     /// use ndsp::*;
@@ -18,7 +18,7 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
     /// vec.simple_plot("./figures/hamming_test.png", "Hamming Window Function");
     /// 
     /// let c_vec = Vec::<Cartesian<f32>>::new_from_real(vec);
-    /// c_vec.plot_psd( 1f32, "./figures/hamming_psd_test.png", "Hamming Window Function" );
+    /// c_vec.plot_psd( 1f32, -180f32, "./figures/hamming_psd_test.png", "Hamming Window Function" );
     /// ```
     /// 
     /// The resulitg plots are shown below.
@@ -34,8 +34,40 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
 
         for idx in 0..len {
             let n = T::mixed_from_num(idx);
-            let v = a0 - (T::mixed_one() - a0) * (T::mixed_tau() * n / size).mixed_cos();
-            r_vec.push_back(v);
+            let w = a0 - (T::mixed_one() - a0) * (T::mixed_tau() * n / size).mixed_cos();
+            r_vec.push_back(w);
+        }
+        return r_vec;
+    }
+
+    /// Generate a Barlett window funciton.
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// use mixed_num::Cartesian;
+    /// 
+    /// let mut vec = Vec::<f32>::barlett(512);
+    /// 
+    /// vec.simple_plot("./figures/barlett_test.png", "Barlett Window Function");
+    /// 
+    /// let c_vec = Vec::<Cartesian<f32>>::new_from_real(vec);
+    /// c_vec.plot_psd( 1f32, -110f32, "./figures/barlett_psd_test.png", "Barlett Window Function" );
+    /// ```
+    /// 
+    /// The resulitg plots are shown below.
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/barlett_test.png)
+    /// 
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/barlett_psd_test.png)
+    pub fn barlett(len: usize) -> Self {
+        let mut r_vec = crate::Vec::<T>::new_with_capacity(len);
+        
+        let half_len = T::mixed_from_num(len.clone())/T::mixed_from_num(2usize);
+
+        for idx in 0..len {
+            let n = T::mixed_from_num(idx);
+            let w = T::mixed_one()-((n-half_len)/half_len).mixed_abs();
+            r_vec.push_back(w);
         }
         return r_vec;
     }
@@ -51,7 +83,7 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
     /// vec.simple_plot("./figures/blackman_test.png", "Blackman Window Function");
     /// 
     /// let c_vec = Vec::<Cartesian<f32>>::new_from_real(vec);
-    /// c_vec.plot_psd( 1f32, "./figures/blackman_psd_test.png", "Blackman Window Function" );
+    /// c_vec.plot_psd( 1f32, -180f32, "./figures/blackman_psd_test.png", "Blackman Window Function" );
     /// ```
     /// 
     /// The resulitg plots are shown below.
@@ -69,9 +101,9 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
 
         for idx in 0..len {
             let n = T::mixed_from_num(idx);
-            let v = a0 - a1 * (T::mixed_tau() * n / size).mixed_cos()
+            let w = a0 - a1 * (T::mixed_tau() * n / size).mixed_cos()
                       + a2 * (T::mixed_from_num(2) * T::mixed_tau() * n / size).mixed_cos();
-            r_vec.push_back(v);
+            r_vec.push_back(w);
         }
         return r_vec;
     }

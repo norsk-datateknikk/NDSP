@@ -743,7 +743,7 @@ impl <T: MixedReal + MixedZero + MixedPowi + MixedNumSigned + MixedTrigonometry 
     /// 
     /// signal.hilbert(&mut buffer);
     /// 
-    /// buffer.plot_psd(1e3, "./figures/plot_hilbert.png", "PSD of Analytical Signal");
+    /// buffer.plot_psd(1e3, -180f32, "./figures/plot_hilbert.png", "PSD of Analytical Signal");
     /// 
     /// ```
     /// 
