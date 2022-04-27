@@ -1,5 +1,11 @@
 # Release Notes
 
+## Release 0.2.0 (2021-04-??)
+
+- Breaking change on plot_psd. An aditional argument is taken, this is to handle vectors with -inf values.
+- Adds methot to append vectors.
+- Adds Blackman, triangle and Hamming window functions.
+
 ## Release 0.1.2 (2021-04-25)
 
 - Adds plots and tests for all traits in math_impl.rs.

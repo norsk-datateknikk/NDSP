@@ -12,6 +12,8 @@ pub use ops::*;
 
 pub mod math_impl;
 
+pub mod window;
+
 pub mod complex;
 pub use complex::*;
 
@@ -24,7 +26,7 @@ use alloc::string::ToString;
 
 extern crate num;
 
-use core::fmt;
+use core::{fmt, panic};
 use alloc::string::String;
 
 /// Numeric vector of real, complex, fixed or floating-point numbers.
@@ -103,6 +105,40 @@ impl<T> Vec<T> {
         vec.reserve_exact(capacity);
         Vec {
             vec: vec,
+        }
+    }
+
+    /// Append vector into self.
+    /// 
+    /// self must have capacity to append the vec.
+    /// 
+    /// /// ```
+    /// use ndsp::*;
+    /// use mixed_num::*;
+    /// 
+    /// // Allocate memory for vec.
+    /// let mut a = Vec::<f32>::new_with_capacity(4);
+    /// let mut b = Vec::<f32>::new_with_capacity(2);
+    /// 
+    /// // Add values to the vec.
+    /// a.push_back(2f32);
+    /// a.push_back(1f32);
+    /// b.push_back(4f32);
+    /// b.push_back(4f32);
+    /// 
+    /// a.append(b);
+    /// 
+    /// assert_eq!(vec.to_string(), "[ 2, 1, 4, 4 ]" );
+    /// ```
+    pub fn append( &mut self, vec: Vec<T> )
+    {
+        if self.capacity() < vec.len()
+        {
+            panic!("Vector capacity is not sufficient. Capacity = {}, appending vector size = {}", self.capacity(), vec.len() );
+        }
+        for item in vec
+        {
+            self.push_back(item);
         }
     }
 

@@ -26,7 +26,7 @@ use crate::traits;
 impl<T: MixedReal> Vec<Cartesian<T>> {
     /// Create a complex vector from a real one.
     #[allow(dead_code)]
-    fn new_from_real( real_vec: Vec<T> ) -> Vec<Cartesian<T>>
+    pub fn new_from_real( real_vec: Vec<T> ) -> Vec<Cartesian<T>>
     {
         let mut vec = Vec::<Cartesian<T>>::new_with_capacity(real_vec.len());
 
