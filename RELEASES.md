@@ -1,9 +1,9 @@
 # Release Notes
 
-## Release 0.2.0 (2021-04-??)
+## Release 0.2.0 (2021-04-27)
 
 - Breaking change on plot_psd. An aditional argument is taken, this is to handle vectors with -inf values.
-- Adds methot to append vectors.
+- Adds method to append vectors.
 - Adds Blackman, triangle and Hamming window functions.
 
 ## Release 0.1.2 (2021-04-25)
