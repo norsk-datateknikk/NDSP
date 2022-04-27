@@ -76,6 +76,28 @@
 //! 
 //! ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/lib_plot_x_y.png)
 //! 
+//! ## Window functions
+//! 
+//! The package support selected window funcitons.
+//! 
+//! ```
+//! use ndsp::*;
+//! use mixed_num::Cartesian;
+//! 
+//! let mut vec = Vec::<f32>::barlett(256);
+//! 
+//! vec.simple_plot("./figures/barlett_test_lib.png", "Barlett Window Function");
+//! 
+//! let c_vec = Vec::<Cartesian<f32>>::new_from_real(vec);
+//! c_vec.plot_psd( 1f32, -110f32, "./figures/barlett_psd_test_lib.png", "Barlett Window Function" );
+//! ```
+//! 
+//! The resulitg plots are shown below.
+//! 
+//! ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/barlett_test_lib.png)
+//! 
+//! ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/barlett_psd_test_lib.png)
+//! 
 #![crate_name = "ndsp"]
 
 #![cfg_attr(not(feature = "std"), no_std)]
