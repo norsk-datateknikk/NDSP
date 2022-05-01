@@ -325,6 +325,45 @@ impl <T: MixedReal + MixedNumSigned + MixedNumConversion<T> + MixedTrigonometry 
     }
 }
 
+impl <T: Clone + Copy> FftShift for Vec<T> {
+    /// Rearrange a frequency domain vector from [0,2π] to [-π,π].
+    ///
+    ///  ## Example
+    /// 
+    /// ```
+    /// use ndsp::*;
+    /// 
+    /// let n = 512;
+    /// let mut complex_vec = Vec::osc(1f32,0f32,n);
+    ///
+    /// complex_vec.fft();
+    /// 
+    /// complex_vec.fft_shift();
+    ///
+    /// complex_vec.mag();
+    /// 
+    /// complex_vec.re().simple_plot("./figures/fft_shift_test.png", "FFT Shift Demonstration");
+    /// ```
+    /// 
+    /// The resulting plot is shown below.
+    ///
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/fft_shift_test.png) 
+    fn fft_shift( &mut self )
+    {
+        let tempvec = self.clone();
+        let half_len = self.len()/2;
+
+        for idx in 0..half_len
+        {
+            self[idx] = tempvec[half_len+idx];
+        }
+        for idx in 0..half_len
+        {
+            self[half_len+idx] = tempvec[idx];
+        }
+    }
+}
+
 /*
 #[cfg(any(feature = "std"))]
 impl <T> traits::FromBinary for Vec<Complex<T>>

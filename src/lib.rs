@@ -84,7 +84,7 @@
 //! use ndsp::*;
 //! use mixed_num::Cartesian;
 //! 
-//! let mut vec = Vec::<f32>::barlett(256);
+//! let mut vec = Vec::<f32>::bartlett(256);
 //! 
 //! vec.simple_plot("./figures/barlett_test_lib.png", "Barlett Window Function");
 //! 

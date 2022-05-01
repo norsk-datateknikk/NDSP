@@ -149,6 +149,11 @@ pub trait Fft {
     fn fft( &mut self );
 }
 
+pub trait FftShift {
+    /// Reatrange a frequency domain vector from [0,2π] to [-π,π].
+    fn fft_shift( &mut self );
+}
+
 pub trait Ifft {
     /// Compute the the FFT of `self`. Computed-in-place.
     fn ifft( &mut self );
