@@ -239,8 +239,10 @@ impl <T:MixedNum + MixedReal + MixedNumSigned + MixedTrigonometry + MixedSqrt + 
         let sample_rate_hz:f32 = sample_rate_hz.mixed_to_num();
         let step_hz: f32 = 2f32*sample_rate_hz/(psd.len() as f32);
 
-        let x_vec = Vec::lin_range(0f32, sample_rate_hz-step_hz, psd.len());
+        let x_vec = Vec::lin_range(-&sample_rate_hz/2f32, &sample_rate_hz/2f32-step_hz, psd.len());
         psd.pow2db();
+
+        psd.fft_shift();
 
         psd.minimum( floor_db);
     
