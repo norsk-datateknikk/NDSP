@@ -1,8 +1,8 @@
 # Release Notes
 
-## Release 0.3.0 (2021-xx-xx)
+## Release 0.3.0 (2021-05-01)
 
-- Breaking change on plot_psd. Corrects Bartlett funciton name.
+- Breaking change on plot_psd. Corrects Bartlett method name.
 - Adds fft-shift trait.
 
 ## Release 0.2.0 (2021-04-27)
