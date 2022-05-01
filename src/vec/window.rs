@@ -25,7 +25,7 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
     /// 
     /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/hamming_test.png)
     /// 
-    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/hammming_psd_test.png)
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/hamming_psd_test.png)
     pub fn hamming(len: usize) -> Self {
         let a0: T = T::mixed_from_num(25) / T::mixed_from_num(46);
 
@@ -40,26 +40,26 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
         return r_vec;
     }
 
-    /// Generate a Barlett window funciton.
+    /// Generate a Bartlett window funciton.
     /// 
     /// ```
     /// use ndsp::*;
     /// use mixed_num::Cartesian;
     /// 
-    /// let mut vec = Vec::<f32>::barlett(512);
+    /// let mut vec = Vec::<f32>::bartlett(512);
     /// 
     /// vec.simple_plot("./figures/barlett_test.png", "Barlett Window Function");
     /// 
     /// let c_vec = Vec::<Cartesian<f32>>::new_from_real(vec);
-    /// c_vec.plot_psd( 1f32, -110f32, "./figures/barlett_psd_test.png", "Barlett Window Function" );
+    /// c_vec.plot_psd( 1f32, -110f32, "./figures/bartlett_psd_test.png", "Bartlett Window Function" );
     /// ```
     /// 
     /// The resulitg plots are shown below.
     /// 
-    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/barlett_test.png)
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/bartlett_test.png)
     /// 
-    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/barlett_psd_test.png)
-    pub fn barlett(len: usize) -> Self {
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/bartlett_psd_test.png)
+    pub fn bartlett(len: usize) -> Self {
         let mut r_vec = crate::Vec::<T>::new_with_capacity(len);
         
         let half_len = T::mixed_from_num(len.clone())/T::mixed_from_num(2usize);
