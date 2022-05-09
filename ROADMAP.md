@@ -9,6 +9,7 @@
 
 - [x] Implement vector-scalar operations for vectors with complex items.
 - [ ] Implement popular window funcitons.
+- [x] implemen Nuttall window.
 
 - [ ] implement WGN for real vectors.
 - [ ] implement WGN for complex vectors.
