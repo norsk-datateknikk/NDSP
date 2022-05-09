@@ -4,7 +4,7 @@
 
 [package]
 name = "ndsp"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Erik Buer"]
 edition = "2021"
 description = "A package for Rust DSP."
