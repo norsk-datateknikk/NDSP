@@ -48,7 +48,7 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
     /// 
     /// let mut vec = Vec::<f32>::bartlett(512);
     /// 
-    /// vec.simple_plot("./figures/barlett_test.png", "Barlett Window Function");
+    /// vec.simple_plot("./figures/bartlett_test.png", "Bartlett Window Function");
     /// 
     /// let c_vec = Vec::<Cartesian<f32>>::new_from_real(vec);
     /// c_vec.plot_psd( 1f32, -110f32, "./figures/bartlett_psd_test.png", "Bartlett Window Function" );
