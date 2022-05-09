@@ -87,9 +87,9 @@ impl <T: MixedNum + MixedOps + MixedNumConversion<usize> + MixedConsts + MixedCo
     /// 
     /// The resulitg plots are shown below.
     /// 
-    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/bartlett_test.png)
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/nuttall_test.png)
     /// 
-    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/bartlett_psd_test.png)
+    /// ![Alt version](https://raw.githubusercontent.com/norsk-datateknikk/NDSP/main/figures/Nuttall_psd_test.png)
     pub fn nuttall(len: usize) -> Self {
         let mut r_vec = crate::Vec::<T>::new_with_capacity(len);
 
